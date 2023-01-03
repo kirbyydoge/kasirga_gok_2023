@@ -159,6 +159,7 @@ always @(posedge clk_i) begin
     end
 end
 
+assign yurut_uop_o = uop_r;
 assign coz_aktif_w = getir_gecerli_i && !bosalt_i;
 
 endmodule
