@@ -88,15 +88,15 @@ endtask
 
 task uop_rv32add();
 begin
-    buyruk_ky1_cmb = {{27{1'b0}}, getir_buyruk_i[`R_RS1]};
-    buyruk_ky2_cmb = {{27{1'b0}}, getir_buyruk_i[`R_RS2]};
-    buyruk_hy_cmb = {{27{1'b0}}, getir_buyruk_i[`R_RD]};
+    buyruk_rs1_cmb = {{27{1'b0}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{1'b0}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = {{27{1'b0}}, getir_buyruk_i[`R_RD]};
 
     buyruk_etiket_gecerli_cmb = 1'b1;
 
-    uop_ns[`UOP_RS1] = buyruk_ky1_cmb;
-    uop_ns[`UOP_RS2] = buyruk_ky2_cmb;
-    uop_ns[`UOP_RD] = buyruk_hy_cmb;
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RD] = buyruk_rd_cmb;
     uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
 
