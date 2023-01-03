@@ -3,7 +3,7 @@
 `include "mikroislem.vh"
 `include "sabitler.vh"
 
-module tb_l1b();
+module tb_l1d();
 
 reg                                             clk_i;
 reg                                             rstn_i;
@@ -31,7 +31,7 @@ wire    [(`ADRES_ETIKET_BIT * `L1_YOL)-1:0]     l1_veri_etiket_i;
 wire    [(`L1_BLOK_BIT * `L1_YOL)-1:0]          l1_veri_blok_i;
 reg                                             l1_veri_gecerli_i;
 
-// l1 denetleyici <> vy denetleyici
+// l1 denetleyici <> veri yolu denetleyici
 wire    [`ADRES_BIT-1:0]        vy_istek_adres_o;
 wire                            vy_istek_gecerli_o;
 wire                            vy_istek_hazir_i;
@@ -57,11 +57,11 @@ always begin
     #5;
 end
 
-reg     [`ADRES_BIT-1:0]    cmd_addr;
-wire    [`VERI_BIT-1:0]     rd_data;
-reg     [`VERI_BIT-1:0]     wr_data;
-reg                         wr_enable;
-reg                         cmd_valid;
+reg     [`ADRES_BIT-1:0]    cmd_addr_r;
+wire    [`VERI_BIT-1:0]     rd_data_w;
+reg     [`VERI_BIT-1:0]     wr_data_r;
+reg                         wr_enable_r;
+reg                         cmd_valid_r;
 
 memory_model #(
     .BASE_ADDR   (`BELLEK_BASLANGIC), 
@@ -71,20 +71,20 @@ memory_model #(
 )
 mem (
     .clk_i          ( clk_i ),
-    .cmd_addr       ( cmd_addr ),
-    .rd_data        ( rd_data ),
-    .wr_data        ( wr_data ),
-    .wr_enable      ( wr_enable ),
-    .cmd_valid      ( cmd_valid )
+    .cmd_addr_i     ( cmd_addr_r ),
+    .rd_data_o      ( rd_data_w ),
+    .wr_data_i      ( wr_data_r ),
+    .wr_enable_i    ( wr_enable_r ),
+    .cmd_valid_i    ( cmd_valid_r )
 );
 
 always @* begin
-    mem_veri_i = rd_data;
+    mem_veri_i = rd_data_w;
     mem_istek_hazir_i = `HIGH;
-    cmd_addr = mem_istek_adres_o;
-    wr_data = mem_istek_veri_o;
-    wr_enable = mem_istek_yaz_o;
-    cmd_valid = mem_istek_gecerli_o;
+    cmd_addr_r = mem_istek_adres_o;
+    wr_data_r = mem_istek_veri_o;
+    wr_enable_r = mem_istek_yaz_o;
+    cmd_valid_r = mem_istek_gecerli_o;
 end
 
 localparam BELLEK_GECIKMESI = 1;
@@ -129,21 +129,28 @@ generate
         assign l1_veri_blok_i[gen_i * `L1_BLOK_BIT +: `L1_BLOK_BIT] = bram_oku_bloklar[gen_i];
         assign l1_veri_etiket_i[gen_i * `ADRES_ETIKET_BIT +: `ADRES_ETIKET_BIT] = bram_oku_etiketler[gen_i];
 
-        l1_etiket_bram l1_etiket (
-            .clka(clk_i), 
-            .ena(!l1_istek_gecersiz_o),
-            .wea(l1_istek_yaz_o[gen_i]), 
-            .addra(l1_istek_satir_o), 
-            .dina(bram_yaz_etiketler[gen_i]), 
-            .douta(bram_oku_etiketler[gen_i])
+        bram_model #(
+            .DATA_WIDTH(`ADRES_ETIKET_BIT),
+            .BRAM_DEPTH(`L1_SATIR)
+        ) l1_etiket (
+            .clk_i(clk_i), 
+            .cmd_en_i(!l1_istek_gecersiz_o),
+            .wr_en_i(l1_istek_yaz_o[gen_i]), 
+            .addr_i(l1_istek_satir_o), 
+            .data_i(bram_yaz_etiketler[gen_i]), 
+            .data_o(bram_oku_etiketler[gen_i])
         );
-        l1_veri_bram l1_veri (
-            .clka(clk_i), 
-            .ena(!l1_istek_gecersiz_o),
-            .wea(l1_istek_yaz_o[gen_i]), 
-            .addra(l1_istek_satir_o), 
-            .dina(bram_yaz_bloklar[gen_i]), 
-            .douta(bram_oku_bloklar[gen_i])
+        
+        bram_model #(
+            .DATA_WIDTH(`L1_BLOK_BIT),
+            .BRAM_DEPTH(`L1_SATIR)
+        ) l1_veri (
+            .clk_i(clk_i), 
+            .cmd_en_i(!l1_istek_gecersiz_o),
+            .wr_en_i(l1_istek_yaz_o[gen_i]), 
+            .addr_i(l1_istek_satir_o), 
+            .data_i(bram_yaz_bloklar[gen_i]), 
+            .data_o(bram_oku_bloklar[gen_i])
         );
     end
 endgenerate
@@ -152,7 +159,7 @@ always @(posedge clk_i) begin
     l1_veri_gecerli_i <=  !l1_istek_gecersiz_o && (l1_istek_yaz_o == {`L1_YOL{`LOW}});
 end
 
-l1b_denetleyici l1b (
+l1_denetleyici l1b (
     .clk_i                  ( clk_i ),
     .rstn_i                 ( rstn_i ),
     .port_istek_adres_i     ( port_istek_adres_i ),
@@ -187,7 +194,7 @@ localparam ACCESS_STEP = 1;
 
 reg [7:0] rep_byte;
 reg istek_handshake;
-reg istek_enable;
+reg istek_cmd_en_ible;
 reg veri_handshake;
 reg flag_test;
 
@@ -229,18 +236,18 @@ initial begin
         end
     end
     port_istek_gecerli_i = `LOW;
-    istek_enable = `HIGH;
+    istek_cmd_en_ible = `HIGH;
     for (i = 0; i < ACCESS_COUNT;) begin
         rep_byte = i[7:0] + 1;
         port_istek_adres_i = `BELLEK_BASLANGIC + ACCESS_STEP * i * DATA_WIDTH / 8;
-        port_istek_gecerli_i = istek_enable;
+        port_istek_gecerli_i = istek_cmd_en_ible;
         port_istek_yaz_i = `LOW;
         port_istek_veri_i = 0;
         istek_handshake = port_istek_hazir_o && port_istek_gecerli_i;
         veri_handshake = port_veri_hazir_i && port_veri_gecerli_o;
         @(posedge clk_i) #2;
         if (istek_handshake) begin
-            istek_enable = `LOW;
+            istek_cmd_en_ible = `LOW;
         end
         if (veri_handshake) begin
             if (port_veri_o != {`VERI_BYTE{rep_byte}}) begin
@@ -248,7 +255,7 @@ initial begin
                 $display("[SIM] ACTUAL: %0x\tEXPECTED: %0x", port_veri_o, {`VERI_BYTE{rep_byte}});
                 flag_test = `LOW;
             end
-            istek_enable = `HIGH;
+            istek_cmd_en_ible = `HIGH;
             i = i + 1;
         end
     end
@@ -262,6 +269,9 @@ initial begin
 `ifdef RANDOM
     //TODO:
 `endif
+
+    $display("[SIM] All tests passed.");
+    $finish;
 end
 
 endmodule

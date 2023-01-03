@@ -2,7 +2,7 @@
 
 `include "sabitler.vh"
 
-module l1b_denetleyici (
+module l1_denetleyici (
     input                                           clk_i,
     input                                           rstn_i,
 
@@ -29,7 +29,7 @@ module l1b_denetleyici (
     input   [(`L1_BLOK_BIT * `L1_YOL)-1:0]          l1_veri_blok_i,
     input                                           l1_veri_gecerli_i,
 
-    // ana bellek denetleyici <> l1 denetleyici oku
+    // veri yolu denetleyici <> l1 denetleyici oku
     output  [`ADRES_BIT-1:0]                        vy_istek_adres_o,
     output                                          vy_istek_gecerli_o,
     input                                           vy_istek_hazir_i,
@@ -49,9 +49,9 @@ localparam  L1_BEKLE        = 'd2;
 localparam  L1_SORGU        = 'd3;
 localparam  L1_YANIT        = 'd4;
 localparam  L1_SATIR_ACIK   = 'd5;
-localparam  vy_OKU_ISTEK    = 'd6;
-localparam  vy_OKU_BEKLE    = 'd7;
-localparam  vy_YAZ_ISTEK    = 'd8;
+localparam  VY_OKU_ISTEK    = 'd6;
+localparam  VY_OKU_BEKLE    = 'd7;
+localparam  VY_YAZ_ISTEK    = 'd8;
 
 reg [L1_DURUM_BIT-1:0] l1_durum_r; 
 reg [L1_DURUM_BIT-1:0] l1_durum_ns;
@@ -116,8 +116,8 @@ reg [`L1_YOL-1:0] satir_kirli_ns [0:`L1_SATIR-1];
 wire [`L1_YOL-1:0] acik_satir_gecerli_durumu_w;
 wire [`L1_YOL-1:0] acik_satir_kirli_durumu_w;
 
-reg [$clog2(`L1_YOL)-1:0] idx_gecersiz_yol_comb_r;
-reg gecersiz_yol_var_comb_r;
+reg [$clog2(`L1_YOL)-1:0] idx_gecersiz_yol_cmb;
+reg gecersiz_yol_var_cmb;
 
 reg [$clog2(`L1_YOL)-1:0] vy_hedef_yol_r;
 reg [$clog2(`L1_YOL)-1:0] vy_hedef_yol_ns;
@@ -166,44 +166,39 @@ generate
     end
 endgenerate
 
-function [`ADRES_ETIKET_BIT-1:0] get_etiket (
-        input [`ADRES_BIT-1:0] adres
-    );
+function [`ADRES_ETIKET_BIT-1:0] get_etiket;
+    input [`ADRES_BIT-1:0] adres;
     begin
         get_etiket = adres[`ADRES_ETIKET_OFFSET +: `ADRES_ETIKET_BIT];
     end
 endfunction
 
-function [`ADRES_SATIR_BIT-1:0] get_satir (
-        input [`ADRES_BIT-1:0] adres
-    );
+function [`ADRES_SATIR_BIT-1:0] get_satir;
+    input [`ADRES_BIT-1:0] adres;
     begin
         get_satir = adres[`ADRES_SATIR_OFFSET +: `ADRES_SATIR_BIT];
     end
 endfunction
 
-function [`ADRES_BYTE_BIT-1:0] get_bytes (
-        input [`ADRES_BIT-1:0] adres
-    );
+function [`ADRES_BYTE_BIT-1:0] get_bytes;
+    input [`ADRES_BIT-1:0] adres;
     begin
         get_bytes = adres[`ADRES_BYTE_OFFSET +: `ADRES_BYTE_BIT];
     end
 endfunction
 
-function [`VERI_BIT-1:0] get_veri (
-        input [`L1_BLOK_BIT-1:0] blok,
-        input [`ADRES_BIT-1:0] adres
-    );
+function [`VERI_BIT-1:0] get_veri;
+    input [`L1_BLOK_BIT-1:0] blok;
+    input [`ADRES_BIT-1:0] adres;
     begin
         get_veri = blok[get_bytes(adres) * 8 +: `VERI_BIT];
     end
 endfunction
 
-task set_veri (
-        input [$clog2(`L1_YOL)-1:0] yol_idx,
-        input [`ADRES_BIT-1:0] adres,
-        input [`VERI_BIT-1:0] veri
-    );
+task set_veri;
+    input [$clog2(`L1_YOL)-1:0] yol_idx;
+    input [`ADRES_BIT-1:0] adres;
+    input [`VERI_BIT-1:0] veri;
     begin
         l1_buffer_bloklar_ns[yol_idx][get_bytes(adres) * 8 +: `VERI_BIT] = veri;
         l1_buffer_etiketler_ns[yol_idx] = get_etiket(adres);
@@ -215,10 +210,9 @@ endtask
 // Verilogda (maalesef) structlarimiz yok. O nedenle bu tip cozumlere gitmemiz gerekiyor.
 `define FN_L1_SORGU_YOL     $clog2(`L1_YOL)-1:0
 `define FN_L1_SORGU_SONUC   $clog2(`L1_YOL)
-reg [$clog2(`L1_YOL):0] fn_l1_ara_sonuc_comb;
-function [$clog2(`L1_YOL):0] l1_ara (
-        input [`ADRES_BIT-1:0] adres
-    );
+reg [$clog2(`L1_YOL):0] fn_l1_ara_sonuc_cmb;
+function [$clog2(`L1_YOL):0] l1_ara;
+    input [`ADRES_BIT-1:0] adres;
     begin
         l1_ara[`FN_L1_SORGU_YOL] = 0;
         l1_ara[`FN_L1_SORGU_SONUC] = `LOW;
@@ -239,9 +233,7 @@ endfunction
 //  - Kirli satiri bir buffera koy ve ana bellekten okuma yap.
 //  - Bu sayede istegi erken yanitlayip bos kalan vakitte yazabiliriz.
 //  - Simdilik donanim karmasikligini artirmak istemiyoruz. Son islerden olacak.
-task l1_cikar (
-        input [`ADRES_BIT-1:0] istek_adres
-    );
+task l1_cikar (input [`ADRES_BIT-1:0] istek_adres);
     begin
         if (get_satir(son_adres_r) != get_satir(istek_adres)) begin
             if (l1_yol_guncellendi_r != {`L1_YOL{`LOW}}) begin // Arabelleklerde SRAM'e yazilmamis veri var
@@ -259,16 +251,16 @@ task l1_cikar (
                 vy_istek_gecerli_ns = `HIGH;
                 vy_istek_yaz_ns = `LOW;
                 vy_veri_hazir_ns = `LOW;
-                l1_durum_ns = vy_OKU_ISTEK;
+                l1_durum_ns = VY_OKU_ISTEK;
             end
         end
-        else if (gecersiz_yol_var_comb_r) begin
-            vy_hedef_yol_ns = idx_gecersiz_yol_comb_r;
+        else if (gecersiz_yol_var_cmb) begin
+            vy_hedef_yol_ns = idx_gecersiz_yol_cmb;
             vy_istek_adres_ns = istek_adres;
             vy_istek_gecerli_ns = `HIGH;
             vy_istek_yaz_ns = `LOW;
             vy_veri_hazir_ns = `LOW;
-            l1_durum_ns = vy_OKU_ISTEK;
+            l1_durum_ns = VY_OKU_ISTEK;
         end
         else if (satir_kirli_r[get_satir(istek_adres)][cikarma_sayaci_r]) begin
             vy_hedef_yol_ns = cikarma_sayaci_r;
@@ -277,7 +269,7 @@ task l1_cikar (
             vy_istek_gecerli_ns = `HIGH;
             vy_istek_yaz_ns = `HIGH; 
             vy_veri_hazir_ns = `LOW;
-            l1_durum_ns = vy_YAZ_ISTEK;
+            l1_durum_ns = VY_YAZ_ISTEK;
         end
         else begin
             vy_hedef_yol_ns = cikarma_sayaci_r;
@@ -285,19 +277,19 @@ task l1_cikar (
             vy_istek_gecerli_ns = `HIGH;
             vy_istek_yaz_ns = `LOW;
             vy_veri_hazir_ns = `LOW;
-            l1_durum_ns = vy_OKU_ISTEK;
+            l1_durum_ns = VY_OKU_ISTEK;
         end
     end
 endtask
 
 // Acik satirdaki kirli ve gecerli yollari bul ve yeniden isimlendir
 always @* begin
-    idx_gecersiz_yol_comb_r = 0;
-    gecersiz_yol_var_comb_r = `LOW;
+    idx_gecersiz_yol_cmb = 0;
+    gecersiz_yol_var_cmb = `LOW;
     for (i = `L1_YOL - 1; i >= 0; i = i - 1) begin
         if (!acik_satir_gecerli_durumu_w[i]) begin
-            idx_gecersiz_yol_comb_r = i;
-            gecersiz_yol_var_comb_r = `HIGH;
+            idx_gecersiz_yol_cmb = i;
+            gecersiz_yol_var_cmb = `HIGH;
         end
     end
 end
@@ -344,19 +336,19 @@ always @* begin
     L1_SATIR_ACIK: begin
     // Yine bostayiz ama elimizde acik bir satir var. Istek burayi vurursa l1 okumaya gerek yok.
         port_istek_hazir_ns = `HIGH;
-        fn_l1_ara_sonuc_comb = l1_ara(port_istek_adres_i);
+        fn_l1_ara_sonuc_cmb = l1_ara(port_istek_adres_i);
         if (port_istek_gecerli_i && port_istek_hazir_o) begin
             port_istek_hazir_ns = `LOW;
             port_istek_adres_ns = port_istek_adres_i;
             port_istek_veri_ns = port_istek_veri_i;
             port_yazma_istegi_ns = port_istek_yaz_i;
-            if (fn_l1_ara_sonuc_comb[`FN_L1_SORGU_SONUC]) begin
+            if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
                 if (port_istek_yaz_i) begin
-                    set_veri(fn_l1_ara_sonuc_comb[`FN_L1_SORGU_YOL], port_istek_adres_i, port_istek_veri_i);
+                    set_veri(fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL], port_istek_adres_i, port_istek_veri_i);
                     port_yazma_istegi_ns = `LOW;
                 end
                 else begin
-                    port_veri_ns = get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_comb[`FN_L1_SORGU_YOL]], port_istek_adres_i);
+                    port_veri_ns = get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], port_istek_adres_i);
                     port_veri_gecerli_ns = `HIGH;
                     l1_durum_ns = L1_YANIT;
                 end
@@ -386,15 +378,15 @@ always @* begin
         end
     end
     L1_SORGU: begin
-        fn_l1_ara_sonuc_comb = l1_ara(port_istek_adres_r);
-        if (fn_l1_ara_sonuc_comb[`FN_L1_SORGU_SONUC]) begin
+        fn_l1_ara_sonuc_cmb = l1_ara(port_istek_adres_r);
+        if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
             if (port_yazma_istegi_r) begin
-                set_veri(fn_l1_ara_sonuc_comb[`FN_L1_SORGU_YOL], port_istek_adres_r, port_istek_veri_r);
+                set_veri(fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL], port_istek_adres_r, port_istek_veri_r);
                 port_yazma_istegi_ns = `LOW;
                 l1_durum_ns = L1_SATIR_ACIK;
             end
             else begin
-                port_veri_ns =  get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_comb[`FN_L1_SORGU_YOL]], port_istek_adres_r);
+                port_veri_ns =  get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], port_istek_adres_r);
                 port_veri_gecerli_ns = `HIGH;
                 l1_durum_ns = L1_YANIT;
             end
@@ -410,15 +402,15 @@ always @* begin
             l1_durum_ns = L1_SATIR_ACIK;
         end
     end
-    vy_OKU_ISTEK: begin
+    VY_OKU_ISTEK: begin
         if (vy_istek_hazir_i && vy_istek_gecerli_o) begin
             vy_istek_gecerli_ns = `LOW;
             vy_veri_hazir_ns = `HIGH;
             son_adres_ns = vy_istek_adres_r;
-            l1_durum_ns = vy_OKU_BEKLE;
+            l1_durum_ns = VY_OKU_BEKLE;
         end
     end
-    vy_OKU_BEKLE: begin
+    VY_OKU_BEKLE: begin
         vy_veri_hazir_ns = `HIGH;
         if (vy_veri_hazir_o && vy_veri_gecerli_i) begin
             l1_buffer_etiketler_ns[vy_hedef_yol_r] = get_etiket(son_adres_r);
@@ -432,7 +424,7 @@ always @* begin
             l1_durum_ns = L1_SORGU;
         end
     end
-    vy_YAZ_ISTEK: begin
+    VY_YAZ_ISTEK: begin
         vy_istek_gecerli_ns = `HIGH;
         vy_istek_yaz_ns = `HIGH; 
         if (vy_istek_hazir_i && vy_istek_gecerli_o) begin 
@@ -443,14 +435,14 @@ always @* begin
             vy_istek_adres_ns = son_adres_r;
             vy_istek_gecerli_ns = `HIGH;
             vy_istek_yaz_ns = `LOW; 
-            l1_durum_ns = vy_OKU_ISTEK;
+            l1_durum_ns = VY_OKU_ISTEK;
         end
     end
     endcase
 end
 
 always @(posedge clk_i) begin
-    if (~rstn_i) begin
+    if (!rstn_i) begin
         for (i = 0; i < `L1_SATIR; i = i + 1) begin
             satir_gecerli_r[i] <= 0;
             satir_kirli_r[i] <= 0;

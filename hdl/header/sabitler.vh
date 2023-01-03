@@ -10,6 +10,7 @@
 
 `define VERI_BIT  32
 `define VERI_BYTE (`VERI_BIT / 8)
+`define PS_BIT    32
 //-----------Bellek---------------
 `define ADRES_BIT           32
 `define BELLEK_BASLANGIC    'h4000_0000

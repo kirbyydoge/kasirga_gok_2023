@@ -2,7 +2,7 @@
 
 `include "sabitler.vh"
 
-module vy_denetleyici (
+module veri_yolu_denetleyici (
     input                           clk_i,
     input                           rstn_i,
 
@@ -31,13 +31,13 @@ module vy_denetleyici (
     input                           l1_veri_hazir_i
 );
 
-localparam vy_DURUM_BIT = 3;
+localparam VY_DURUM_BIT = 3;
 
-localparam vy_BOSTA             = 'd0;
-localparam vy_BLOK_OKU_ISTEK    = 'd1;
-localparam vy_BLOK_OKU_BEKLE    = 'd2;
-localparam vy_BLOK_OKU_YANIT    = 'd3;
-localparam vy_BLOK_YAZ          = 'd4;
+localparam VY_BOSTA             = 'd0;
+localparam VY_BLOK_OKU_ISTEK    = 'd1;
+localparam VY_BLOK_OKU_BEKLE    = 'd2;
+localparam VY_BLOK_OKU_YANIT    = 'd3;
+localparam VY_BLOK_YAZ          = 'd4;
 
 reg  [`ADRES_BIT-1:0]   mem_istek_adres_r;
 reg  [`ADRES_BIT-1:0]   mem_istek_adres_ns;
@@ -59,8 +59,8 @@ reg                     mem_veri_hazir_r;
 reg                     mem_veri_hazir_ns;
 assign mem_veri_hazir_o = mem_veri_hazir_r;
 
-reg [vy_DURUM_BIT-1:0]  vy_durum_r;
-reg [vy_DURUM_BIT-1:0]  vy_durum_ns;
+reg [VY_DURUM_BIT-1:0]  vy_durum_r;
+reg [VY_DURUM_BIT-1:0]  vy_durum_ns;
 
 reg                     l1_istek_hazir_r;
 reg                     l1_istek_hazir_ns;
@@ -87,7 +87,7 @@ reg [$clog2(BLOK_VERI_SAYISI)-1:0] vy_istek_indis_ns;
 
 always @* begin
     vy_durum_ns = vy_durum_r;
-    l1_istek_hazir_ns = vy_durum_ns == vy_BOSTA;
+    l1_istek_hazir_ns = vy_durum_ns == VY_BOSTA;
     l1_veri_ns = l1_veri_r;
     l1_veri_gecerli_ns = l1_veri_gecerli_r;
     vy_buffer_blok_ns = vy_buffer_blok_r;
@@ -100,7 +100,7 @@ always @* begin
     mem_veri_hazir_ns = mem_veri_hazir_r;
  
     case (vy_durum_r)
-    vy_BOSTA: begin
+    VY_BOSTA: begin
         l1_istek_hazir_ns = `HIGH;
         vy_buffer_indis_ns = 0;
         vy_istek_indis_ns = 0;
@@ -109,16 +109,16 @@ always @* begin
             mem_istek_adres_ns = l1_istek_adres_i;
             if (l1_istek_yaz_i) begin
                 vy_buffer_blok_ns = l1_istek_veri_i;
-                vy_durum_ns = vy_BLOK_YAZ;
+                vy_durum_ns = VY_BLOK_YAZ;
             end
             else begin
-                vy_durum_ns = vy_BLOK_OKU_ISTEK;
+                vy_durum_ns = VY_BLOK_OKU_ISTEK;
             end
         end
     end
-    vy_BLOK_OKU_ISTEK: begin
+    VY_BLOK_OKU_ISTEK: begin
     // Bu durum icerisinde istek yapma ve veri kabul etme asenkron calisiyor.
-    // O nedenle tum isteklerimizi bitirdigimizde vy_BLOK_BEKLE durumuna gidilmeli.
+    // O nedenle tum isteklerimizi bitirdigimizde VY_BLOK_BEKLE durumuna gidilmeli.
         mem_istek_adres_ns = mem_istek_adres_r;
         mem_istek_veri_ns = vy_buffer_blok_r[vy_istek_indis_r];
         mem_istek_gecerli_ns = `HIGH;
@@ -128,7 +128,7 @@ always @* begin
             vy_istek_indis_ns = vy_istek_indis_r + 1;
             if (vy_istek_indis_r == BLOK_VERI_SAYISI - 1) begin
                 mem_istek_gecerli_ns = `LOW;
-                vy_durum_ns = vy_BLOK_OKU_BEKLE;
+                vy_durum_ns = VY_BLOK_OKU_BEKLE;
             end
         end
 
@@ -140,7 +140,7 @@ always @* begin
             // yok bu istegi en hizli durumda bu cevrim yapabiliriz
         end
     end
-    vy_BLOK_OKU_BEKLE: begin
+    VY_BLOK_OKU_BEKLE: begin
         // Istek yaptigimiz veriye karsi hazir olmamak gibi bir luksumuz yok.
         // Gelecekte farkli bellek tipleriyle uyumlu olmasi icin bu sinyallerle yazdim.
         mem_veri_hazir_ns = `HIGH;
@@ -151,19 +151,19 @@ always @* begin
                 mem_veri_hazir_ns = `LOW;
                 l1_veri_ns = vy_buffer_blok_ns;
                 l1_veri_gecerli_ns = `HIGH;
-                vy_durum_ns = vy_BLOK_OKU_YANIT;
+                vy_durum_ns = VY_BLOK_OKU_YANIT;
             end
         end
     end
-    vy_BLOK_OKU_YANIT: begin
+    VY_BLOK_OKU_YANIT: begin
         l1_veri_ns = vy_buffer_blok_r;
         l1_veri_gecerli_ns = `HIGH;
         if (l1_veri_hazir_i && l1_veri_gecerli_o) begin
             l1_veri_gecerli_ns = `LOW;
-            vy_durum_ns = vy_BOSTA;
+            vy_durum_ns = VY_BOSTA;
         end
     end
-    vy_BLOK_YAZ: begin
+    VY_BLOK_YAZ: begin
         mem_istek_adres_ns = mem_istek_adres_r;
         mem_istek_veri_ns = vy_buffer_blok_r[vy_istek_indis_r * `VERI_BIT +: `VERI_BIT];
         mem_istek_gecerli_ns = `HIGH;
@@ -175,7 +175,7 @@ always @* begin
             if (vy_istek_indis_r == BLOK_VERI_SAYISI - 1) begin
                 mem_istek_gecerli_ns = `LOW;
                 mem_istek_yaz_ns = `LOW;
-                vy_durum_ns = vy_BOSTA;
+                vy_durum_ns = VY_BOSTA;
             end
         end
     end
@@ -184,7 +184,7 @@ end
 
 always @(posedge clk_i) begin
     if (!rstn_i) begin
-        vy_durum_r <= vy_BOSTA;
+        vy_durum_r <= VY_BOSTA;
         l1_istek_hazir_r <= 0;
         l1_veri_r <= 0;
         l1_veri_gecerli_r <= 0;

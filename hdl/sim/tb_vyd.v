@@ -32,11 +32,11 @@ always begin
     #5;
 end
 
-reg     [`ADRES_BIT-1:0]    cmd_addr;
-wire    [`VERI_BIT-1:0]     rd_data;
-reg     [`VERI_BIT-1:0]     wr_data;
-reg                         wr_enable;
-reg                         cmd_valid;
+reg     [`ADRES_BIT-1:0]    cmd_addr_r;
+wire    [`VERI_BIT-1:0]     rd_data_w;
+reg     [`VERI_BIT-1:0]     wr_data_r;
+reg                         wr_enable_r;
+reg                         cmd_valid_r;
 
 memory_model #(
     .BASE_ADDR   (`BELLEK_BASLANGIC), 
@@ -46,20 +46,20 @@ memory_model #(
 )
 mem (
     .clk_i          ( clk_i ),
-    .cmd_addr       ( cmd_addr ),
-    .rd_data        ( rd_data ),
-    .wr_data        ( wr_data ),
-    .wr_enable      ( wr_enable ),
-    .cmd_valid      ( cmd_valid )
+    .cmd_addr_i     ( cmd_addr_r ),
+    .rd_data_o      ( rd_data_w ),
+    .wr_data_i      ( wr_data_r ),
+    .wr_enable_i    ( wr_enable_r ),
+    .cmd_valid_i    ( cmd_valid_r )
 );
 
 always @* begin
-    mem_veri_i = rd_data;
+    mem_veri_i = rd_data_w;
     mem_istek_hazir_i = `HIGH;
-    cmd_addr = mem_istek_adres_o;
-    wr_data = mem_istek_veri_o;
-    wr_enable = mem_istek_yaz_o;
-    cmd_valid = mem_istek_gecerli_o;
+    cmd_addr_r = mem_istek_adres_o;
+    wr_data_r = mem_istek_veri_o;
+    wr_enable_r = mem_istek_yaz_o;
+    cmd_valid_r = mem_istek_gecerli_o;
 end
 
 localparam BELLEK_GECIKMESI = 1;
@@ -68,7 +68,7 @@ always @* begin
     mem_veri_gecerli_i <= mem_istek_gecerli_o;
 end
 
-vy_denetleyici vyd (
+veri_yolu_denetleyici vyd (
     .clk_i                  ( clk_i ),
     .rstn_i                 ( rstn_i ),
     .mem_istek_adres_o      ( mem_istek_adres_o ),
