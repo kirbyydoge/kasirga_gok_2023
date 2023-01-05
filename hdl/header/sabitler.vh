@@ -10,6 +10,7 @@
 `define VERI_BYTE   (`VERI_BIT / 8)
 `define BUYRUK_BIT  32
 `define PS_BIT      32
+`define N_YAZMAC    32
 `define YAZMAC_BIT  5
 
 //-----------Bellek---------------

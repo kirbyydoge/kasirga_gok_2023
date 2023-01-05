@@ -4,16 +4,31 @@
 `define UOP_VALID           0
 
 `define UOP_PC_BIT          32
-`define UOP_PC_PTR          (`UOP_VALID_PTR + `UOP_VALID_BIT)
+`define UOP_PC_PTR          `UOP_VALID_PTR + `UOP_VALID_BIT
 `define UOP_PC              `UOP_PC_PTR +: `UOP_PC_BIT
 
 `define UOP_TAG_BIT         4
-`define UOP_TAG_PTR         (`UOP_PC_PTR + `UOP_PC_BIT)
+`define UOP_TAG_PTR         `UOP_PC_PTR + `UOP_PC_BIT
 `define UOP_TAG             `UOP_TAG_PTR +: `UOP_TAG_BIT
+
+// RD'ye yazma yapilacagini belirten flag
+`define UOP_RD_ALLOC_BIT    1
+`define UOP_RD_ALLOC_PTR    `UOP_TAG_PTR + `UOP_TAG_BIT
+`define UOP_RD_ALLOC        `UOP_RD_ALLOC_PTR +: `UOP_RD_ALLOC_BIT
+
+// RS2'den okuma yapilacagini belirten flag
+`define UOP_RS2_EN_BIT      1
+`define UOP_RS2_EN_PTR      (`UOP_RD_ALLOC_PTR + `UOP_RD_ALLOC_BIT)
+`define UOP_RS2_EN          `UOP_RS2_EN_PTR +: `UOP_RS2_EN_BIT
+
+// RS1'den okuma yapilacagini belirten flag
+`define UOP_RS1_EN_BIT      1
+`define UOP_RS1_EN_PTR      (`UOP_RS2_EN_PTR + `UOP_RS2_EN_BIT)
+`define UOP_RS1_EN          `UOP_RS1_EN_PTR +: `UOP_RS1_EN_BIT
 
 // Islecler (Simdilik 4 tane lazim sanirim? Islec iletmek gerekirse genisletilebilir)
 `define UOP_RD_BIT          32
-`define UOP_RD_PTR          (`UOP_TAG_PTR + `UOP_TAG_BIT)
+`define UOP_RD_PTR          (`UOP_RD_ALLOC_PTR + `UOP_RD_ALLOC_BIT)
 `define UOP_RD              `UOP_RD_PTR +: `UOP_RD_BIT
 
 `define UOP_IMM_BIT         32
@@ -38,8 +53,24 @@
 `define UOP_AMB_OR          6
 `define UOP_AMB_XOR         7
 
+`define UOP_AMB_OP_NOP      0
+`define UOP_AMB_OP_RS1      1
+`define UOP_AMB_OP_RS2      2
+`define UOP_AMB_OP_IMM      3
+
+`define UOP_AMB_OP_BIT      2
+
+// Islecler hangi veriler olmali?
+`define UOP_AMB_OP2_BIT     `UOP_AMB_OP_BIT
+`define UOP_AMB_OP2_PTR     (`UOP_RS1_PTR + `UOP_RS1_BIT)
+`define UOP_AMB_OP2         `UOP_AMB_OP2_PTR +: `UOP_AMB_OP2_BIT
+
+`define UOP_AMB_OP1_BIT     `UOP_AMB_OP_BIT
+`define UOP_AMB_OP1_PTR     (`UOP_AMB_OP2_PTR + `UOP_AMB_OP2_BIT)
+`define UOP_AMB_OP1         `UOP_AMB_OP1_PTR +: `UOP_AMB_OP1_BIT
+
 `define UOP_AMB_BIT         3
-`define UOP_AMB_PTR         (`UOP_RS1_PTR + `UOP_RS1_BIT)
+`define UOP_AMB_PTR         (`UOP_AMB_OP1_PTR + `UOP_AMB_OP1_BIT)
 `define UOP_AMB             `UOP_AMB_PTR +: `UOP_AMB_BIT
 
 // Yazilacak veri secimi
@@ -60,24 +91,24 @@
 `define UOP_DAL_JAL             4
 `define UOP_DAL_JALR            5
 
-`define UOP_DAL_BIT         2
-`define UOP_DAL_PTR         (`UOP_YAZ_PTR + `UOP_YAZ_BIT)
-`define UOP_DAL             `UOP_DAL_PTR +: `UOP_DAL_BIT
+`define UOP_DAL_BIT             2
+`define UOP_DAL_PTR             (`UOP_YAZ_PTR + `UOP_YAZ_BIT)
+`define UOP_DAL                 `UOP_DAL_PTR +: `UOP_DAL_BIT
 
 // Bellek Islemleri
 `define UOP_BEL_NOP             0
 `define UOP_BEL_LW              1
 `define UOP_BEL_SW              2
 
-`define UOP_BEL_BIT         2
-`define UOP_BEL_PTR         (`UOP_DAL_PTR + `UOP_DAL_BIT)
-`define UOP_BEL             `UOP_BEL_PTR +: `UOP_BEL_BIT
+`define UOP_BEL_BIT             2
+`define UOP_BEL_PTR             (`UOP_DAL_PTR + `UOP_DAL_BIT)
+`define UOP_BEL                 `UOP_BEL_PTR +: `UOP_BEL_BIT
 
 // TODO: CSR
 // TODO: Compressed
 // TODO: Yapaz Zeka Birimi
 // TODO: Kriptografi Birimi
 
-`define UOP_BIT (`UOP_BEL_PTR + `UOP_BEL_BIT) //!!! HER ZAMAN EN ANLAMLI YERLESTIRILEN MIKROSILEME GORE SECILMELI !!!
+`define UOP_BIT                 (`UOP_BEL_PTR + `UOP_BEL_BIT) 
 
 //!!! TODO: HER ASAMA ICIN MIKROISLEM TANIMLARI (COZ_UOP, YURUT_UOP...) YAPILMALI, BU SAYEDE UOP YAZMACLARI KUCULTULEBILIR !!!

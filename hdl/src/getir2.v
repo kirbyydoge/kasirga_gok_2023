@@ -16,6 +16,11 @@ module getir2(
     output  [`PS_BIT-1:0]       g1_dallanma_ps_o,
     output                      g1_dallanma_gecerli_o,
 
+    input   [`PS_BIT-1:0]       y_ps_i,
+    input                       y_guncelle_i,
+    input                       y_atladi_i,
+    input                       y_hatali_tahmin_i,
+
     input   [`VERI_BIT-1:0]     l1b_buyruk_i,
     input                       l1b_buyruk_gecerli_i,
     output                      l1b_buyruk_hazir_o,

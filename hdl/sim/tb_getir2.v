@@ -12,6 +12,10 @@ reg                       g1_ps_gecerli_i;
 wire                      g1_ps_hazir_o;
 wire  [`PS_BIT-1:0]       g1_dallanma_ps_o;
 wire                      g1_dallanma_gecerli_o;
+reg   [`PS_BIT-1:0]       y_ps_i;
+reg                       y_guncelle_i;
+reg                       y_atladi_i;
+reg                       y_hatali_tahmin_i;
 reg   [`VERI_BIT-1:0]     l1b_buyruk_i;
 reg                       l1b_buyruk_gecerli_i;
 wire                      l1b_buyruk_hazir_o;
@@ -30,6 +34,10 @@ getir2 g2 (
     .g1_ps_hazir_o         ( g1_ps_hazir_o ),
     .g1_dallanma_ps_o      ( g1_dallanma_ps_o ),
     .g1_dallanma_gecerli_o ( g1_dallanma_gecerli_o ),
+    .y_ps_i                ( y_ps_i ),
+    .y_guncelle_i          ( y_guncelle_i ),
+    .y_atladi_i            ( y_atladi_i ),
+    .y_hatali_tahmin_i     ( y_hatali_tahmin_i ),
     .l1b_buyruk_i          ( l1b_buyruk_i ),
     .l1b_buyruk_gecerli_i  ( l1b_buyruk_gecerli_i ),
     .l1b_buyruk_hazir_o    ( l1b_buyruk_hazir_o ),
