@@ -28,7 +28,7 @@
 
 // Islecler (Simdilik 4 tane lazim sanirim? Islec iletmek gerekirse genisletilebilir)
 `define UOP_RD_BIT          32
-`define UOP_RD_PTR          (`UOP_RD_ALLOC_PTR + `UOP_RD_ALLOC_BIT)
+`define UOP_RD_PTR          (`UOP_RS1_EN_PTR + `UOP_RS1_EN_BIT)
 `define UOP_RD              `UOP_RD_PTR +: `UOP_RD_BIT
 
 `define UOP_IMM_BIT         32
