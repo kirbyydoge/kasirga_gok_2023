@@ -6,12 +6,16 @@
 `define HIGH 1'b1
 `define LOW  1'b0
 
-`define VERI_BIT    32
-`define VERI_BYTE   (`VERI_BIT / 8)
-`define BUYRUK_BIT  32
-`define PS_BIT      32
-`define N_YAZMAC    32
-`define YAZMAC_BIT  5
+`define VERI_BIT        32
+`define VERI_BYTE       (`VERI_BIT / 8)
+`define BUYRUK_BIT      32
+`define PS_BIT          32
+`define N_YAZMAC        32
+`define YAZMAC_BIT      5
+`define CSR_ADRES_BIT   12
+
+`define XLEN            32
+`define MXLEN           32
 
 //-----------Bellek---------------
 `define ADRES_BIT           32

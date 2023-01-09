@@ -104,8 +104,23 @@
 `define UOP_BEL_PTR             (`UOP_DAL_PTR + `UOP_DAL_BIT)
 `define UOP_BEL                 `UOP_BEL_PTR +: `UOP_BEL_BIT
 
-// TODO: CSR
-// TODO: Compressed
+// Denetim Durum Birimi
+`define UOP_CSR_NOP             0
+`define UOP_CSR_RD              1
+`define UOP_CSR_WR              2
+
+`define UOP_CSR_BIT             2
+`define UOP_CSR_PTR             (`UOP_BEL_PTR + `UOP_BEL_BIT)
+`defune UOP_CSR                 `UOP_CSR_PTR +: `UOP_CSR_BIT
+
+`define EXC_CODE_IAM            0   // Instruction Address Misaligned
+`define EXC_CODE_IS             1   // Illegal Instruction
+`define EXC_CODE_LAM            4   // Load Address Misaligned
+`define EXC_CODE_SAM            6   // Store Address Misaligned
+`define EXC_CODE_MRET           11  // Environment call from M-mode
+
+`define EXC_CODE_BIT            5
+
 // TODO: Yapaz Zeka Birimi
 // TODO: Kriptografi Birimi
 
