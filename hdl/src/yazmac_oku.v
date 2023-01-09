@@ -96,4 +96,6 @@ assign yaz_adres_w = geriyaz_adres_i;
 assign yaz_etiket_w = geriyaz_etiket_i; 
 assign yaz_gecerli_w = geriyaz_gecerli_i; 
 
+assign duraklat_o = okuma_hatasi_w;
+
 endmodule
