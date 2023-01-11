@@ -4,9 +4,11 @@ module yurut (
     input                           clk_i,
     input                           rstn_i,
 
-    input                           duraklat_i,
+    input                           cek_bosalt_i,
+    input                           cek_duraklat_i,
     output                          duraklat_o,
-
+    output                          bosalt_o,
+    
     // Hatali dallanma
     output  [`PS_BIT-1:0]           g1_ps_o,
     output                          g1_ps_gecerli_o,

@@ -16,10 +16,10 @@ module getir2(
     output  [`PS_BIT-1:0]       g1_dallanma_ps_o,
     output                      g1_dallanma_gecerli_o,
 
-    input   [`PS_BIT-1:0]       y_ps_i,
-    input                       y_guncelle_i,
-    input                       y_atladi_i,
-    input                       y_hatali_tahmin_i,
+    input   [`PS_BIT-1:0]       yurut_ps_i,
+    input                       yurut_guncelle_i,
+    input                       yurut_atladi_i,
+    input                       yurut_hatali_tahmin_i,
 
     input   [`VERI_BIT-1:0]     l1b_buyruk_i,
     input                       l1b_buyruk_gecerli_i,
@@ -29,8 +29,8 @@ module getir2(
     output  [`PS_BIT-1:0]       coz_buyruk_ps_o,
     output                      coz_buyruk_gecerli_o,
 
-    input                       cek_duraklat_i,
-    input                       cek_bosalt_i
+    input                       cek_bosalt_i,
+    input                       cek_duraklat_i
 );
 
 localparam                  G2_YAZMAC_BOS   = 2'd0;

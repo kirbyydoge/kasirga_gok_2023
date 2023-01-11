@@ -16,9 +16,10 @@ module amb (
     output  [`VERI_BIT-1:0]     islem_sonuc_o
 );
 
-reg [31:0] islem_sonuc_cmb;
+reg [`VERI_BIT-1:0] islem_sonuc_cmb;
+
 always @* begin
-    case(islem_kod_i)
+    case (islem_kod_i)
     `UOP_AMB_ADD    : islem_sonuc_cmb = $signed(islem_islec1_i) + $signed(islem_islec2_i);
     `UOP_AMB_SUB    : islem_sonuc_cmb = $signed(islem_islec1_i) - $signed(islem_islec2_i);
     `UOP_AMB_AND    : islem_sonuc_cmb = $signed(islem_islec1_i) & $signed(islem_islec2_i);

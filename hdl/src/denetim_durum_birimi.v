@@ -1,5 +1,7 @@
 `timescale 1ns/1ps
 
+`include "mikroislem.vh"
+`include "sabitler.vh"
 `include "csr.vh"
 
 module denetim_durum_birimi(
@@ -29,6 +31,7 @@ module denetim_durum_birimi(
     output  [`MXLEN-1:0]            csr_veri_o,
     output                          csr_gecerli_o,
 
+    output                          bosalt_o,
     output  [`PS_BIT-1:0]           getir_ps_o,
     output                          getir_ps_gecerli_o
 );
@@ -48,6 +51,7 @@ reg                             odd_gecerli_cmb;
 reg     [`EXC_CODE_BIT-1:0]     odd_kod_cmb; 
 reg     [`MXLEN-1:0]            odd_bilgi_cmb; 
 
+reg                             bosalt_cmb;
 reg     [`PS_BIT-1:0]           getir_ps_cmb;
 reg     [`PS_BIT-1:0]           getir_ps_gecerli_cmb;
 
@@ -91,7 +95,7 @@ begin
     csr_r[`CSR_MIMPID] = {`MXLEN{1'b0}};
     csr_r[`CSR_MHARTID] = {`MXLEN{1'b0}};
 end
-endtask;
+endtask
 
 task odd_sec();
 begin
@@ -127,10 +131,12 @@ always @* begin
     csr_gecerli_cmb = `LOW;
     getir_ps_cmb = {`PS_BIT{1'b0}};
     getir_ps_gecerli_cmb = `LOW;
+    bosalt_cmb = `LOW;
 
     odd_sec();
     
     if (odd_gecerli_cmb) begin
+        bosalt_cmb = `HIGH;
         csr_ns[`CSR_MEPC] = odd_ps_cmb;
         csr_ns[`CSR_MSTATUS][`MSTATUS_MIE] = csr_r[`CSR_MSTATUS][`MSTATUS_MPIE];
         csr_ns[`CSR_MSTATUS][`MSTATUS_MPIE] = `HIGH;
@@ -165,7 +171,7 @@ always @(posedge clk_i) begin
         csr_init();
     end
     else begin
-        for (i = 0; i < `CSR_N_REGS; i = i + 1) begin
+        for (i = 0; i < `CSR_ARCH_N_REGS; i = i + 1) begin
             csr_r[i] <= csr_ns[i];
         end
     end
@@ -174,6 +180,7 @@ end
 assign oku_mimari_adres_w = csr_adres_donustur(oku_istek_adres_i);
 assign yaz_mimari_adres_w = csr_adres_donustur(yaz_istek_adres_i);
 
+assign bosalt_o = bosalt_cmb;
 assign getir_ps_o = getir_ps_cmb;
 assign getir_ps_gecerli_o = getir_ps_gecerli_cmb;
 

@@ -16,6 +16,7 @@ module getir1 (
     input                       g2_ps_hazir_i,
     output                      g2_ps_gecerli_o,
 
+    input                       cek_bosalt_i,
     input                       cek_duraklat_i,
     input   [`PS_BIT-1:0]       cek_ps_i,
     input                       cek_ps_gecerli_i

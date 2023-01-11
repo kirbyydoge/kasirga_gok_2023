@@ -12,6 +12,8 @@ module yazmac_oku(
     input   [`UOP_TAG_BIT-1:0]      geriyaz_etiket_i,
     input                           geriyaz_gecerli_i,
 
+    input                           cek_bosalt_i,
+    input                           cek_duraklat_i,
     output                          duraklat_o,
 
     input   [`UOP_BIT-1:0]          yo_uop_i,

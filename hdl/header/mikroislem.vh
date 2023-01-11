@@ -11,9 +11,14 @@
 `define UOP_TAG_PTR         `UOP_PC_PTR + `UOP_PC_BIT
 `define UOP_TAG             `UOP_TAG_PTR +: `UOP_TAG_BIT
 
+// RD yazmac adresi
+`define UOP_RD_ADDR_BIT     5
+`define UOP_RD_ADDR_PTR     `UOP_TAG_PTR + `UOP_TAG_BIT
+`define UOP_RD_ADDR         `UOP_RD_ALLOC_PTR +: `UOP_RD_ALLOC_BIT
+
 // RD'ye yazma yapilacagini belirten flag
 `define UOP_RD_ALLOC_BIT    1
-`define UOP_RD_ALLOC_PTR    `UOP_TAG_PTR + `UOP_TAG_BIT
+`define UOP_RD_ALLOC_PTR    `UOP_RD_ADDR_PTR + `UOP_RD_ADDR_BIT
 `define UOP_RD_ALLOC        `UOP_RD_ALLOC_PTR +: `UOP_RD_ALLOC_BIT
 
 // RS2'den okuma yapilacagini belirten flag
@@ -111,7 +116,7 @@
 
 `define UOP_CSR_BIT             2
 `define UOP_CSR_PTR             (`UOP_BEL_PTR + `UOP_BEL_BIT)
-`defune UOP_CSR                 `UOP_CSR_PTR +: `UOP_CSR_BIT
+`define UOP_CSR                 `UOP_CSR_PTR +: `UOP_CSR_BIT
 
 `define EXC_CODE_IAM            0   // Instruction Address Misaligned
 `define EXC_CODE_IS             1   // Illegal Instruction

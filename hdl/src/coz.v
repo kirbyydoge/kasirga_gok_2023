@@ -9,8 +9,8 @@ module coz(
     input                           clk_i,
     input                           rstn_i,
 
-    input                           bosalt_i,
-    input                           duraklat_i,
+    input                           cek_bosalt_i,
+    input                           cek_duraklat_i,
     output                          duraklat_o,
 
     output                          gecersiz_buyruk_o,
@@ -19,7 +19,7 @@ module coz(
     input   [`PS_BIT-1:0]           getir_ps_i,
     input                           getir_gecerli_i,
 
-    output  [`UOP_BIT-1:0]          yurut_uop_o
+    output  [`UOP_BIT-1:0]          yo_uop_o
 );
 
 wire [14:0] buyruk;
@@ -94,7 +94,7 @@ begin
     uop_ns[`UOP_RS1_EN] = `HIGH;
     uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
     uop_ns[`UOP_RS2_EN] = `HIGH;
-    uop_ns[`UOP_RD] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
     uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
     uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
@@ -147,6 +147,10 @@ always @* begin
     buyruk_etiket_ns = buyruk_etiket_r;
 
     coz();
+
+    if (buyruk_etiket_gecerli_cmb) begin
+        buyruk_etiket_ns = buyruk_etiket_r + {`UOP_TAG_BIT{1'b1}};
+    end
 end
 
 always @(posedge clk_i) begin
