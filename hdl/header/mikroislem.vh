@@ -14,7 +14,7 @@
 // RD yazmac adresi
 `define UOP_RD_ADDR_BIT     5
 `define UOP_RD_ADDR_PTR     `UOP_TAG_PTR + `UOP_TAG_BIT
-`define UOP_RD_ADDR         `UOP_RD_ALLOC_PTR +: `UOP_RD_ALLOC_BIT
+`define UOP_RD_ADDR         `UOP_RD_ADDR_PTR +: `UOP_RD_ADDR_BIT
 
 // RD'ye yazma yapilacagini belirten flag
 `define UOP_RD_ALLOC_BIT    1

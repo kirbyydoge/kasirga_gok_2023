@@ -20,7 +20,8 @@ module yazmac_oku(
     output  [`UOP_BIT-1:0]          yurut_uop_o
 );
 
-wire uop_gecerli_w;
+wire                            uop_gecerli_w;
+wire    [`UOP_PC_BIT-1:0]       uop_ps_w;
 
 reg     [`UOP_BIT-1:0]          uop_r;
 reg     [`UOP_BIT-1:0]          uop_ns;
@@ -85,6 +86,7 @@ yazmac_obegi rf (
 );
 
 assign uop_gecerli_w = yo_uop_i[`UOP_VALID];
+assign uop_ps_w = yo_uop_i[`UOP_PC];
 
 assign oku_adres1_w = yo_uop_i[`UOP_RS1];
 assign oku_adres1_gecerli_w = yo_uop_i[`UOP_RS1_EN];

@@ -49,7 +49,10 @@ wire [`VERI_BIT-1:0]            amb_sonuc_w;
 reg duraklat_cmb;
 
 function [`VERI_BIT-1:0] islec_sec (
-    input [`UOP_AMB_OP_BIT-1:0] uop_secici
+    input [`UOP_AMB_OP_BIT-1:0] uop_secici,
+    input [`VERI_BIT-1:0]       uop_rs1_w,
+    input [`VERI_BIT-1:0]       uop_rs2_w,
+    input [`VERI_BIT-1:0]       uop_imm_w
 );
 begin
     islec_sec = {`VERI_BIT{1'b0}};
@@ -111,8 +114,8 @@ assign uop_rs2_w = yurut_uop_i[`UOP_RS2];
 assign uop_imm_w = yurut_uop_i[`UOP_IMM];
 assign uop_yaz_sec_w = yurut_uop_i[`UOP_YAZ];
 
-assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w);
-assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w);
+assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w);
+assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w);
 
 assign bosalt_o = `LOW;
 assign duraklat_o = `LOW;

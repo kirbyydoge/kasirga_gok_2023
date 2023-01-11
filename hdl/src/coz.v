@@ -81,22 +81,13 @@ generate
     assign buyruk[`AND]   = match(getir_buyruk_i, `MASK_AND, `MATCH_AND) && coz_aktif_w;
     assign buyruk[`XOR]   = match(getir_buyruk_i, `MASK_XOR, `MATCH_XOR) && coz_aktif_w;
 
-    assign gecersiz_buyruk_o = !(|buyruk) && !coz_aktif_w;
+    assign gecersiz_buyruk_o = !(|buyruk) && coz_aktif_w;
 endgenerate
-
-task uop_genel();
-begin
-    uop_ns[`UOP_PC] = getir_ps_i;
-    uop_ns[`UOP_TAG] = buyruk_etiket_r;
-    uop_ns[`UOP_VALID] = coz_aktif_w;
-end
-endtask
 
 task uop_rv32addi();
 begin
-    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
-    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
-    buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RD]};
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RD]};
     buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
@@ -155,7 +146,10 @@ always @* begin
     uop_ns = {`UOP_BIT{`LOW}};
     buyruk_etiket_ns = buyruk_etiket_r;
 
-    uop_genel();
+    uop_ns[`UOP_PC] = getir_ps_i;
+    uop_ns[`UOP_TAG] = buyruk_etiket_r;
+    uop_ns[`UOP_VALID] = coz_aktif_w;
+
     case (buyruk)
     CASE_LUI   : uop_nop();
     CASE_AUIPC : uop_nop();

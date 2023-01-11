@@ -49,8 +49,6 @@ always begin
     #5;
 end
 
-localparam TEST_LEN = 6;
-
 reg [31:0] buyruklar [0:TEST_LEN-1];
 
 reg [31:0] istek_counter;
@@ -77,6 +75,7 @@ always @(posedge clk_i) begin
     end
 end
 
+localparam TEST_LEN = 10;
 integer i;
 initial begin
     rstn_i = 0;
@@ -86,12 +85,16 @@ initial begin
     vy_yanit_gecerli_i = 0;
     vy_istek_hazir_i = 0;
 
-    buyruklar['h000] = 'h00108093;
-    buyruklar['h001] = 'h00108093;
-    buyruklar['h002] = 'h00108093;
-    buyruklar['h003] = 'h00108093;
-    buyruklar['h004] = 'h00108093;
-    buyruklar['h005] = 'h00108093;
+    buyruklar['h000] = 'h00108093; // addi x1, x1, 1
+    buyruklar['h001] = 'h00108093; // addi x1, x1, 1
+    buyruklar['h002] = 'h00108093; // addi x1, x1, 1
+    buyruklar['h003] = 'h00108093; // addi x1, x1, 1
+    buyruklar['h004] = 'h00108093; // addi x1, x1, 1
+    buyruklar['h005] = 'h00200113; // addi x2, x0, 2
+    buyruklar['h006] = 'h00300193; // addi x3, x0, 3
+    buyruklar['h007] = 'h00400213; // addi x4, x0, 4
+    buyruklar['h008] = 'h00500293; // addi x5, x0, 5
+    buyruklar['h009] = 'h00318333; // add x6, x3, x3
 end
 
 endmodule
