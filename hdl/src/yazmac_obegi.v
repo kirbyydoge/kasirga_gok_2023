@@ -31,6 +31,26 @@ reg [`N_YAZMAC-1:0] yazmac_gecerli_r;
 reg [`UOP_TAG_BIT-1:0] yazmac_etiket_ns [0:`N_YAZMAC-1];
 reg [`UOP_TAG_BIT-1:0] yazmac_etiket_r [0:`N_YAZMAC-1];
 
+integer i;
+always @* begin
+    for (i = 0; i < 32; i = i + 1) begin
+        yazmac_ns[i] = yazmac_r[i];
+        yazmac_etiket_ns[i] = yazmac_etiket_r[i];
+        yazmac_gecerli_ns[i] = yazmac_gecerli_r[i];
+    end
+
+    if (etiket_gecerli_i) begin
+        yazmac_etiket_ns[etiket_adres_i] = etiket_i;
+        yazmac_gecerli_ns[etiket_adres_i] = 1'b0;
+    end
+
+    if (yaz_gecerli_i) begin
+        yazmac_ns[yaz_adres_i] = yaz_veri_i;
+        yazmac_gecerli_ns[yaz_adres_i] = yazmac_etiket_r[yaz_adres_i] == yaz_etiket_i;
+    end
+end
+
+integer i;
 always @(posedge clk_i) begin
     if (!rstn_i) begin
         for (i = 0; i < `N_YAZMAC; i = i + 1) begin

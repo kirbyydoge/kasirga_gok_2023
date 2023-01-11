@@ -51,6 +51,10 @@ always @* begin
     uop_ns[`UOP_VALID] = uop_gecerli_w && !okuma_hatasi_w;
     uop_ns[`UOP_RS1] = oku_veri1_w;
     uop_ns[`UOP_RS2] = oku_veri2_w;
+
+    if (cek_duraklat_i) begin
+        uop_ns = uop_r;
+    end
 end
 
 always @(posedge clk_i) begin
@@ -87,11 +91,11 @@ assign oku_adres1_gecerli_w = yo_uop_i[`UOP_RS1_EN];
 assign oku_adres2_w = yo_uop_i[`UOP_RS2];
 assign oku_adres2_gecerli_w = yo_uop_i[`UOP_RS2_EN];
 
-assign okuma_hatasi_w = !(oku_adres1_gecerli_w && !oku_veri1_gecerli_w) || !(oku_adres2_gecerli_w && !oku_veri2_gecerli_w);
+assign okuma_hatasi_w = (oku_adres1_gecerli_w && !oku_veri1_gecerli_w) || (oku_adres2_gecerli_w && !oku_veri2_gecerli_w);
 
 assign etiket_w = yo_uop_i[`UOP_TAG];
-assign etiket_adres_w = yo_uop_i[`UOP_RD];
-assign etiket_gecerli_w = yo_uop_i[`UOP_RD_ALLOC];
+assign etiket_adres_w = yo_uop_i[`UOP_RD_ADDR];
+assign etiket_gecerli_w = yo_uop_i[`UOP_RD_ALLOC] && !okuma_hatasi_w;
 
 assign yaz_veri_w = geriyaz_veri_i; 
 assign yaz_adres_w = geriyaz_adres_i; 
@@ -99,5 +103,7 @@ assign yaz_etiket_w = geriyaz_etiket_i;
 assign yaz_gecerli_w = geriyaz_gecerli_i; 
 
 assign duraklat_o = okuma_hatasi_w;
+
+assign yurut_uop_o = uop_r;
 
 endmodule

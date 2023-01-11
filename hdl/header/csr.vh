@@ -60,34 +60,6 @@
 //--------------------- MIMARI ADRESLER ---------------------
 `define CSR_UNIMPLEMENTED {`CSR_ARCH_BIT{1'b1}}
 
-function [`CSR_ARCH_BIT-1:0] csr_adres_donustur (
-    input [`CSR_SPEC_BIT-1:0] csr_spec_addr
-);
-begin
-    case(csr_spec_addr)
-    `CSR_SPEC_MVENDORID     : csr_adres_donustur = `CSR_MVENDORID;
-    `CSR_SPEC_MARCHID       : csr_adres_donustur = `CSR_MARCHID  ;
-    `CSR_SPEC_MIMPID        : csr_adres_donustur = `CSR_MIMPID   ;
-    `CSR_SPEC_MHARTID       : csr_adres_donustur = `CSR_MHARTID  ;
-    `CSR_SPEC_MSTATUS       : csr_adres_donustur = `CSR_MSTATUS  ;
-    `CSR_SPEC_MISA          : csr_adres_donustur = `CSR_MISA     ;
-    `CSR_SPEC_MIE           : csr_adres_donustur = `CSR_MIE      ;
-    `CSR_SPEC_MTVEC         : csr_adres_donustur = `CSR_MTVEC    ;
-    `CSR_SPEC_MSTATUSH      : csr_adres_donustur = `CSR_MSTATUSH ;
-    `CSR_SPEC_MEPC          : csr_adres_donustur = `CSR_MEPC     ;
-    `CSR_SPEC_MCAUSE        : csr_adres_donustur = `CSR_MCAUSE   ;
-    `CSR_SPEC_MTVAL         : csr_adres_donustur = `CSR_MTVAL    ;
-    `CSR_SPEC_MTIP          : csr_adres_donustur = `CSR_MTIP     ;
-    `CSR_SPEC_MTINST        : csr_adres_donustur = `CSR_MTINST   ;
-    `CSR_SPEC_MCYCLE        : csr_adres_donustur = `CSR_MCYCLE   ;
-    `CSR_SPEC_MINSTRET      : csr_adres_donustur = `CSR_MINSTRET ;
-    `CSR_SPEC_MCYCLEH       : csr_adres_donustur = `CSR_MCYCLEH  ;
-    `CSR_SPEC_MINSTRETH     : csr_adres_donustur = `CSR_MINSTRETH;
-    default                 : csr_adres_donustur = `CSR_UNIMPLEMENTED;
-    endcase
-end
-endfunction
-
 //---- MISA ----
 `define MISA_A          0
 `define MISA_B          1

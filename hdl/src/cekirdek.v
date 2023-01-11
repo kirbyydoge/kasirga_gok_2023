@@ -116,7 +116,7 @@ wire    [`UOP_BIT-1:0]          io_coz_yo_uop_w;
 coz coz (
     .clk_i                      ( io_coz_clk_w ),
     .rstn_i                     ( io_coz_rstn_w ),
-    .bosalt_i                   ( io_coz_cek_bosalt_w ),
+    .cek_bosalt_i               ( io_coz_cek_bosalt_w ),
     .cek_duraklat_i             ( io_coz_cek_duraklat_w ),
     .duraklat_o                 ( io_coz_duraklat_w ),
     .gecersiz_buyruk_o          ( io_coz_gecersiz_buyruk_w ),
@@ -208,7 +208,7 @@ bellek bellek (
     .l1v_istek_hazir_i          ( io_bellek_l1v_istek_hazir_w ),
     .l1v_istek_adres_o          ( io_bellek_l1v_istek_adres_w ),
     .l1v_istek_gecerli_o        ( io_bellek_l1v_istek_gecerli_w ),
-    .cek_duraklat_o             ( io_bellek_duraklat_w ),
+    .duraklat_o                 ( io_bellek_duraklat_w ),
     .bellek_uop_i               ( io_bellek_bellek_uop_w ),
     .geri_yaz_uop_o             ( io_bellek_gy_uop_w )
 );
@@ -322,6 +322,7 @@ end
 // Getir1 < Cekirdek
 assign io_g1_clk_w = clk_i;
 assign io_g1_rstn_w = rstn_i;
+assign io_g1_cek_bosalt_w = cekirdek_bosalt_w;
 assign io_g1_cek_duraklat_w = cekirdek_getir1_duraklat_w;
 assign io_g1_cek_ps_w = cekirdek_ps_cmb;
 assign io_g1_cek_ps_gecerli_w = cekirdek_ps_gecerli_cmb;
@@ -357,8 +358,8 @@ assign io_bellek_rstn_w = rstn_i;
 // assign io_bellek_cek_duraklat_w = cekirdek_yurut_duraklat_w;
 
 // Geri Yaz < Cekirdek
-assign io_yo_clk_w = clk_i;
-assign io_yo_rstn_w = rstn_i;
+assign io_gy_clk_w = clk_i;
+assign io_gy_rstn_w = rstn_i;
 
 // Getir1 < Getir2
 assign io_g1_g2_ps_hazir_w = io_g2_g1_ps_hazir_w;
@@ -369,17 +370,17 @@ assign io_g2_g1_ps_w = io_g1_g2_ps_w;
 assign io_g2_g1_ps_gecerli_w = io_g1_g2_ps_gecerli_w;
 
 // Getir1 < L1B
-assign io_g1_l1b_istek_adres_w = buyruk_istek_adres_o;
-assign io_g1_l1b_istek_gecerli_w = buyruk_istek_gecerli_o;
-
-// L1B < Getir1
 assign io_g1_l1b_istek_hazir_w = buyruk_istek_hazir_i;
 
+// L1B < Getir1
+assign buyruk_istek_adres_o = io_g1_l1b_istek_adres_w;
+assign buyruk_istek_gecerli_o = io_g1_l1b_istek_gecerli_w;
+
 // Getir2 < Yurut
-assign io_g2_yurut_ps_i = io_yurut_g2_ps_w;
-assign io_g2_yurut_guncelle_i = io_yurut_g2_guncelle_w;
-assign io_g2_yurut_atladi_i = io_yurut_g2_atladi_w;
-assign io_g2_yurut_hatali_tahmin_i = io_yurut_g2_hatali_tahmin_w;
+assign io_g2_yurut_ps_w = io_yurut_g2_ps_w;
+assign io_g2_yurut_guncelle_w = io_yurut_g2_guncelle_w;
+assign io_g2_yurut_atladi_w = io_yurut_g2_atladi_w;
+assign io_g2_yurut_hatali_tahmin_w = io_yurut_g2_hatali_tahmin_w;
 
 // Getir2 < L1B
 assign io_g2_l1b_buyruk_w = buyruk_yanit_veri_i;

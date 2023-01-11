@@ -63,7 +63,7 @@ always @* begin
     l1b_beklenen_sayisi_ns = l1b_beklenen_sayisi_r;
     coz_buyruk_ns = coz_buyruk_r;
     coz_buyruk_ps_ns = coz_buyruk_ps_r;
-    coz_buyruk_gecerli_ns = coz_buyruk_gecerli_r;
+    coz_buyruk_gecerli_ns = cek_duraklat_i ? coz_buyruk_gecerli_r : `LOW;
     l1b_buyruk_hazir_cmb = `LOW;
     g1_ps_hazir_cmb = `LOW;
     g2_durum_ns = g2_durum_r;

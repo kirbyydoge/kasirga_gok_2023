@@ -27,17 +27,17 @@ reg     [`UOP_TAG_BIT-1:0]      yo_etiket_ns;
 reg                             yo_gecerli_r;
 reg                             yo_gecerli_ns;
 
-wire                            uop_bellek_gecerli_w;
-wire    [`VERI_BIT-1:0]         uop_bellek_veri_w;
-wire                            uop_bellek_veri_gecerli_w;
-wire    [`YAZMAC_BIT-1:0]       uop_bellek_adres_w;
-wire    [`UOP_TAG_BIT-1:0]      uop_bellek_etiket_w;
+wire                            uop_gy_gecerli_w;
+wire    [`VERI_BIT-1:0]         uop_gy_veri_w;
+wire                            uop_gy_veri_gecerli_w;
+wire    [`YAZMAC_BIT-1:0]       uop_gy_adres_w;
+wire    [`UOP_TAG_BIT-1:0]      uop_gy_etiket_w;
 
 always @* begin
-    yo_gecerli_ns = uop_bellek_gecerli_w && uop_bellek_veri_gecerli_w;
-    yo_veri_ns = uop_bellek_veri_w;
-    yo_adres_ns = uop_bellek_adres_w;
-    yo_etiket_ns = uop_bellek_etiket_w;
+    yo_gecerli_ns = uop_gy_gecerli_w && uop_gy_veri_gecerli_w;
+    yo_veri_ns = uop_gy_veri_w;
+    yo_adres_ns = uop_gy_adres_w;
+    yo_etiket_ns = uop_gy_etiket_w;
 end
 
 always @(posedge clk_i) begin
@@ -55,10 +55,15 @@ always @(posedge clk_i) begin
     end
 end
 
-assign uop_bellek_gecerli_w = bellek_uop_i[`UOP_VALID];
-assign uop_bellek_veri_w = bellek_uop_i[`UOP_RD];
-assign uop_bellek_veri_gecerli_w = bellek_uop_i[`UOP_RD_ALLOC];
-assign uop_bellek_adres_w = bellek_uop_i[`UOP_RD_ADDR];
-assign uop_bellek_etiket_w = bellek_uop_i[`UOP_TAG];
+assign uop_gy_gecerli_w = gy_uop_i[`UOP_VALID];
+assign uop_gy_veri_w = gy_uop_i[`UOP_RD];
+assign uop_gy_veri_gecerli_w = gy_uop_i[`UOP_RD_ALLOC];
+assign uop_gy_adres_w = gy_uop_i[`UOP_RD_ADDR];
+assign uop_gy_etiket_w = gy_uop_i[`UOP_TAG];
+
+assign yo_gecerli_o = yo_gecerli_r;
+assign yo_veri_o = yo_veri_r;
+assign yo_adres_o = yo_adres_r;
+assign yo_etiket_o = yo_etiket_r;
 
 endmodule

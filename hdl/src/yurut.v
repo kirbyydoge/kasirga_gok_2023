@@ -1,5 +1,8 @@
 `timescale 1ns/1ps
 
+`include "sabitler.vh"
+`include "mikroislem.vh"
+
 module yurut (
     input                           clk_i,
     input                           rstn_i,
@@ -49,6 +52,7 @@ function [`VERI_BIT-1:0] islec_sec (
     input [`UOP_AMB_OP_BIT-1:0] uop_secici
 );
 begin
+    islec_sec = {`VERI_BIT{1'b0}};
     case(uop_secici)
     `UOP_AMB_OP_NOP: islec_sec = {`VERI_BIT{1'b0}};
     `UOP_AMB_OP_RS1: islec_sec = uop_rs1_w;
@@ -58,25 +62,23 @@ begin
 end
 endfunction
 
-function [`VERI_BIT-1:0] kaynak_sec (
-    input [`UOP_YAZ_BIT-1:0]    uop_secici
-);
-begin
-    case(uop_secici)
-    `UOP_YAZ_NOP: kaynak_sec = {`VERI_BIT{1'b0}};
-    `UOP_YAZ_AMB: kaynak_sec = amb_sonuc_w;
-    `UOP_YAZ_IS1: kaynak_sec = amb_islec1_w;
-    `UOP_YAZ_DAL: kaynak_sec = uop_ps_w + 32'd4;   // dallanma biriminden gelmesi gerekiyor
-    endcase
-end
-endfunction
-
 // TODO: ANLIK DEGERLER GENISLETILECEKSE BUNUN MIKROISLEME EKLENMESI YA DA COZDE ARADAN HALLEDILMESI LAZIM
 always @* begin
     uop_ns = yurut_uop_i;
-    uop_ns[`UOP_VALID] = `HIGH; // simdilik her sey tek cevrim
-    uop_ns[`UOP_RD] = kaynak_sec(uop_yaz_sec_w);
+    uop_ns[`UOP_VALID] = uop_gecerli_w; // simdilik her sey tek cevrim
+
+    case(uop_yaz_sec_w)
+    `UOP_YAZ_NOP: uop_ns[`UOP_RD] = {`VERI_BIT{1'b0}};
+    `UOP_YAZ_AMB: uop_ns[`UOP_RD] = amb_sonuc_w;
+    `UOP_YAZ_IS1: uop_ns[`UOP_RD] = amb_islec1_w;
+    `UOP_YAZ_DAL: uop_ns[`UOP_RD] = uop_ps_w + 32'd4;   // dallanma biriminden gelmesi gerekiyor
+    endcase
+    
     duraklat_cmb = `LOW; // asla duraklatma
+
+    if (cek_duraklat_i) begin
+        uop_ns = uop_r;
+    end
 end
 
 always @(posedge clk_i) begin
@@ -112,14 +114,17 @@ assign uop_yaz_sec_w = yurut_uop_i[`UOP_YAZ];
 assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w);
 assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w);
 
+assign bosalt_o = `LOW;
 assign duraklat_o = `LOW;
 
 assign g1_ps_o = uop_ps_w;
 assign g1_ps_gecerli_o = `LOW;
 
-assign g2_dal_ps_o = uop_ps_w;
-assign g2_dal_guncelle_o = `LOW;
-assign g2_dal_atladi_o = `LOW;
-assign g2_dal_hatali_tahmin_o = `LOW;
+assign g2_ps_o = uop_ps_w;
+assign g2_guncelle_o = `LOW;
+assign g2_atladi_o = `LOW;
+assign g2_hatali_tahmin_o = `LOW;
+
+assign bellek_uop_o = uop_r;
 
 endmodule
