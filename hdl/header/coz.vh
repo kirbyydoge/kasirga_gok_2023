@@ -14,6 +14,7 @@
 `define S_RS2           24:20
 `define S_IMM_LO        11:7
 `define S_IMM_HI        31:25
+`define S_SIGN          31
 
 `define U_RD            11:7
 `define U_IMM           31:12

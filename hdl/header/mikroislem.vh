@@ -100,13 +100,23 @@
 `define UOP_DAL_PTR             (`UOP_YAZ_PTR + `UOP_YAZ_BIT)
 `define UOP_DAL                 `UOP_DAL_PTR +: `UOP_DAL_BIT
 
+`define UOP_TAKEN_BIT           1
+`define UOP_TAKEN_PTR           (`UOP_DAL_PTR + `UOP_DAL_BIT)
+`define UOP_TAKEN               `UOP_TAKEN_PTR +: `UOP_TAKEN_BIT
+
 // Bellek Islemleri
 `define UOP_BEL_NOP             0
 `define UOP_BEL_LW              1
-`define UOP_BEL_SW              2
+`define UOP_BEL_LH              2
+`define UOP_BEL_LHU             3
+`define UOP_BEL_LB              4
+`define UOP_BEL_LBU             5
+`define UOP_BEL_SW              6
+`define UOP_BEL_SH              7
+`define UOP_BEL_SB              8
 
-`define UOP_BEL_BIT             2
-`define UOP_BEL_PTR             (`UOP_DAL_PTR + `UOP_DAL_BIT)
+`define UOP_BEL_BIT             4 //seçim için kullanılacak
+`define UOP_BEL_PTR             (`UOP_TAKEN_PTR + `UOP_TAKEN_BIT)
 `define UOP_BEL                 `UOP_BEL_PTR +: `UOP_BEL_BIT
 
 // Denetim Durum Birimi

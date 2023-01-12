@@ -75,6 +75,7 @@ wire                            io_g2_l1b_buyruk_hazir_w;
 wire    [`BUYRUK_BIT-1:0]       io_g2_coz_buyruk_w;
 wire    [`PS_BIT-1:0]           io_g2_coz_buyruk_ps_w;
 wire                            io_g2_coz_buyruk_gecerli_w;
+wire                            io_g2_coz_buyruk_atladi_w;
 wire                            io_g2_cek_bosalt_w;
 wire                            io_g2_cek_duraklat_w;
 
@@ -97,6 +98,7 @@ getir2 getir2 (
     .coz_buyruk_o               ( io_g2_coz_buyruk_w ),
     .coz_buyruk_ps_o            ( io_g2_coz_buyruk_ps_w ),
     .coz_buyruk_gecerli_o       ( io_g2_coz_buyruk_gecerli_w ),
+    .coz_buyruk_atladi_o        ( io_g2_coz_buyruk_atladi_w ),
     .cek_bosalt_i               ( io_g2_cek_bosalt_w ),
     .cek_duraklat_i             ( io_g2_cek_duraklat_w )
 );
@@ -111,6 +113,7 @@ wire                            io_coz_gecersiz_buyruk_w;
 wire    [`PS_BIT-1:0]           io_coz_getir_buyruk_w;
 wire    [`PS_BIT-1:0]           io_coz_getir_ps_w;
 wire                            io_coz_getir_gecerli_w;
+wire                            io_coz_getir_atladi_w;
 wire    [`UOP_BIT-1:0]          io_coz_yo_uop_w;
 
 coz coz (
@@ -123,6 +126,7 @@ coz coz (
     .getir_buyruk_i             ( io_coz_getir_buyruk_w ),
     .getir_ps_i                 ( io_coz_getir_ps_w ),
     .getir_gecerli_i            ( io_coz_getir_gecerli_w ),
+    .getir_atladi_i             ( io_coz_getir_atladi_w ),
     .yo_uop_o                   ( io_coz_yo_uop_w )
 );
 
@@ -393,6 +397,7 @@ assign buyruk_yanit_hazir_o = io_g2_l1b_buyruk_hazir_w;
 assign io_coz_getir_buyruk_w = io_g2_coz_buyruk_w;
 assign io_coz_getir_ps_w = io_g2_coz_buyruk_ps_w;
 assign io_coz_getir_gecerli_w = io_g2_coz_buyruk_gecerli_w;
+assign io_coz_getir_atladi_w = io_g2_coz_buyruk_atladi_w;
 
 // Yazmac Oku < Coz
 assign io_yo_yo_uop_w = io_coz_yo_uop_w;

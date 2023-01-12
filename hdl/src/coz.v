@@ -18,6 +18,7 @@ module coz(
     input   [`PS_BIT-1:0]           getir_buyruk_i,
     input   [`PS_BIT-1:0]           getir_ps_i,
     input                           getir_gecerli_i,
+    input                           getir_atladi_i,
 
     output  [`UOP_BIT-1:0]          yo_uop_o
 );
@@ -84,6 +85,28 @@ generate
     assign gecersiz_buyruk_o = !(|buyruk) && coz_aktif_w;
 endgenerate
 
+task uop_rv32bne();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `LOW;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_DAL] = `UOP_DAL_BNE;
+end
+endtask
+
 task uop_rv32addi();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
@@ -149,6 +172,7 @@ always @* begin
     uop_ns[`UOP_PC] = getir_ps_i;
     uop_ns[`UOP_TAG] = buyruk_etiket_r;
     uop_ns[`UOP_VALID] = coz_aktif_w;
+    uop_ns[`UOP_TAKEN] = getir_atladi_i;
 
     case (buyruk)
     CASE_LUI   : uop_nop();
@@ -156,7 +180,7 @@ always @* begin
     CASE_JALR  : uop_nop();
     CASE_JAL   : uop_nop();
     CASE_BEQ   : uop_nop();
-    CASE_BNE   : uop_nop();
+    CASE_BNE   : uop_rv32bne();
     CASE_BLT   : uop_nop();
     CASE_LW    : uop_nop();
     CASE_SW    : uop_nop();

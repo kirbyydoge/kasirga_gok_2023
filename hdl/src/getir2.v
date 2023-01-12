@@ -28,6 +28,7 @@ module getir2(
     output  [`BUYRUK_BIT-1:0]   coz_buyruk_o,
     output  [`PS_BIT-1:0]       coz_buyruk_ps_o,
     output                      coz_buyruk_gecerli_o,
+    output                      coz_buyruk_atladi_o,
 
     input                       cek_bosalt_i,
     input                       cek_duraklat_i
@@ -150,5 +151,6 @@ assign l1b_buyruk_hazir_o = l1b_buyruk_hazir_cmb;
 assign coz_buyruk_o = coz_buyruk_r;
 assign coz_buyruk_ps_o = coz_buyruk_ps_r;
 assign coz_buyruk_gecerli_o = coz_buyruk_gecerli_r;
+assign coz_buyruk_atladi_o = `LOW; // Su anki buyruk atlamadi
 
 endmodule

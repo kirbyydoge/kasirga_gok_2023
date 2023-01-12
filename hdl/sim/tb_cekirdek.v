@@ -49,15 +49,15 @@ always begin
     #5;
 end
 
+localparam TEST_LEN = 8;
 reg [31:0] buyruklar [0:TEST_LEN-1];
 
-reg [31:0] istek_counter;
-reg [31:0] buyruk_counter;
+reg [5:0] istek_counter;
+reg [5:0] buyruk_counter;
 
 always @* begin
-    buyruk_yanit_veri_i = buyruklar[buyruk_counter];
-    buyruk_yanit_gecerli_i = buyruk_counter < TEST_LEN;
-    buyruk_istek_hazir_i = istek_counter < TEST_LEN;
+    buyruk_yanit_gecerli_i = buyruk_counter[5];
+    buyruk_istek_hazir_i = !(|istek_counter);
 end
 
 always @(posedge clk_i) begin
@@ -66,16 +66,20 @@ always @(posedge clk_i) begin
         buyruk_counter <= 0;
     end
     else begin
-        if (buyruk_istek_hazir_i && buyruk_istek_gecerli_o) begin
-            istek_counter <= istek_counter + 1;
+        if (!buyruk_yanit_gecerli_i || buyruk_yanit_hazir_o && buyruk_yanit_gecerli_i) begin
+            buyruk_counter <= buyruk_counter << 1;
         end
-        if (buyruk_yanit_gecerli_i && buyruk_yanit_hazir_o) begin
-            buyruk_counter <= buyruk_counter + 1;
+        if (buyruk_istek_hazir_i && buyruk_istek_gecerli_o) begin
+            buyruk_yanit_veri_i <= buyruklar[('h0000_ffff & buyruk_istek_adres_o) >> 2];
+            istek_counter <= 1;
+            buyruk_counter <= 1;
+        end
+        else begin
+            istek_counter <= istek_counter << 1;
         end
     end
 end
 
-localparam TEST_LEN = 10;
 integer i;
 initial begin
     rstn_i = 0;
@@ -85,16 +89,14 @@ initial begin
     vy_yanit_gecerli_i = 0;
     vy_istek_hazir_i = 0;
 
-    buyruklar['h000] = 'h00108093; // addi x1, x1, 1
+    buyruklar['h000] = 'h00500113; // addi x2, x0, 5
     buyruklar['h001] = 'h00108093; // addi x1, x1, 1
-    buyruklar['h002] = 'h00108093; // addi x1, x1, 1
-    buyruklar['h003] = 'h00108093; // addi x1, x1, 1
-    buyruklar['h004] = 'h00108093; // addi x1, x1, 1
-    buyruklar['h005] = 'h00200113; // addi x2, x0, 2
-    buyruklar['h006] = 'h00300193; // addi x3, x0, 3
-    buyruklar['h007] = 'h00400213; // addi x4, x0, 4
-    buyruklar['h008] = 'h00500293; // addi x5, x0, 5
-    buyruklar['h009] = 'h00318333; // add x6, x3, x3
+    buyruklar['h002] = 'hfe209ee3; // bne x1, x2, -4
+    buyruklar['h003] = 'h00200113; // addi x2, x0, 2
+    buyruklar['h004] = 'h00300193; // addi x3, x0, 3
+    buyruklar['h005] = 'h00400213; // addi x4, x0, 4
+    buyruklar['h006] = 'h00500293; // addi x5, x0, 5
+    buyruklar['h007] = 'h00318333; // add x6, x3, x3
 end
 
 endmodule
