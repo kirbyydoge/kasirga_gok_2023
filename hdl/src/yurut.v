@@ -11,6 +11,11 @@ module yurut (
     input                           cek_duraklat_i,
     output                          duraklat_o,
     output                          bosalt_o,
+
+    output  [`PS_BIT-1:0]           ddb_odd_ps_o,
+    output  [`EXC_CODE_BIT-1:0]     ddb_odd_kod_o,
+    output  [`MXLEN-1:0]            ddb_odd_bilgi_o,
+    output                          ddb_odd_gecerli_o,
     
     // Hatali dallanma
     output  [`PS_BIT-1:0]           g1_ps_o,
@@ -51,6 +56,7 @@ wire                            amb_esittir_w;
 wire                            amb_buyuktur_w;
 wire [`VERI_BIT-1:0]            amb_sonuc_w;
 
+
 reg                             duraklat_cmb;
 reg                             bosalt_cmb;
 
@@ -62,11 +68,18 @@ reg                             g2_guncelle_cmb;
 reg                             g2_atladi_cmb;
 reg                             g2_hatali_tahmin_cmb;
 
+reg [`PS_BIT-1:0]               ddb_odd_ps_cmb;
+reg [`EXC_CODE_BIT-1:0]         ddb_odd_kod_cmb;
+reg [`MXLEN-1:0]                ddb_odd_bilgi_cmb;
+reg                             ddb_odd_gecerli_cmb;
+
 function [`VERI_BIT-1:0] islec_sec (
     input [`UOP_AMB_OP_BIT-1:0] uop_secici,
     input [`VERI_BIT-1:0]       uop_rs1_w,
     input [`VERI_BIT-1:0]       uop_rs2_w,
-    input [`VERI_BIT-1:0]       uop_imm_w
+    input [`VERI_BIT-1:0]       uop_imm_w,
+    input [`VERI_BIT-1:0]       uop_csr_w,
+    input [`PS_BIT-1:0]         uop_ps_w
 );
 begin
     islec_sec = {`VERI_BIT{1'b0}};
@@ -75,6 +88,7 @@ begin
     `UOP_AMB_OP_RS1: islec_sec = uop_rs1_w;
     `UOP_AMB_OP_RS2: islec_sec = uop_rs2_w;
     `UOP_AMB_OP_IMM: islec_sec = uop_imm_w;
+    `UOP_AMB_OP_CSR: islec_sec = uop_csr_w;
     endcase
 end
 endfunction
@@ -84,6 +98,10 @@ always @* begin
     uop_ns = yurut_uop_i;
     uop_ns[`UOP_VALID] = uop_gecerli_w; // simdilik her sey tek cevrim
     bosalt_cmb = `LOW;
+    ddb_odd_ps_cmb = uop_ps_w;
+    ddb_odd_kod_cmb = yurut_uop_i[`UOP_CSR_OP];
+    ddb_odd_bilgi_cmb = {`MXLEN{1'b0}}; // mcause
+    ddb_odd_gecerli_cmb = `LOW;
 
     case(uop_yaz_sec_w)
     `UOP_YAZ_NOP: uop_ns[`UOP_RD] = {`VERI_BIT{1'b0}};
@@ -96,6 +114,8 @@ always @* begin
     case(uop_csr_islem_sec_w)
     `UOP_CSR_NOP: uop_ns[`UOP_CSR] = {`VERI_BIT{1'b0}};
     `UOP_CSR_RW: uop_ns[`UOP_CSR] = uop_rs1_w;
+    `UOP_CSR_RS: uop_ns[`UOP_CSR] = amb_sonuc_w;
+    `UOP_CSR_MRET: ddb_odd_gecerli_cmb = `HIGH; 
     endcase
 
     case(uop_dal_islem_sec_w)
@@ -114,13 +134,48 @@ always @* begin
         g2_hatali_tahmin_cmb = !(amb_esittir_w ^ uop_taken_w);
         bosalt_cmb = !(amb_esittir_w ^ uop_taken_w);
 
+        g1_ps_cmb = g2_atladi_cmb ? uop_ps_w + uop_imm_w : uop_ps_w + 32'd4;
         g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
-        if (g2_atladi_cmb) begin
-            g1_ps_cmb = uop_ps_w + uop_imm_w;
-        end
-        else begin
-            g1_ps_cmb = uop_ps_w + 32'd4;
-        end
+    end
+    `UOP_DAL_BEQ: begin
+        g2_ps_cmb = uop_ps_w;
+        g2_guncelle_cmb = `HIGH;
+        g2_atladi_cmb = !amb_esittir_w;
+        g2_hatali_tahmin_cmb = (amb_esittir_w ^ uop_taken_w);
+        bosalt_cmb = (amb_esittir_w ^ uop_taken_w);
+
+        g1_ps_cmb = g2_atladi_cmb ? uop_ps_w + uop_imm_w : uop_ps_w + 32'd4;
+        g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
+    end
+    `UOP_DAL_BGE: begin
+        g2_ps_cmb = uop_ps_w;
+        g2_guncelle_cmb = `HIGH;
+        g2_atladi_cmb = amb_buyuktur_w && amb_esittir_w;
+        g2_hatali_tahmin_cmb = ((amb_buyuktur_w && amb_esittir_w) ^ uop_taken_w);
+        bosalt_cmb = ((amb_buyuktur_w && amb_esittir_w) ^ uop_taken_w);
+
+        g1_ps_cmb = g2_atladi_cmb ? uop_ps_w + uop_imm_w : uop_ps_w + 32'd4;
+        g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
+    end
+    `UOP_DAL_JAL: begin
+        g2_ps_cmb = uop_ps_w;
+        g2_guncelle_cmb = `HIGH;
+        g2_atladi_cmb = `HIGH;
+        g2_hatali_tahmin_cmb = !uop_taken_w;
+        bosalt_cmb = !uop_taken_w;
+
+        g1_ps_cmb = uop_ps_w + uop_imm_w;
+        g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
+    end
+    `UOP_DAL_JALR: begin
+        g2_ps_cmb = uop_ps_w;
+        g2_guncelle_cmb = `HIGH;
+        g2_atladi_cmb = `HIGH;
+        g2_hatali_tahmin_cmb = !uop_taken_w;
+        bosalt_cmb = !uop_taken_w;
+
+        g1_ps_cmb = (uop_ps_w + uop_imm_w) & ~1;
+        g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
     end
     default: begin
         g1_ps_cmb = {`PS_BIT{1'b0}};
@@ -174,8 +229,8 @@ assign uop_dal_islem_sec_w = yurut_uop_i[`UOP_DAL];
 assign uop_csr_islem_sec_w = yurut_uop_i[`UOP_CSR_OP];
 assign uop_yaz_sec_w = yurut_uop_i[`UOP_YAZ];
 
-assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w);
-assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w);
+assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w, uop_csr_w, uop_ps_w);
+assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w, uop_csr_w, uop_ps_w);
 
 assign bosalt_o = bosalt_cmb && uop_gecerli_w;
 assign duraklat_o = `LOW && uop_gecerli_w;
@@ -186,6 +241,11 @@ assign g2_ps_o = g2_ps_cmb;
 assign g2_guncelle_o = g2_guncelle_cmb && uop_gecerli_w;
 assign g2_atladi_o = g2_atladi_cmb;
 assign g2_hatali_tahmin_o = g2_hatali_tahmin_cmb;
+
+assign ddb_odd_ps_o = ddb_odd_ps_cmb;
+assign ddb_odd_kod_o = ddb_odd_kod_cmb;
+assign ddb_odd_bilgi_o = ddb_odd_bilgi_cmb;
+assign ddb_odd_gecerli_o = ddb_odd_gecerli_cmb;
 
 assign bellek_uop_o = uop_r;
 

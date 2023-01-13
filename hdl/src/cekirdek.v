@@ -172,8 +172,12 @@ wire                            io_yurut_clk_w;
 wire                            io_yurut_rstn_w;
 wire                            io_yurut_cek_bosalt_w;
 wire                            io_yurut_cek_duraklat_w;
-wire                            io_yurut_bosalt_w;
 wire                            io_yurut_duraklat_w;
+wire                            io_yurut_bosalt_w;
+wire    [`PS_BIT-1:0]           io_yurut_ddb_odd_ps_w;
+wire    [`EXC_CODE_BIT-1:0]     io_yurut_ddb_odd_kod_w;
+wire    [`MXLEN-1:0]            io_yurut_ddb_odd_bilgi_w;
+wire                            io_yurut_ddb_odd_gecerli_w;
 wire    [`PS_BIT-1:0]           io_yurut_g1_ps_w;
 wire                            io_yurut_g1_ps_gecerli_w;
 wire    [`PS_BIT-1:0]           io_yurut_g2_ps_w;
@@ -188,8 +192,12 @@ yurut yurut(
     .rstn_i                     ( io_yurut_rstn_w ),
     .cek_bosalt_i               ( io_yurut_cek_bosalt_w ),
     .cek_duraklat_i             ( io_yurut_cek_duraklat_w ),
-    .bosalt_o                   ( io_yurut_bosalt_w ),
     .duraklat_o                 ( io_yurut_duraklat_w ),
+    .bosalt_o                   ( io_yurut_bosalt_w ),
+    .ddb_odd_ps_o               ( io_yurut_ddb_odd_ps_w ),
+    .ddb_odd_kod_o              ( io_yurut_ddb_odd_kod_w ),
+    .ddb_odd_bilgi_o            ( io_yurut_ddb_odd_bilgi_w ),
+    .ddb_odd_gecerli_o          ( io_yurut_ddb_odd_gecerli_w ),
     .g1_ps_o                    ( io_yurut_g1_ps_w ),
     .g1_ps_gecerli_o            ( io_yurut_g1_ps_gecerli_w ),
     .g2_ps_o                    ( io_yurut_g2_ps_w ),
@@ -459,10 +467,26 @@ assign vy_istek_gecerli_o = io_bellek_l1v_istek_gecerli_w;
 // Geri Yaz < Bellek
 assign io_gy_gy_uop_w = io_bellek_gy_uop_w;
 
+// Denetim Durum Birimi < Coz
+assign io_ddb_coz_odd_ps_w = 0;
+assign io_ddb_coz_odd_kod_w = 0;
+assign io_ddb_coz_odd_gecerli_w_w = 0;
+
 // Denetim Durum Birimi < Yazmac Oku
 assign io_ddb_oku_istek_adres_w = io_yo_csr_adres_w;
 assign io_ddb_oku_istek_etiket_w = io_yo_csr_etiket_w;
 assign io_ddb_oku_istek_etiket_gecerli_w = io_yo_csr_etiket_gecerli_w;
+
+// Denetim Durum Birimi < Yurut
+assign io_ddb_yurut_odd_ps_w = io_yurut_ddb_odd_ps_w;
+assign io_ddb_yurut_odd_kod_w = io_yurut_ddb_odd_kod_w;
+assign io_ddb_yurut_odd_bilgi_w = io_yurut_ddb_odd_bilgi_w;
+assign io_ddb_yurut_odd_gecerli_w = io_yurut_ddb_odd_gecerli_w;
+
+// Denetim Durum Birimi < Bellek
+assign io_ddb_bellek_odd_ps_w = 0;
+assign io_ddb_bellek_odd_kod_w = 0;
+assign io_ddb_bellek_odd_gecerli_w = 0;
 
 // Denetim Durum Birimi < Geri Yaz
 assign io_ddb_yaz_istek_veri_w = io_gy_csr_veri_w;

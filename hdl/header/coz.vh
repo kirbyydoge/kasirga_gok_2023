@@ -18,6 +18,10 @@
 
 `define U_RD            11:7
 `define U_IMM           31:12
+`define U_SIGN          31
+
+`define J_RD            11:7
+`define J_SIGN          31
 
 `define CSR_RD          11:7
 `define CSR_RS1         19:15
@@ -40,5 +44,14 @@
 `define AND         'd13  // TODO: Bit genislikleri eksik      
 `define XOR         'd14  // TODO: Bit genislikleri eksik 
 `define CSRRW       'd15  // TODO: Bit genislikleri eksik 
+`define CSRRS       'd16
+`define CSRRWI      'd17
+`define CSRRSI      'd18
+`define FENCE       'd19
+`define ECALL       'd20
+`define MRET        'd21
+`define SLLI        'd22
+`define ORI         'd23
+`define BGE         'd24
 
-`define N_BUYRUK    16    // Kac buyruk var?
+`define N_BUYRUK    'd25    // Kac buyruk var?
