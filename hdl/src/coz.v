@@ -151,7 +151,7 @@ task uop_rv32add();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
     buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
-    buyruk_rd_cmb = getir_buyruk_i[`R_RD]
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
