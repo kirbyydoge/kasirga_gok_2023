@@ -99,8 +99,9 @@
 `define UOP_YAZ_AMB         1
 `define UOP_YAZ_IS1         2
 `define UOP_YAZ_DAL         3
+`define UOP_YAZ_CSR         4
 
-`define UOP_YAZ_BIT         2
+`define UOP_YAZ_BIT         3
 `define UOP_YAZ_PTR         (`UOP_AMB_PTR + `UOP_AMB_BIT)
 `define UOP_YAZ             `UOP_YAZ_PTR +: `UOP_YAZ_BIT
 
@@ -143,9 +144,17 @@
 
 `define EXC_CODE_BIT            5
 
+// CSR Islemleri
+`define UOP_CSR_NOP             0
+`define UOP_CSR_RW              1
+
+`define UOP_CSR_OP_BIT          1 // CSR_OP berbat bir isim, AMB_OP1'deki OPerand ile buradaki CSR_OPeration kisaltmasi ayristirilmali
+`define UOP_CSR_OP_PTR          (`UOP_BEL_PTR + `UOP_BEL_BIT)
+`define UOP_CSR_OP              `UOP_CSR_OP_PTR +: `UOP_CSR_OP_BIT
+
 // TODO: Yapaz Zeka Birimi
 // TODO: Kriptografi Birimi
 
-`define UOP_BIT                 (`UOP_BEL_PTR + `UOP_BEL_BIT) 
+`define UOP_BIT                 (`UOP_CSR_OP_PTR + `UOP_CSR_OP_BIT)
 
 //!!! TODO: HER ASAMA ICIN MIKROISLEM TANIMLARI (COZ_UOP, YURUT_UOP...) YAPILMALI, BU SAYEDE UOP YAZMACLARI KUCULTULEBILIR !!!

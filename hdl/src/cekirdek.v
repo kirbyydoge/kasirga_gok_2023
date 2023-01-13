@@ -387,6 +387,10 @@ assign io_bellek_rstn_w = rstn_i;
 assign io_gy_clk_w = clk_i;
 assign io_gy_rstn_w = rstn_i;
 
+// Denetim Durum Birimi < Cekirdek
+assign io_ddb_clk_w = clk_i;
+assign io_ddb_rstn_w = rstn_i;
+
 // Getir1 < Getir2
 assign io_g1_g2_ps_hazir_w = io_g2_g1_ps_hazir_w;
 

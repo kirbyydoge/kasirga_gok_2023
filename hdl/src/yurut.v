@@ -33,14 +33,17 @@ wire                            uop_gecerli_w;
 wire [`UOP_PC_BIT-1:0]          uop_ps_w;
 wire [`UOP_TAG_BIT-1:0]         uop_tag_w;
 wire                            uop_taken_w;
-wire [`UOP_AMB_BIT-1:0]         uop_amb_islem_sec_w;
 wire [`UOP_AMB_OP1_BIT-1:0]     uop_amb_islec1_sec_w;
 wire [`UOP_AMB_OP2_BIT-1:0]     uop_amb_islec2_sec_w;
-wire [`UOP_YAZ_BIT-1:0]         uop_yaz_sec_w;
 wire [`UOP_RS2_BIT-1:0]         uop_rs1_w;
 wire [`UOP_RS1_BIT-1:0]         uop_rs2_w;
 wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
+wire [`UOP_CSR_BIT-1:0]         uop_csr_w;
+
 wire [`UOP_DAL_BIT-1:0]         uop_dal_islem_sec_w;
+wire [`UOP_AMB_BIT-1:0]         uop_amb_islem_sec_w;
+wire [`UOP_CSR_OP_BIT-1:0]      uop_csr_islem_sec_w;
+wire [`UOP_YAZ_BIT-1:0]         uop_yaz_sec_w;
 
 wire [`VERI_BIT-1:0]            amb_islec1_w;
 wire [`VERI_BIT-1:0]            amb_islec2_w;
@@ -87,6 +90,12 @@ always @* begin
     `UOP_YAZ_AMB: uop_ns[`UOP_RD] = amb_sonuc_w;
     `UOP_YAZ_IS1: uop_ns[`UOP_RD] = amb_islec1_w;
     `UOP_YAZ_DAL: uop_ns[`UOP_RD] = uop_ps_w + 32'd4;   // dallanma biriminden gelmesi gerekiyor
+    `UOP_YAZ_CSR: uop_ns[`UOP_RD] = uop_csr_w;
+    endcase
+
+    case(uop_csr_islem_sec_w)
+    `UOP_CSR_NOP: uop_ns[`UOP_CSR] = {`VERI_BIT{1'b0}};
+    `UOP_CSR_RW: uop_ns[`UOP_CSR] = uop_rs1_w;
     endcase
 
     case(uop_dal_islem_sec_w)
@@ -153,14 +162,17 @@ assign uop_gecerli_w = yurut_uop_i[`UOP_VALID];
 assign uop_ps_w = yurut_uop_i[`UOP_PC];
 assign uop_tag_w = yurut_uop_i[`UOP_TAG];
 assign uop_taken_w = yurut_uop_i[`UOP_TAKEN];
-assign uop_amb_islem_sec_w = yurut_uop_i[`UOP_AMB];
 assign uop_amb_islec1_sec_w = yurut_uop_i[`UOP_AMB_OP1];
 assign uop_amb_islec2_sec_w = yurut_uop_i[`UOP_AMB_OP2];
 assign uop_rs1_w = yurut_uop_i[`UOP_RS1];
 assign uop_rs2_w = yurut_uop_i[`UOP_RS2];
 assign uop_imm_w = yurut_uop_i[`UOP_IMM];
-assign uop_yaz_sec_w = yurut_uop_i[`UOP_YAZ];
+assign uop_csr_w = yurut_uop_i[`UOP_CSR];
+
+assign uop_amb_islem_sec_w = yurut_uop_i[`UOP_AMB];
 assign uop_dal_islem_sec_w = yurut_uop_i[`UOP_DAL];
+assign uop_csr_islem_sec_w = yurut_uop_i[`UOP_CSR_OP];
+assign uop_yaz_sec_w = yurut_uop_i[`UOP_YAZ];
 
 assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w);
 assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w);

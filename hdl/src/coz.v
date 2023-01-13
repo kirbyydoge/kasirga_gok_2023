@@ -23,7 +23,7 @@ module coz(
     output  [`UOP_BIT-1:0]          yo_uop_o
 );
 
-wire [`N_BUYRUK:0] buyruk;
+wire [`N_BUYRUK-1:0] buyruk;
 
 localparam CASE_LUI     = 1 << `LUI;     
 localparam CASE_AUIPC   = 1 << `AUIPC;         
@@ -90,19 +90,21 @@ endgenerate
 
 task uop_rv32csrrw();
 begin
-    // rd = x0 ise NOP ile degistir
-    uop_ns[`UOP_VALID] = getir_buyruk_i[`CSR_RD] != {`YAZMAC_BIT{1'b0}};
-
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`CSR_RS1]};
     buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[`CSR_RD]};
     buyruk_csr_cmb = getir_buyruk_i[`CSR_ADDR];
 
     buyruk_etiket_gecerli_cmb = getir_buyruk_i[`CSR_RD] != {`YAZMAC_BIT{1'b0}};
 
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
     uop_ns[`UOP_CSR_ADDR] = buyruk_csr_cmb;
     uop_ns[`UOP_CSR_EN] = `HIGH;
     uop_ns[`UOP_CSR_ALLOC] = `HIGH;
+    uop_ns[`UOP_CSR_OP] = `UOP_CSR_RW;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_CSR;
 end
 endtask
 
@@ -185,6 +187,7 @@ always @* begin
     buyruk_rs1_cmb = {`VERI_BIT{1'b0}};
     buyruk_rs2_cmb = {`VERI_BIT{1'b0}};
     buyruk_rd_cmb = {`YAZMAC_BIT{1'b0}};
+    buyruk_csr_cmb = {`CSR_ADRES_BIT{1'b0}};
     buyruk_etiket_gecerli_cmb = {`UOP_TAG_BIT{1'b0}};
     uop_ns = {`UOP_BIT{`LOW}};
     buyruk_etiket_ns = buyruk_etiket_r;
@@ -210,7 +213,7 @@ always @* begin
     CASE_OR    : uop_nop();
     CASE_AND   : uop_nop();
     CASE_XOR   : uop_nop();
-    CASR_CSRRW : uop_rv32csrrw();
+    CASE_CSRRW : uop_rv32csrrw();
     endcase
 
     if (buyruk_etiket_gecerli_cmb && !cek_duraklat_i) begin

@@ -86,7 +86,7 @@ begin
     `CSR_SPEC_MINSTRET      : csr_adres_donustur = `CSR_MINSTRET ;
     `CSR_SPEC_MCYCLEH       : csr_adres_donustur = `CSR_MCYCLEH  ;
     `CSR_SPEC_MINSTRETH     : csr_adres_donustur = `CSR_MINSTRETH;
-    default                 : csr_adres_donustur = `CSR_UNIMPLEMENTED;
+    default                 : csr_adres_donustur = {`CSR_ARCH_BIT{1'b0}};
     endcase
 end
 endfunction
@@ -96,6 +96,8 @@ task csr_init();
 begin
     for (i = 0; i < `CSR_ARCH_N_REGS; i = i + 1) begin
         csr_r[i] = {`MXLEN{1'b0}};
+        csr_gecerli_r[i] = 1'b1;
+        csr_etiket_r[i] = {`UOP_TAG_BIT{1'b0}};
     end
 
     csr_r[`CSR_MISA][`MISA_A] = `LOW;

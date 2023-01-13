@@ -20,30 +20,6 @@ module geri_yaz (
     output                          csr_gecerli_o
 );
 
-reg     [`VERI_BIT-1:0]         yo_veri_r;
-reg     [`VERI_BIT-1:0]         yo_veri_ns;
-
-reg     [`YAZMAC_BIT-1:0]       yo_adres_r;
-reg     [`YAZMAC_BIT-1:0]       yo_adres_ns;
-
-reg     [`UOP_TAG_BIT-1:0]      yo_etiket_r;
-reg     [`UOP_TAG_BIT-1:0]      yo_etiket_ns;
-
-reg                             yo_gecerli_r;
-reg                             yo_gecerli_ns;
-
-reg     [`VERI_BIT-1:0]         csr_veri_r;
-reg     [`VERI_BIT-1:0]         csr_veri_ns;
-
-reg     [`YAZMAC_BIT-1:0]       csr_adres_r;
-reg     [`YAZMAC_BIT-1:0]       csr_adres_ns;
-
-reg     [`UOP_TAG_BIT-1:0]      csr_etiket_r;
-reg     [`UOP_TAG_BIT-1:0]      csr_etiket_ns;
-
-reg                             csr_gecerli_r;
-reg                             csr_gecerli_ns;
-
 wire                            uop_gy_gecerli_w;
 wire    [`VERI_BIT-1:0]         uop_gy_veri_w;
 wire                            uop_gy_veri_gecerli_w;
@@ -52,43 +28,7 @@ wire    [`UOP_TAG_BIT-1:0]      uop_gy_etiket_w;
 
 wire    [`VERI_BIT-1:0]         uop_gy_csr_veri_w;
 wire                            uop_gy_csr_veri_gecerli_w;
-wire    [`YAZMAC_BIT-1:0]       uop_gy_csr_adres_w;
-wire    [`UOP_TAG_BIT-1:0]      uop_gy_csr_etiket_w;
-
-always @* begin
-    yo_gecerli_ns = uop_gy_gecerli_w && uop_gy_veri_gecerli_w;
-    yo_veri_ns = uop_gy_veri_w;
-    yo_adres_ns = uop_gy_adres_w;
-    yo_etiket_ns = uop_gy_etiket_w;
-
-    csr_gecerli_ns = uop_gy_gecerli_w && uop_gy_csr_veri_gecerli_w;
-    csr_veri_ns = uop_gy_csr_veri_w;
-    csr_adres_ns = uop_gy_csr_adres_w;
-    csr_etiket_ns = uop_gy_etiket_w;
-end
-
-always @(posedge clk_i) begin
-    if (!rstn_i) begin
-        yo_gecerli_r <= `LOW;
-        yo_veri_r <= {`VERI_BIT{1'b0}};
-        yo_adres_r <= {`YAZMAC_BIT{1'b0}};
-        yo_etiket_r <= {`UOP_TAG_BIT{1'b0}};
-        csr_gecerli_r <= `LOW;
-        csr_veri_r <= {`VERI_BIT{1'b0}};
-        csr_adres_r <= {`YAZMAC_BIT{1'b0}};
-        csr_etiket_r <= {`UOP_TAG_BIT{1'b0}};
-    end
-    else begin
-        yo_gecerli_r <= yo_gecerli_ns;
-        yo_veri_r <= yo_veri_ns;
-        yo_adres_r <= yo_adres_ns;
-        yo_etiket_r <= yo_etiket_ns;
-        csr_gecerli_r <= csr_gecerli_ns;
-        csr_veri_r <= csr_veri_ns;
-        csr_adres_r <= csr_adres_ns;
-        csr_etiket_r <= csr_etiket_ns;
-    end
-end
+wire    [`CSR_ADRES_BIT-1:0]    uop_gy_csr_adres_w;
 
 assign uop_gy_gecerli_w = gy_uop_i[`UOP_VALID];
 assign uop_gy_veri_w = gy_uop_i[`UOP_RD];
@@ -100,9 +40,75 @@ assign uop_gy_csr_veri_w = gy_uop_i[`UOP_CSR];
 assign uop_gy_csr_veri_gecerli_w = gy_uop_i[`UOP_CSR_ALLOC];
 assign uop_gy_csr_adres_w = gy_uop_i[`UOP_CSR_ADDR];
 
-assign yo_gecerli_o = yo_gecerli_r;
-assign yo_veri_o = yo_veri_r;
-assign yo_adres_o = yo_adres_r;
-assign yo_etiket_o = yo_etiket_r;
+assign yo_gecerli_o = uop_gy_gecerli_w && uop_gy_veri_gecerli_w;
+assign yo_veri_o = uop_gy_veri_w;
+assign yo_adres_o = uop_gy_adres_w;
+assign yo_etiket_o = uop_gy_etiket_w;
+
+assign csr_gecerli_o = uop_gy_gecerli_w && uop_gy_csr_veri_gecerli_w;
+assign csr_veri_o = uop_gy_csr_veri_w;
+assign csr_adres_o = uop_gy_csr_adres_w;
+assign csr_etiket_o = uop_gy_etiket_w;
+
+// Simdilik 2 kere registerlamaya gerek yok. Direkt UOP yazmaclarindan combinational gitmeli.
+
+// reg     [`VERI_BIT-1:0]         yo_veri_r;
+// reg     [`VERI_BIT-1:0]         yo_veri_ns;
+
+// reg     [`YAZMAC_BIT-1:0]       yo_adres_r;
+// reg     [`YAZMAC_BIT-1:0]       yo_adres_ns;
+
+// reg     [`UOP_TAG_BIT-1:0]      yo_etiket_r;
+// reg     [`UOP_TAG_BIT-1:0]      yo_etiket_ns;
+
+// reg                             yo_gecerli_r;
+// reg                             yo_gecerli_ns;
+
+// reg     [`VERI_BIT-1:0]         csr_veri_r;
+// reg     [`VERI_BIT-1:0]         csr_veri_ns;
+
+// reg     [`CSR_ADRES_BIT-1:0]    csr_adres_r;
+// reg     [`CSR_ADRES_BIT-1:0]    csr_adres_ns;
+
+// reg     [`UOP_TAG_BIT-1:0]      csr_etiket_r;
+// reg     [`UOP_TAG_BIT-1:0]      csr_etiket_ns;
+
+// reg                             csr_gecerli_r;
+// reg                             csr_gecerli_ns;
+
+// always @* begin
+//     yo_gecerli_ns = uop_gy_gecerli_w && uop_gy_veri_gecerli_w;
+//     yo_veri_ns = uop_gy_veri_w;
+//     yo_adres_ns = uop_gy_adres_w;
+//     yo_etiket_ns = uop_gy_etiket_w;
+
+//     csr_gecerli_ns = uop_gy_gecerli_w && uop_gy_csr_veri_gecerli_w;
+//     csr_veri_ns = uop_gy_csr_veri_w;
+//     csr_adres_ns = uop_gy_csr_adres_w;
+//     csr_etiket_ns = uop_gy_etiket_w;
+// end
+
+// always @(posedge clk_i) begin
+//     if (!rstn_i) begin
+//         yo_gecerli_r <= `LOW;
+//         yo_veri_r <= {`VERI_BIT{1'b0}};
+//         yo_adres_r <= {`YAZMAC_BIT{1'b0}};
+//         yo_etiket_r <= {`UOP_TAG_BIT{1'b0}};
+//         csr_gecerli_r <= `LOW;
+//         csr_veri_r <= {`VERI_BIT{1'b0}};
+//         csr_adres_r <= {`YAZMAC_BIT{1'b0}};
+//         csr_etiket_r <= {`UOP_TAG_BIT{1'b0}};
+//     end
+//     else begin
+//         yo_gecerli_r <= yo_gecerli_ns;
+//         yo_veri_r <= yo_veri_ns;
+//         yo_adres_r <= yo_adres_ns;
+//         yo_etiket_r <= yo_etiket_ns;
+//         csr_gecerli_r <= csr_gecerli_ns;
+//         csr_veri_r <= csr_veri_ns;
+//         csr_adres_r <= csr_adres_ns;
+//         csr_etiket_r <= csr_etiket_ns;
+//     end
+// end
 
 endmodule

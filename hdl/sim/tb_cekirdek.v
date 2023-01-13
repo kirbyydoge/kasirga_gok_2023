@@ -49,8 +49,8 @@ always begin
     #5;
 end
 
-localparam TEST_LEN = 8;
-reg [31:0] buyruklar [0:TEST_LEN-1];
+localparam BUYRUK_BELLEK_LEN = 8;
+reg [31:0] buyruklar [0:BUYRUK_BELLEK_LEN-1];
 
 reg [5:0] istek_counter;
 reg [5:0] buyruk_counter;
@@ -70,7 +70,7 @@ always @(posedge clk_i) begin
             buyruk_counter <= buyruk_counter << 1;
         end
         if (buyruk_istek_hazir_i && buyruk_istek_gecerli_o) begin
-            buyruk_yanit_veri_i <= buyruklar[('h0000_ffff & buyruk_istek_adres_o) >> 2];
+            buyruk_yanit_veri_i <= (('h0000_ffff & buyruk_istek_adres_o) >> 2) < BUYRUK_BELLEK_LEN ? buyruklar[('h0000_ffff & buyruk_istek_adres_o) >> 2] : 0;
             istek_counter <= 1;
             buyruk_counter <= 1;
         end
@@ -82,6 +82,9 @@ end
 
 integer i;
 initial begin
+    for (i = 0; i < BUYRUK_BELLEK_LEN; i = i+1) begin
+        buyruklar[i] = 0;
+    end
     rstn_i = 0;
     repeat(20) @(posedge clk_i) #COMB_DELAY;
     rstn_i = 1;
@@ -97,6 +100,10 @@ initial begin
     buyruklar['h005] = 'h00400213; // addi x4, x0, 4
     buyruklar['h006] = 'h00500293; // addi x5, x0, 5
     buyruklar['h007] = 'h00318333; // add x6, x3, x3
+    
+    // Normalde MISA yazmacinin READONLY olmasi lazim. Simdilik bu izinler yok, degerlerin takaslanmasi yeterli.
+    // buyruklar['h000] = 'h00500113; // addi x2, x0, 5
+    // buyruklar['h001] = 'h301110f3; // csrrw x1, misa, x2
 end
 
 endmodule

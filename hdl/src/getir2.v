@@ -68,6 +68,7 @@ always @* begin
     l1b_buyruk_hazir_cmb = `LOW;
     g1_ps_hazir_cmb = `LOW;
     g2_durum_ns = g2_durum_r;
+    g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r;
 
     case(g2_durum_r)
     G2_YAZMAC_BOS: begin
