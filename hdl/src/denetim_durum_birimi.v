@@ -22,10 +22,12 @@ module denetim_durum_birimi(
     input                           bellek_odd_gecerli_i,
 
     input   [`CSR_ADRES_BIT-1:0]    oku_istek_adres_i,
-    input                           oku_istek_gecerli_i,
+    input   [`UOP_TAG_BIT-1:0]      oku_istek_etiket_i,
+    input                           oku_istek_etiket_gecerli_i,
 
     input   [`MXLEN-1:0]            yaz_istek_veri_i,
     input   [`CSR_ADRES_BIT-1:0]    yaz_istek_adres_i,
+    input   [`UOP_TAG_BIT-1:0]      yaz_istek_etiket_i,
     input                           yaz_istek_gecerli_i,
 
     output  [`MXLEN-1:0]            csr_veri_o,
@@ -38,6 +40,12 @@ module denetim_durum_birimi(
 
 reg     [`MXLEN-1:0]            csr_r [0:`CSR_ARCH_N_REGS-1];
 reg     [`MXLEN-1:0]            csr_ns [0:`CSR_ARCH_N_REGS-1];
+
+reg     [`UOP_TAG_BIT-1:0]      csr_etiket_r [0:`CSR_ARCH_N_REGS-1];
+reg     [`UOP_TAG_BIT-1:0]      csr_etiket_ns [0:`CSR_ARCH_N_REGS-1];
+
+reg     [`CSR_ARCH_N_REGS-1:0]  csr_gecerli_r;
+reg     [`CSR_ARCH_N_REGS-1:0]  csr_gecerli_ns;
 
 reg     [`MXLEN-1:0]            csr_veri_cmb;
 
@@ -155,6 +163,8 @@ end
 always @* begin
     for (i = 0; i < `CSR_ARCH_N_REGS; i = i + 1) begin
         csr_ns[i] = csr_r[i];
+        csr_etiket_ns[i] = csr_etiket_r[i];
+        csr_gecerli_ns[i] = csr_gecerli_r[i];
     end
     csr_gecerli_cmb = `LOW;
     getir_ps_cmb = {`PS_BIT{1'b0}};
@@ -162,6 +172,17 @@ always @* begin
     bosalt_cmb = `LOW;
 
     odd_sec();
+
+    if (oku_istek_etiket_gecerli_i) begin
+        csr_etiket_ns[oku_mimari_adres_w] = oku_istek_etiket_i;
+        csr_gecerli_ns[oku_mimari_adres_w] = `LOW;
+    end
+
+    // TODO: Yetki ve alan izin kontrolleri
+    if (yaz_istek_gecerli_i) begin
+        csr_ns[yaz_mimari_adres_w] = yaz_istek_veri_i;
+        csr_gecerli_ns[yaz_mimari_adres_w] = csr_etiket_r[yaz_mimari_adres_w] == yaz_istek_etiket_i;
+    end
     
     if (odd_gecerli_cmb) begin
         bosalt_cmb = `HIGH;
@@ -181,17 +202,6 @@ always @* begin
         end
         endcase
     end
-
-    // TODO: Yetki kontrolleri
-    if (oku_istek_gecerli_i) begin
-        csr_gecerli_cmb = `HIGH;
-        csr_veri_cmb = csr_r[oku_mimari_adres_w];
-    end
-
-    // TODO: Yetki ve alan izin kontrolleri
-    if (yaz_istek_gecerli_i) begin
-        csr_ns[yaz_mimari_adres_w] = yaz_istek_veri_i;
-    end
 end
 
 always @(posedge clk_i) begin
@@ -201,6 +211,8 @@ always @(posedge clk_i) begin
     else begin
         for (i = 0; i < `CSR_ARCH_N_REGS; i = i + 1) begin
             csr_r[i] <= csr_ns[i];
+            csr_etiket_r[i] <= csr_etiket_ns[i];
+            csr_gecerli_r[i] <= csr_gecerli_ns[i];
         end
     end
 end
@@ -211,5 +223,8 @@ assign yaz_mimari_adres_w = csr_adres_donustur(yaz_istek_adres_i);
 assign bosalt_o = bosalt_cmb;
 assign getir_ps_o = getir_ps_cmb;
 assign getir_ps_gecerli_o = getir_ps_gecerli_cmb;
+
+assign csr_veri_o = csr_r[oku_mimari_adres_w];
+assign csr_gecerli_o = csr_gecerli_r[oku_mimari_adres_w];
 
 endmodule

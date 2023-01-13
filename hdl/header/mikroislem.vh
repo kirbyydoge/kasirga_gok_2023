@@ -48,6 +48,22 @@
 `define UOP_RS1_PTR         (`UOP_RS2_PTR + `UOP_RS2_BIT)
 `define UOP_RS1             `UOP_RS1_PTR +: `UOP_RS1_BIT 
 
+`define UOP_CSR_BIT         32
+`define UOP_CSR_PTR         (`UOP_RS1_PTR + `UOP_RS1_BIT)
+`define UOP_CSR             `UOP_CSR_PTR +: `UOP_CSR_BIT
+
+`define UOP_CSR_ADDR_BIT    12
+`define UOP_CSR_ADDR_PTR    (`UOP_CSR_PTR + `UOP_CSR_BIT)
+`define UOP_CSR_ADDR        `UOP_CSR_ADDR_PTR +: `UOP_CSR_ADDR_BIT
+
+`define UOP_CSR_ALLOC_BIT   1
+`define UOP_CSR_ALLOC_PTR   (`UOP_CSR_ADDR_PTR + `UOP_CSR_ADDR_BIT)
+`define UOP_CSR_ALLOC       `UOP_CSR_ALLOC_PTR +: `UOP_CSR_ALLOC_BIT
+
+`define UOP_CSR_EN_BIT      1
+`define UOP_CSR_EN_PTR      (`UOP_CSR_ALLOC_PTR + `UOP_CSR_ALLOC_BIT)
+`define UOP_CSR_EN          `UOP_CSR_EN_PTR +: `UOP_CSR_EN_BIT
+
 // Aritmetik Mantik Birimi
 `define UOP_AMB_NOP         0
 `define UOP_AMB_ADD         1
@@ -67,7 +83,7 @@
 
 // Islecler hangi veriler olmali?
 `define UOP_AMB_OP2_BIT     `UOP_AMB_OP_BIT
-`define UOP_AMB_OP2_PTR     (`UOP_RS1_PTR + `UOP_RS1_BIT)
+`define UOP_AMB_OP2_PTR     (`UOP_CSR_ALLOC_PTR + `UOP_CSR_ALLOC_BIT)
 `define UOP_AMB_OP2         `UOP_AMB_OP2_PTR +: `UOP_AMB_OP2_BIT
 
 `define UOP_AMB_OP1_BIT     `UOP_AMB_OP_BIT
@@ -118,15 +134,6 @@
 `define UOP_BEL_BIT             4 //seçim için kullanılacak
 `define UOP_BEL_PTR             (`UOP_TAKEN_PTR + `UOP_TAKEN_BIT)
 `define UOP_BEL                 `UOP_BEL_PTR +: `UOP_BEL_BIT
-
-// Denetim Durum Birimi
-`define UOP_CSR_NOP             0
-`define UOP_CSR_RD              1
-`define UOP_CSR_WR              2
-
-`define UOP_CSR_BIT             2
-`define UOP_CSR_PTR             (`UOP_BEL_PTR + `UOP_BEL_BIT)
-`define UOP_CSR                 `UOP_CSR_PTR +: `UOP_CSR_BIT
 
 `define EXC_CODE_IAM            0   // Instruction Address Misaligned
 `define EXC_CODE_IS             1   // Illegal Instruction

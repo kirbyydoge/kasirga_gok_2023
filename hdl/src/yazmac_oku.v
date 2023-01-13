@@ -12,6 +12,13 @@ module yazmac_oku(
     input   [`UOP_TAG_BIT-1:0]      geriyaz_etiket_i,
     input                           geriyaz_gecerli_i,
 
+    output  [`VERI_BIT-1:0]         csr_adres_o,
+    output  [`UOP_TAG_BIT-1:0]      csr_etiket_o,
+    output                          csr_etiket_gecerli_o,
+
+    input   [`VERI_BIT-1:0]         csr_veri_i,
+    input                           csr_veri_gecerli_i,
+
     input                           cek_bosalt_i,
     input                           cek_duraklat_i,
     output                          duraklat_o,
@@ -30,6 +37,9 @@ wire    [`YAZMAC_BIT-1:0]       oku_adres1_w;
 wire                            oku_adres1_gecerli_w;
 wire    [`YAZMAC_BIT-1:0]       oku_adres2_w;
 wire                            oku_adres2_gecerli_w;
+
+wire    [`CSR_ADRES_BIT-1:0]    csr_oku_adres_w;
+wire    [`CSR_ADRES_BIT-1:0]    csr_oku_gecerli_w;
 
 wire                            okuma_hatasi_w;
 
@@ -52,6 +62,7 @@ always @* begin
     uop_ns[`UOP_VALID] = uop_gecerli_w && !okuma_hatasi_w;
     uop_ns[`UOP_RS1] = oku_veri1_w;
     uop_ns[`UOP_RS2] = oku_veri2_w;
+    uop_ns[`UOP_CSR] = csr_veri_i;
 
     if (cek_duraklat_i) begin
         uop_ns = uop_r;
@@ -93,11 +104,19 @@ assign oku_adres1_gecerli_w = yo_uop_i[`UOP_RS1_EN];
 assign oku_adres2_w = yo_uop_i[`UOP_RS2];
 assign oku_adres2_gecerli_w = yo_uop_i[`UOP_RS2_EN];
 
-assign okuma_hatasi_w = (oku_adres1_gecerli_w && !oku_veri1_gecerli_w) || (oku_adres2_gecerli_w && !oku_veri2_gecerli_w);
+assign okuma_hatasi_w = (oku_adres1_gecerli_w && !oku_veri1_gecerli_w)
+                    ||  (oku_adres2_gecerli_w && !oku_veri2_gecerli_w)
+                    ||  (csr_oku_gecerli_w    && !csr_veri_gecerli_i);
 
 assign etiket_w = yo_uop_i[`UOP_TAG];
 assign etiket_adres_w = yo_uop_i[`UOP_RD_ADDR];
 assign etiket_gecerli_w = yo_uop_i[`UOP_RD_ALLOC] && !okuma_hatasi_w;
+
+assign csr_oku_adres_w = yo_uop_i[`UOP_CSR_ADDR];
+assign csr_etiket_o = etiket_w;
+assign csr_etiket_gecerli_o = yo_uop_i[`UOP_CSR_ALLOC] && !okuma_hatasi_w;
+
+assign csr_oku_gecerli_w = yo_uop_i[`UOP_CSR_EN];
 
 assign yaz_veri_w = geriyaz_veri_i; 
 assign yaz_adres_w = geriyaz_adres_i; 

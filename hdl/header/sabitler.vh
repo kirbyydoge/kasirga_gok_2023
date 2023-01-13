@@ -14,6 +14,7 @@
 `define YAZMAC_BIT      5
 `define CSR_ADRES_BIT   12
 
+// !!! DDB <> Yazmac Oku ve DDB <> Geri Yaz icin assert(VERI_BIT == MXLEN) !!!
 `define XLEN            32
 `define MXLEN           32
 

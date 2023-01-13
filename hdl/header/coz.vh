@@ -19,6 +19,10 @@
 `define U_RD            11:7
 `define U_IMM           31:12
 
+`define CSR_RD          11:7
+`define CSR_RS1         19:15
+`define CSR_ADDR        31:20
+
 // Buyruk Numaralandirmasi
 `define LUI         'd0   // TODO: Bit genislikleri eksik          
 `define AUIPC       'd1   // TODO: Bit genislikleri eksik  
@@ -35,3 +39,6 @@
 `define OR          'd12  // TODO: Bit genislikleri eksik      
 `define AND         'd13  // TODO: Bit genislikleri eksik      
 `define XOR         'd14  // TODO: Bit genislikleri eksik 
+`define CSRRW       'd15  // TODO: Bit genislikleri eksik 
+
+`define N_BUYRUK    16    // Kac buyruk var?

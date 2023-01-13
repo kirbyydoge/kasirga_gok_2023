@@ -137,6 +137,11 @@ wire    [`VERI_BIT-1:0]         io_yo_geriyaz_veri_w;
 wire    [`YAZMAC_BIT-1:0]       io_yo_geriyaz_adres_w;
 wire    [`UOP_TAG_BIT-1:0]      io_yo_geriyaz_etiket_w;
 wire                            io_yo_geriyaz_gecerli_w;
+wire    [`VERI_BIT-1:0]         io_yo_csr_adres_w;
+wire    [`UOP_TAG_BIT-1:0]      io_yo_csr_etiket_w;
+wire                            io_yo_csr_etiket_gecerli_w;
+wire    [`VERI_BIT-1:0]         io_yo_csr_veri_w;
+wire                            io_yo_csr_veri_gecerli_w;
 wire                            io_yo_cek_bosalt_w;
 wire                            io_yo_cek_duraklat_w;
 wire                            io_yo_duraklat_w;
@@ -150,6 +155,11 @@ yazmac_oku yo (
     .geriyaz_adres_i            ( io_yo_geriyaz_adres_w ),
     .geriyaz_etiket_i           ( io_yo_geriyaz_etiket_w ),
     .geriyaz_gecerli_i          ( io_yo_geriyaz_gecerli_w ),
+    .csr_adres_o                ( io_yo_csr_adres_w ),
+    .csr_etiket_o               ( io_yo_csr_etiket_w ),
+    .csr_etiket_gecerli_o       ( io_yo_csr_etiket_gecerli_w ),
+    .csr_veri_i                 ( io_yo_csr_veri_w ),
+    .csr_veri_gecerli_i         ( io_yo_csr_veri_gecerli_w ),
     .cek_bosalt_i               ( io_yo_cek_bosalt_w ),
     .cek_duraklat_i             ( io_yo_cek_duraklat_w ),
     .duraklat_o                 ( io_yo_duraklat_w ),
@@ -225,6 +235,10 @@ wire    [`VERI_BIT-1:0]         io_gy_yo_veri_w;
 wire    [`YAZMAC_BIT-1:0]       io_gy_yo_adres_w;
 wire    [`UOP_TAG_BIT-1:0]      io_gy_yo_etiket_w;
 wire                            io_gy_yo_gecerli_w;
+wire    [`VERI_BIT-1:0]         io_gy_csr_veri_w;
+wire    [`CSR_ADRES_BIT-1:0]    io_gy_csr_adres_w;
+wire    [`UOP_TAG_BIT-1:0]      io_gy_csr_etiket_w;
+wire                            io_gy_csr_gecerli_w;       
 
 geri_yaz gy (
     .clk_i                      ( io_gy_clk_w ),
@@ -233,7 +247,11 @@ geri_yaz gy (
     .yo_veri_o                  ( io_gy_yo_veri_w ),
     .yo_adres_o                 ( io_gy_yo_adres_w ),
     .yo_etiket_o                ( io_gy_yo_etiket_w ),
-    .yo_gecerli_o               ( io_gy_yo_gecerli_w )
+    .yo_gecerli_o               ( io_gy_yo_gecerli_w ),
+    .csr_veri_o                 ( io_gy_csr_veri_w ),
+    .csr_adres_o                ( io_gy_csr_adres_w ),
+    .csr_etiket_o               ( io_gy_csr_etiket_w ),
+    .csr_gecerli_o              ( io_gy_csr_gecerli_w )
 );
 
 // ---- DENETIM DURUM BIRIMI ----
@@ -250,9 +268,11 @@ wire    [`PS_BIT-1:0]           io_ddb_bellek_odd_ps_w;
 wire    [`EXC_CODE_BIT-1:0]     io_ddb_bellek_odd_kod_w;
 wire                            io_ddb_bellek_odd_gecerli_w;
 wire    [`CSR_ADRES_BIT-1:0]    io_ddb_oku_istek_adres_w;
-wire                            io_ddb_oku_istek_gecerli_w;
+wire    [`UOP_TAG_BIT-1:0]      io_ddb_oku_istek_etiket_w;
+wire                            io_ddb_oku_istek_etiket_gecerli_w;
 wire    [`MXLEN-1:0]            io_ddb_yaz_istek_veri_w;
 wire    [`CSR_ADRES_BIT-1:0]    io_ddb_yaz_istek_adres_w;
+wire    [`UOP_TAG_BIT-1:0]      io_ddb_yaz_istek_etiket_w;
 wire                            io_ddb_yaz_istek_gecerli_w;
 wire    [`MXLEN-1:0]            io_ddb_csr_veri_w;
 wire                            io_ddb_csr_gecerli_w;
@@ -274,9 +294,11 @@ denetim_durum_birimi ddb (
     .bellek_odd_kod_i           ( io_ddb_bellek_odd_kod_w ),
     .bellek_odd_gecerli_i       ( io_ddb_bellek_odd_gecerli_w ),
     .oku_istek_adres_i          ( io_ddb_oku_istek_adres_w ),
-    .oku_istek_gecerli_i        ( io_ddb_oku_istek_gecerli_w ),
+    .oku_istek_etiket_i         ( io_ddb_oku_istek_etiket_w ),
+    .oku_istek_etiket_gecerli_i ( io_ddb_oku_istek_etiket_gecerli_w ),
     .yaz_istek_veri_i           ( io_ddb_yaz_istek_veri_w ),
     .yaz_istek_adres_i          ( io_ddb_yaz_istek_adres_w ),
+    .yaz_istek_etiket_i         ( io_ddb_yaz_istek_etiket_w ),
     .yaz_istek_gecerli_i        ( io_ddb_yaz_istek_gecerli_w ),
     .csr_veri_o                 ( io_ddb_csr_veri_w ),
     .csr_gecerli_o              ( io_ddb_csr_gecerli_w ),
@@ -408,6 +430,10 @@ assign io_yo_geriyaz_adres_w = io_gy_yo_adres_w;
 assign io_yo_geriyaz_etiket_w = io_gy_yo_etiket_w;
 assign io_yo_geriyaz_gecerli_w = io_gy_yo_gecerli_w;
 
+// Yazmac Oku < Denetim Durum Birimi
+assign io_yo_csr_veri_w = io_ddb_csr_veri_w;
+assign io_yo_csr_veri_gecerli_w = io_ddb_csr_gecerli_w;
+
 // Yurut < Yazmac Oku
 assign io_yurut_yurut_uop_w = io_yo_yurut_uop_w;
 
@@ -428,5 +454,17 @@ assign vy_istek_gecerli_o = io_bellek_l1v_istek_gecerli_w;
 
 // Geri Yaz < Bellek
 assign io_gy_gy_uop_w = io_bellek_gy_uop_w;
+
+// Denetim Durum Birimi < Yazmac Oku
+assign io_ddb_oku_istek_adres_w = io_yo_csr_adres_w;
+assign io_ddb_oku_istek_etiket_w = io_yo_csr_etiket_w;
+assign io_ddb_oku_istek_etiket_gecerli_w = io_yo_csr_etiket_gecerli_w;
+
+// Denetim Durum Birimi < Geri Yaz
+assign io_ddb_yaz_istek_veri_w = io_gy_csr_veri_w;
+assign io_ddb_yaz_istek_adres_w = io_gy_csr_adres_w;
+assign io_ddb_yaz_istek_etiket_w = io_gy_csr_etiket_w;
+assign io_ddb_yaz_istek_gecerli_w = io_gy_csr_gecerli_w;
+
 
 endmodule
