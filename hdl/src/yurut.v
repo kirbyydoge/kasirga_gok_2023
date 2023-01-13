@@ -89,6 +89,7 @@ begin
     `UOP_AMB_OP_RS2: islec_sec = uop_rs2_w;
     `UOP_AMB_OP_IMM: islec_sec = uop_imm_w;
     `UOP_AMB_OP_CSR: islec_sec = uop_csr_w;
+    `UOP_AMB_OP_PC : islec_sec = uop_ps_w;
     endcase
 end
 endfunction
@@ -115,7 +116,10 @@ always @* begin
     `UOP_CSR_NOP: uop_ns[`UOP_CSR] = {`VERI_BIT{1'b0}};
     `UOP_CSR_RW: uop_ns[`UOP_CSR] = uop_rs1_w;
     `UOP_CSR_RS: uop_ns[`UOP_CSR] = amb_sonuc_w;
-    `UOP_CSR_MRET: ddb_odd_gecerli_cmb = `HIGH; 
+    `UOP_CSR_MRET: begin
+        ddb_odd_gecerli_cmb = `HIGH; 
+        ddb_odd_kod_cmb = `EXC_CODE_MRET;
+    end
     endcase
 
     case(uop_dal_islem_sec_w)

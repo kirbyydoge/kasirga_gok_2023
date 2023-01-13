@@ -53,11 +53,12 @@ localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32ui-p-add.hex
 localparam BUYRUK_BELLEK_LEN = 1024;
 reg [31:0] buyruklar [0:BUYRUK_BELLEK_LEN-1];
 
-reg [5:0] istek_counter;
-reg [5:0] buyruk_counter;
+localparam BELLEK_GECIKMESI = 5;
+reg [BELLEK_GECIKMESI:0] istek_counter;
+reg [BELLEK_GECIKMESI:0] buyruk_counter;
 
 always @* begin
-    buyruk_yanit_gecerli_i = buyruk_counter[5];
+    buyruk_yanit_gecerli_i = buyruk_counter[BELLEK_GECIKMESI];
     buyruk_istek_hazir_i = !(|istek_counter);
 end
 

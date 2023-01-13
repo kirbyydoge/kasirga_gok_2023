@@ -470,7 +470,7 @@ assign io_gy_gy_uop_w = io_bellek_gy_uop_w;
 // Denetim Durum Birimi < Coz
 assign io_ddb_coz_odd_ps_w = 0;
 assign io_ddb_coz_odd_kod_w = 0;
-assign io_ddb_coz_odd_gecerli_w_w = 0;
+assign io_ddb_coz_odd_gecerli_w = 0;
 
 // Denetim Durum Birimi < Yazmac Oku
 assign io_ddb_oku_istek_adres_w = io_yo_csr_adres_w;

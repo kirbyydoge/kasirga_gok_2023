@@ -117,6 +117,8 @@ begin
     uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_PC;
     uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
     uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
 end
 endtask

@@ -20,6 +20,11 @@ module geri_yaz (
     output                          csr_gecerli_o
 );
 
+// DEBUG
+wire    [`PS_BIT-1:0]           uop_ps_w;
+wire                            uop_gecerli_w;
+// DEBUG
+
 wire                            uop_gy_gecerli_w;
 wire    [`VERI_BIT-1:0]         uop_gy_veri_w;
 wire                            uop_gy_veri_gecerli_w;
@@ -29,6 +34,9 @@ wire    [`UOP_TAG_BIT-1:0]      uop_gy_etiket_w;
 wire    [`VERI_BIT-1:0]         uop_gy_csr_veri_w;
 wire                            uop_gy_csr_veri_gecerli_w;
 wire    [`CSR_ADRES_BIT-1:0]    uop_gy_csr_adres_w;
+
+assign uop_gecerli_w = gy_uop_i[`UOP_VALID];
+assign uop_ps_w = gy_uop_i[`UOP_PC];
 
 assign uop_gy_gecerli_w = gy_uop_i[`UOP_VALID];
 assign uop_gy_veri_w = gy_uop_i[`UOP_RD];
