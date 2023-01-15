@@ -40,8 +40,8 @@ wire [`UOP_TAG_BIT-1:0]         uop_tag_w;
 wire                            uop_taken_w;
 wire [`UOP_AMB_OP1_BIT-1:0]     uop_amb_islec1_sec_w;
 wire [`UOP_AMB_OP2_BIT-1:0]     uop_amb_islec2_sec_w;
-wire [`UOP_RS2_BIT-1:0]         uop_rs1_w;
-wire [`UOP_RS1_BIT-1:0]         uop_rs2_w;
+wire [`UOP_RS1_BIT-1:0]         uop_rs1_w;
+wire [`UOP_RS2_BIT-1:0]         uop_rs2_w;
 wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
 wire [`UOP_CSR_BIT-1:0]         uop_csr_w;
 

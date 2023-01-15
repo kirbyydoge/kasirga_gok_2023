@@ -52,3 +52,9 @@
 `define ALL_ONES_128        128'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF
 `define ALL_ONES_64          64'hFFFF_FFFF_FFFF_FFFF
 `define ALL_ONES_32          32'hFFFF_FFFF
+
+// ----Maskeleme İçin Yardımcı Tanımlar
+`define NOP_MASKE                   32'h0000_0000;
+`define EN_ANLAMLI_BYTE_MASKE       32'hFF00_0000; 
+`define EN_ANLAMLI_HALF_WORD_MASKE  32'hFFFF_0000;
+`define WORD_MASKE                  `ALL_ONES_32;

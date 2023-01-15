@@ -136,7 +136,7 @@
 `define UOP_BEL_SH              7
 `define UOP_BEL_SB              8
 
-`define UOP_BEL_BIT             4 //seçim için kullanılacak
+`define UOP_BEL_BIT             4   //seçim için kullanılacak
 `define UOP_BEL_PTR             (`UOP_TAKEN_PTR + `UOP_TAKEN_BIT)
 `define UOP_BEL                 `UOP_BEL_PTR +: `UOP_BEL_BIT
 

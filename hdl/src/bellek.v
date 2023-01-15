@@ -28,12 +28,22 @@ module bellek (
 
 reg [`UOP_BIT-1:0]              uop_r;
 reg [`UOP_BIT-1:0]              uop_ns;
+wire [`UOP_TAG_BIT-1:0]         uop_tag_w;
+wire                            uop_taken_w;
 
 wire                            uop_gecerli_w;
-wire [`UOP_BEL_BIT-1:0]         uop_buyruk_secim_r;
-wire [`UOP_RS2_BIT-1:0]         uop_rs1_w;
-wire [`UOP_RS1_BIT-1:0]         uop_rs2_w;
+wire [`UOP_BEL_BIT-1:0]         uop_buyruk_secim_w;
+wire [`UOP_RS1_BIT-1:0]         uop_rs1_w;
+wire [`UOP_RS2_BIT-1:0]         uop_rs2_w;
+wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
 
+
+
+always @* begin
+    uop_ns = bellek_uop_i;
+    uop_ns[`UOP_VALID] = uop_gecerli_w; 
+    //Doldurulacak (Şevval)
+end
 
 always @(posedge clk_i) begin
     if (!rstn_i) begin
@@ -44,7 +54,23 @@ always @(posedge clk_i) begin
     end
 end
 
+// bellek_islem_birimi bib(
+
+// );
+
 assign duraklat_o = `LOW;
 assign geri_yaz_uop_o = uop_r;
 
+assign uop_gecerli_w = bellek_uop_i[`UOP_VALID];
+assign uop_tag_w = bellek_uop_i[`UOP_TAG];
+
+assign uop_rs1_w = bellek_uop_i[`UOP_RS1];
+assign uop_rs2_w = bellek_uop_i[`UOP_RS2];
+assign uop_imm_w = bellek_uop_i[`UOP_IMM];
+assign uop_taken_w = bellek_uop_i[`UOP_TAKEN];
+assign uop_buyruk_secim_w = bellek_uop_i[`UOP_BEL];
+
+
 endmodule
+
+
