@@ -74,6 +74,8 @@
 `define UOP_AMB_OR          6
 `define UOP_AMB_XOR         7
 `define UOP_AMB_SLL         8
+`define UOP_AMB_SRL         9
+`define UOP_AMB_SRA         10
 
 `define UOP_AMB_OP_NOP      0
 `define UOP_AMB_OP_RS1      1
@@ -93,7 +95,7 @@
 `define UOP_AMB_OP1_PTR     (`UOP_AMB_OP2_PTR + `UOP_AMB_OP2_BIT)
 `define UOP_AMB_OP1         `UOP_AMB_OP1_PTR +: `UOP_AMB_OP1_BIT
 
-`define UOP_AMB_BIT         3
+`define UOP_AMB_BIT         4
 `define UOP_AMB_PTR         (`UOP_AMB_OP1_PTR + `UOP_AMB_OP1_BIT)
 `define UOP_AMB             `UOP_AMB_PTR +: `UOP_AMB_BIT
 
@@ -103,6 +105,7 @@
 `define UOP_YAZ_IS1         2
 `define UOP_YAZ_DAL         3
 `define UOP_YAZ_CSR         4
+`define UOP_YAZ_BEL         5
 
 `define UOP_YAZ_BIT         3
 `define UOP_YAZ_PTR         (`UOP_AMB_PTR + `UOP_AMB_BIT)
@@ -116,8 +119,10 @@
 `define UOP_DAL_JAL             4
 `define UOP_DAL_JALR            5
 `define UOP_DAL_BGE             6
+`define UOP_DAL_BLTU            7
+`define UOP_DAL_BGEU            8
 
-`define UOP_DAL_BIT             3
+`define UOP_DAL_BIT             4
 `define UOP_DAL_PTR             (`UOP_YAZ_PTR + `UOP_YAZ_BIT)
 `define UOP_DAL                 `UOP_DAL_PTR +: `UOP_DAL_BIT
 
@@ -152,9 +157,10 @@
 `define UOP_CSR_NOP             0
 `define UOP_CSR_RW              1
 `define UOP_CSR_RS              2
-`define UOP_CSR_MRET            3
+`define UOP_CSR_RC              3
+`define UOP_CSR_MRET            4
 
-`define UOP_CSR_OP_BIT          2 // CSR_OP berbat bir isim, AMB_OP1'deki OPerand ile buradaki CSR_OPeration kisaltmasi ayristirilmali
+`define UOP_CSR_OP_BIT          4 // CSR_OP berbat bir isim, AMB_OP1'deki OPerand ile buradaki CSR_OPeration kisaltmasi ayristirilmali
 `define UOP_CSR_OP_PTR          (`UOP_BEL_PTR + `UOP_BEL_BIT)
 `define UOP_CSR_OP              `UOP_CSR_OP_PTR +: `UOP_CSR_OP_BIT
 

@@ -35,6 +35,7 @@ localparam CASE_BLT    = 1 << `BLT;
 localparam CASE_LW     = 1 << `LW;
 localparam CASE_SW     = 1 << `SW;
 localparam CASE_ADDI   = 1 << `ADDI;
+localparam CASE_SLLI   = 1 << `SLLI;
 localparam CASE_ADD    = 1 << `ADD;
 localparam CASE_SUB    = 1 << `SUB;
 localparam CASE_OR     = 1 << `OR;
@@ -47,9 +48,33 @@ localparam CASE_CSRRSI = 1 << `CSRRSI;
 localparam CASE_FENCE  = 1 << `FENCE;
 localparam CASE_ECALL  = 1 << `ECALL;
 localparam CASE_MRET   = 1 << `MRET;
-localparam CASE_SLLI   = 1 << `SLLI;
 localparam CASE_ORI    = 1 << `ORI;
 localparam CASE_BGE    = 1 << `BGE;
+localparam CASE_SLTI   = 1 << `SLTI;
+localparam CASE_SLTU   = 1 << `SLTU;
+localparam CASE_XORI   = 1 << `XORI;
+localparam CASE_ANDI   = 1 << `ANDI;
+localparam CASE_SRLI   = 1 << `SRLI;
+localparam CASE_SRAI   = 1 << `SRAI;
+localparam CASE_FENCE  = 1 << `FENCE;
+localparam CASE_FENCE_I= 1 << `FENCE_I;
+localparam CASE_CSRRC  = 1 << `CSRRC;
+localparam CASE_CSRRCI = 1 << `CSRRCI;
+localparam CASE_EBREAK = 1 << `EBREAK;
+localparam CASE_LB     = 1 << `LB;
+localparam CASE_LH     = 1 << `LH;
+localparam CASE_LBU    = 1 << `LBU;
+localparam CASE_LHU    = 1 << `LHU;
+localparam CASE_SB     = 1 << `SB;
+localparam CASE_SH     = 1 << `SH;
+localparam CASE_BLTU   = 1 << `BLTU;
+localparam CASE_BGEU   = 1 << `BGEU;
+localparam CASE_MUL    = 1 << `MUL;
+localparam CASE_MULH   = 1 << `MULH;
+localparam CASE_MULHSU = 1 << `MULHSU;
+localparam CASE_MULHU  = 1 << `MULHU;
+
+
 
 wire coz_aktif_w;
 
@@ -101,7 +126,26 @@ generate
     assign buyruk[`MRET]    = match(getir_buyruk_i, `MASK_MRET, `MATCH_MRET) && coz_aktif_w;        
     assign buyruk[`SLLI]    = match(getir_buyruk_i, `MASK_SLLI, `MATCH_SLLI) && coz_aktif_w;        
     assign buyruk[`ORI]     = match(getir_buyruk_i, `MASK_ORI, `MATCH_ORI) && coz_aktif_w;         
-    assign buyruk[`BGE]     = match(getir_buyruk_i, `MASK_BGE, `MATCH_BGE) && coz_aktif_w;         
+    assign buyruk[`BGE]     = match(getir_buyruk_i, `MASK_BGE, `MATCH_BGE) && coz_aktif_w;       
+    assign buyruk[`SLTI]    = match(getir_buyruk_i, `MASK_SLTI, `MATCH_SLTI) && coz_aktif_w;  
+    assign buyruk[`SLTU]    = match(getir_buyruk_i, `MASK_SLTU, `MATCH_SLTU) && coz_aktif_w;   
+    assign buyruk[`XORI]    = match(getir_buyruk_i, `MASK_XORI, `MATCH_XORI) && coz_aktif_w;   
+    assign buyruk[`ANDI]    = match(getir_buyruk_i, `MASK_ANDI, `MATCH_ANDI) && coz_aktif_w;
+    assign buyruk[`SRLI]    = match(getir_buyruk_i, `MASK_SRLI, `MATCH_SRLI) && coz_aktif_w;    
+    assign buyruk[`SRAI]    = match(getir_buyruk_i, `MASK_SRAI, `MATCH_SRAI) && coz_aktif_w;   
+    assign buyruk[`FENCE_I] = match(getir_buyruk_i, `MASK_FENCE_I, `MATCH_FENCE_I) && coz_aktif_w;
+    assign buyruk[`CSRRC]   = match(getir_buyruk_i, `MASK_CSRRC, `MATCH_CSRRC) && coz_aktif_w;
+    assign buyruk[`CSRRCI]  = match(getir_buyruk_i, `MASK_CSRRCI, `MATCH_CSRRCI) && coz_aktif_w;    
+    assign buyruk[`EBREAK]  = match(getir_buyruk_i, `MASK_EBREAK, `MATCH_EBREAK) && coz_aktif_w;
+    assign buyruk[`LB]      = match(getir_buyruk_i, `MASK_LB, `MATCH_LB) && coz_aktif_w;
+    assign buyruk[`LH]      = match(getir_buyruk_i, `MASK_LH, `MATCH_LH) && coz_aktif_w; 
+    assign buyruk[`LBU]     = match(getir_buyruk_i, `MASK_LBU, `MATCH_LBU) && coz_aktif_w; 
+    assign buyruk[`LHU]     = match(getir_buyruk_i, `MASK_LHU, `MATCH_LHU) && coz_aktif_w;
+    assign buyruk[`SH]      = match(getir_buyruk_i, `MASK_SH, `MATCH_SH) && coz_aktif_w;
+    assign buyruk[`SB]      = match(getir_buyruk_i, `MASK_SB, `MATCH_SB) && coz_aktif_w;
+    assign buyruk[`BLTU]    = match(getir_buyruk_i, `MASK_BLTU, `MATCH_BLTU) && coz_aktif_w;
+    assign buyruk[`BGEU]    = match(getir_buyruk_i, `MASK_BGEU, `MATCH_BGEU) && coz_aktif_w;   
+
 
     assign gecersiz_buyruk_o = !(|buyruk) && coz_aktif_w;
 endgenerate
@@ -421,6 +465,447 @@ begin
 end
 endtask
 
+task uop_rv32slti(); // compre islemi sign veya unsign olarak yapılacağını gösteren bit eklenebilir
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32sltiu();  // compre islemi sign veya unsign olarak yapılacağını gösteren bit eklenebilir
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`LOW]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32xori();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_XOR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32andi();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_AND;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32srli();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{27{1'b0}}, getir_buyruk_i[24:20]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SRL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32srai();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{27{1'b0}}, getir_buyruk_i[24:20]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SRA;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32sub();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SUB;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32and();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_AND;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32xor();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_XOR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32csrrc();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`CSR_RS1]};
+    buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[`CSR_RD]};
+    buyruk_csr_cmb = getir_buyruk_i[`CSR_ADDR];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_CSR_ADDR] = buyruk_csr_cmb;
+    uop_ns[`UOP_CSR_EN] = `HIGH;
+    uop_ns[`UOP_CSR_ALLOC] = `HIGH;
+    uop_ns[`UOP_CSR_OP] = `UOP_CSR_RC;
+    uop_ns[`UOP_AMB] = `UOP_AMB_OR;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_CSR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_CSR;
+end
+endtask
+
+task uop_rv32csrrci();
+begin
+    buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[`CSR_RD]};
+    buyruk_csr_cmb = getir_buyruk_i[`CSR_ADDR];
+    buyruk_imm_cmb = {{27{`LOW}}, getir_buyruk_i[19:15]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_imm_cmb;
+    uop_ns[`UOP_CSR_ADDR] = buyruk_csr_cmb;
+    uop_ns[`UOP_CSR_EN] = `HIGH;
+    uop_ns[`UOP_CSR_ALLOC] = `HIGH;
+    uop_ns[`UOP_CSR_OP] = `UOP_CSR_RC;
+    uop_ns[`UOP_AMB] = `UOP_AMB_OR;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_CSR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_CSR;
+end
+endtask
+
+task uop_rv32lb();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_LB; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32lh();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_LH; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32lw();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;    
+    uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32lbu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_LBU; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32lhu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`I_RD];
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_LHU; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32sb();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS2]};
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SB; 
+end
+endtask;
+
+task uop_rv32sw();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS2]};
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW; 
+end
+endtask;
+
+task uop_rv32sh();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS2]};
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_; 
+end
+endtask;
+
+task uop_rv32blt();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_DAL] = `UOP_DAL_BLT;
+end
+endtask
+
+task uop_rv32bltu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_DAL] = `UOP_DAL_BLTU;
+end
+endtask
+
+task uop_rv32bltu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_DAL] = `UOP_DAL_BGEU;
+end
+endtask
+
 task uop_nop();
 begin
     uop_ns = {`UOP_BIT{1'b0}};
@@ -457,16 +942,16 @@ always @* begin
     CASE_BEQ   : uop_rv32beq();
     CASE_BNE   : uop_rv32bne();
     CASE_BGE   : uop_rv32bge();
-    CASE_BLT   : uop_nop();
-    CASE_LW    : uop_nop();
-    CASE_SW    : uop_nop();
+    CASE_BLT   : uop_rv32blt();
+    CASE_LW    : uop_rv32lw();
+    CASE_SW    : uop_rv32sw();
     CASE_ADD   : uop_rv32add();
     CASE_ADDI  : uop_rv32addi();
-    CASE_SUB   : uop_nop();
+    CASE_SUB   : uop_rv32sub();
     CASE_OR    : uop_rv32or();
     CASE_ORI   : uop_rv32ori();
-    CASE_AND   : uop_nop();
-    CASE_XOR   : uop_nop();
+    CASE_AND   : uop_rv32and();
+    CASE_XOR   : uop_rv32xor();
     CASE_SLLI  : uop_rv32slli();
     CASE_CSRRW : uop_rv32csrrw();
     CASE_CSRRWI: uop_rv32csrrwi();
@@ -475,6 +960,23 @@ always @* begin
     CASE_FENCE : uop_nop();
     CASE_ECALL : uop_nop();
     CASE_MRET  : uop_rv32mret();
+    CASE_SLTI  : uop_rv32slti();
+    CASE_SLTU  : uop_rv32sltiu();
+    CASE_XORI  : uop_rv32xori();
+    CASE_ANDI  : uop_rv32andi();
+    CASE_SRLI  : uop_rv32srli();
+    CASE_SRAI  : uop_rv32srai();
+    CASE_FENCE_I:uop_nop();
+    CASE_CSRRC : uop_rv32csrrc();
+    CASE_CSRRCI: uop_rv32csrrci();
+    CASE_EBREAK: uop_nop();
+    CASE_LB    : uop_rv32lb();
+    CASE_LH    : uop_rv32lh();
+    CASE_LBU   : uop_rv32lbu();
+    CASE_LHU   : uop_rv32lhu();
+    CASE_SB    : uop_rv32sb();
+    CASE_SH    : uop_rv32sh();   
+    CASE_BLT   : uop_rv32blt(); 
     endcase
 
     if (buyruk_etiket_gecerli_cmb && !cek_duraklat_i) begin

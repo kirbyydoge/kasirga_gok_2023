@@ -53,5 +53,32 @@
 `define SLLI        'd22
 `define ORI         'd23
 `define BGE         'd24
+`define SLTI        'd25
+`define SLTU        'd26
+`define XORI        'd27
+`define ANDI        'd28
+`define SRLI        'd29
+`define SRAI        'd30
+`define FENCE_I     'd31
+`define CSRRC       'd32
+`define CSRRCI      'd33
+`define EBREAK      'd34
+`define LB          'd35
+`define LH          'd36
+`define LBU         'd37
+`define LHU         'd38
+`define SB          'd39
+`define SH          'd40
+`define BLTU        'd41
+`define BGEU        'd42
+`define BGEU        'd42
+`define MUL         'd43
+`define MULH        'd44
+`define MULHSU      'd45
+`define MULHU       'd46
+`define DIV         'd47
+`define DIVU        'd48
+`define REM         'd49
+`define REMU        'd49
 
-`define N_BUYRUK    'd25    // Kac buyruk var?
+`define N_BUYRUK    'd26    // Kac buyruk var?
