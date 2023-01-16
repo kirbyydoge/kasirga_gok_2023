@@ -37,6 +37,7 @@
 `define L1_SATIR    128
 `define L1_YOL      4
 `define L1_BOYUT    (`L1_BLOK_BIT * `L1_SATIR * `L1_YOL) // Teknofest 2022-2023 icin 4KB olmali
+`define L1_ONBELLEK_GECIKME 1 // Denetleyici gecikmesi degil, SRAM/BRAM gecikmesi
 
 `define ADRES_BYTE_BIT      3 // Veriyi byte adreslemek icin gereken bit
 `define ADRES_BYTE_OFFSET   0 // ADRES_BYTE ilk bitine erismek icin gereken kaydirma

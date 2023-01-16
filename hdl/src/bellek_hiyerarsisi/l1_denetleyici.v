@@ -415,6 +415,7 @@ always @* begin
         if (vy_veri_hazir_o && vy_veri_gecerli_i) begin
             l1_buffer_etiketler_ns[vy_hedef_yol_r] = get_etiket(son_adres_r);
             l1_buffer_bloklar_ns[vy_hedef_yol_r] = vy_veri_i;
+            l1_yol_guncellendi_ns[vy_hedef_yol_r] = `HIGH;
             satir_gecerli_ns[get_satir(son_adres_r)][vy_hedef_yol_r] = `HIGH;
             satir_kirli_ns[get_satir(son_adres_r)][vy_hedef_yol_r] = `LOW;
             

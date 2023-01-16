@@ -6,26 +6,26 @@ module veri_yolu_denetleyici (
     input                           clk_i,
     input                           rstn_i,
 
-    // ab denetleyici istek <-> bellek
+    // vy denetleyici istek <-> bellek
     output  [`ADRES_BIT-1:0]        mem_istek_adres_o,
     output  [`VERI_BIT-1:0]         mem_istek_veri_o,
     output                          mem_istek_yaz_o,
     output                          mem_istek_gecerli_o,
     input                           mem_istek_hazir_i,
 
-    // bellek yanit <-> ab denetleyici
+    // bellek yanit <-> vy denetleyici
     input   [`VERI_BIT-1:0]         mem_veri_i,
     input                           mem_veri_gecerli_i,
     output                          mem_veri_hazir_o,
 
-    // l1 denetleyici istek <-> ab denetleyici 
+    // l1 denetleyici istek <-> vy denetleyici 
     input   [`ADRES_BIT-1:0]        l1_istek_adres_i,
     input                           l1_istek_gecerli_i,
     input   [`L1_BLOK_BIT-1:0]      l1_istek_veri_i,
     input                           l1_istek_yaz_i,
     output                          l1_istek_hazir_o,
 
-    // ab denetleyici yanit <-> l1 denetleyici
+    // vy denetleyici yanit <-> l1 denetleyici
     output  [`L1_BLOK_BIT-1:0]      l1_veri_o,
     output                          l1_veri_gecerli_o,
     input                           l1_veri_hazir_i
@@ -136,8 +136,12 @@ always @* begin
         if (mem_veri_hazir_o && mem_veri_gecerli_i) begin
             vy_buffer_blok_ns[vy_buffer_indis_r * `VERI_BIT +: `VERI_BIT] = mem_veri_i;
             vy_buffer_indis_ns = vy_buffer_indis_r  + 1;
-            // vy_buffer_indis_r == BLOK_VERI_SAYISI - 1 kontrolune gerek 
-            // yok bu istegi en hizli durumda bu cevrim yapabiliriz
+            if (vy_buffer_indis_r == BLOK_VERI_SAYISI - 1) begin
+                mem_veri_hazir_ns = `LOW;
+                l1_veri_ns = vy_buffer_blok_ns;
+                l1_veri_gecerli_ns = `HIGH;
+                vy_durum_ns = VY_BLOK_OKU_YANIT;
+            end
         end
     end
     VY_BLOK_OKU_BEKLE: begin

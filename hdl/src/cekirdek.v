@@ -13,7 +13,7 @@ module cekirdek(
     output                          buyruk_istek_gecerli_o,
     input                           buyruk_istek_hazir_i,
 
-    // Cekirdek <> Veri Yolu Birimi
+    // Cekirdek <> Veri Yolu Denetleyicisi
     input   [`VERI_BIT-1:0]         vy_yanit_veri_i,
     input                           vy_yanit_gecerli_i,
     output                          vy_yanit_hazir_o,
