@@ -71,14 +71,6 @@
 `define SH          'd40
 `define BLTU        'd41
 `define BGEU        'd42
-`define BGEU        'd42
-`define MUL         'd43
-`define MULH        'd44
-`define MULHSU      'd45
-`define MULHU       'd46
-`define DIV         'd47
-`define DIVU        'd48
-`define REM         'd49
-`define REMU        'd49
+`define SLT         'd43
 
-`define N_BUYRUK    'd26    // Kac buyruk var?
+`define N_BUYRUK    'd44    // Kac buyruk var?

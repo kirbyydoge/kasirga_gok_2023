@@ -32,33 +32,33 @@
 
 //--------------------- MIMARI ADRESLER ---------------------
 // Machine Information Registers
-`define CSR_MVENDORID  5'd0
-`define CSR_MARCHID    5'd1
-`define CSR_MIMPID     5'd2
-`define CSR_MHARTID    5'd3
+`define CSR_MVENDORID  5'd1
+`define CSR_MARCHID    5'd2
+`define CSR_MIMPID     5'd3
+`define CSR_MHARTID    5'd4
 
 // Machine Trap Setup
-`define CSR_MSTATUS    5'd4
-`define CSR_MISA       5'd5
-`define CSR_MIE        5'd6
-`define CSR_MTVEC      5'd7
-`define CSR_MSTATUSH   5'd8
+`define CSR_MSTATUS    5'd5
+`define CSR_MISA       5'd6
+`define CSR_MIE        5'd7
+`define CSR_MTVEC      5'd8
+`define CSR_MSTATUSH   5'd9
 
 // Machine Trap Handling
-`define CSR_MEPC       5'd9
-`define CSR_MCAUSE     5'd10
-`define CSR_MTVAL      5'd11
-`define CSR_MTIP       5'd12
-`define CSR_MTINST     5'd13
+`define CSR_MEPC       5'd10
+`define CSR_MCAUSE     5'd11
+`define CSR_MTVAL      5'd12
+`define CSR_MTIP       5'd13
+`define CSR_MTINST     5'd14
 
 // Machine Counter/Timers
-`define CSR_MCYCLE     5'd14
-`define CSR_MINSTRET   5'd15
-`define CSR_MCYCLEH    5'd16
-`define CSR_MINSTRETH  5'd17
+`define CSR_MCYCLE     5'd15
+`define CSR_MINSTRET   5'd16
+`define CSR_MCYCLEH    5'd17
+`define CSR_MINSTRETH  5'd18
 
 //--------------------- MIMARI ADRESLER ---------------------
-`define CSR_UNIMPLEMENTED {`CSR_ARCH_BIT{1'b1}}
+`define CSR_UNIMPLEMENTED {`CSR_ARCH_BIT{1'b0}}
 
 //---- MISA ----
 `define MISA_A          0

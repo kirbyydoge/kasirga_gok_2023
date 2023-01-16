@@ -53,7 +53,7 @@ wire [`UOP_YAZ_BIT-1:0]         uop_yaz_sec_w;
 wire [`VERI_BIT-1:0]            amb_islec1_w;
 wire [`VERI_BIT-1:0]            amb_islec2_w;
 wire                            amb_esittir_w;
-wire                            amb_buyuktur_w;
+wire                            amb_kucuktur_w;
 wire [`VERI_BIT-1:0]            amb_sonuc_w;
 
 
@@ -145,9 +145,9 @@ always @* begin
     `UOP_DAL_BEQ: begin
         g2_ps_cmb = uop_ps_w;
         g2_guncelle_cmb = `HIGH;
-        g2_atladi_cmb = !amb_esittir_w;
-        g2_hatali_tahmin_cmb = (amb_esittir_w ^ uop_taken_w);
-        bosalt_cmb = (amb_esittir_w ^ uop_taken_w);
+        g2_atladi_cmb = amb_esittir_w;
+        g2_hatali_tahmin_cmb = (amb_esittir_w != uop_taken_w);
+        bosalt_cmb = (amb_esittir_w != uop_taken_w);
 
         g1_ps_cmb = g2_atladi_cmb ? uop_ps_w + uop_imm_w : uop_ps_w + 32'd4;
         g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
@@ -155,9 +155,9 @@ always @* begin
     `UOP_DAL_BGE: begin
         g2_ps_cmb = uop_ps_w;
         g2_guncelle_cmb = `HIGH;
-        g2_atladi_cmb = amb_buyuktur_w && amb_esittir_w;
-        g2_hatali_tahmin_cmb = ((amb_buyuktur_w && amb_esittir_w) ^ uop_taken_w);
-        bosalt_cmb = ((amb_buyuktur_w && amb_esittir_w) ^ uop_taken_w);
+        g2_atladi_cmb = amb_kucuktur_w;
+        g2_hatali_tahmin_cmb = (amb_kucuktur_w != uop_taken_w);
+        bosalt_cmb = (amb_kucuktur_w != uop_taken_w);
 
         g1_ps_cmb = g2_atladi_cmb ? uop_ps_w + uop_imm_w : uop_ps_w + 32'd4;
         g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
@@ -214,7 +214,7 @@ amb amb (
     .islem_islec1_i    ( amb_islec1_w        ),
     .islem_islec2_i    ( amb_islec2_w        ),
     .islem_esittir_o   ( amb_esittir_w       ),
-    .islem_buyuktur_o  ( amb_buyuktur_w      ),
+    .islem_kucuktur_o  ( amb_kucuktur_w      ),
     .islem_sonuc_o     ( amb_sonuc_w         )
 );
 

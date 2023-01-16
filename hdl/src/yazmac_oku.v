@@ -38,7 +38,7 @@ wire                            oku_adres1_gecerli_w;
 wire    [`YAZMAC_BIT-1:0]       oku_adres2_w;
 wire                            oku_adres2_gecerli_w;
 
-wire    [`CSR_ADRES_BIT-1:0]    csr_oku_gecerli_w;
+wire                            csr_oku_gecerli_w;
 
 wire                            okuma_hatasi_w;
 
@@ -109,11 +109,11 @@ assign okuma_hatasi_w = (oku_adres1_gecerli_w && !oku_veri1_gecerli_w)
 
 assign etiket_w = yo_uop_i[`UOP_TAG];
 assign etiket_adres_w = yo_uop_i[`UOP_RD_ADDR];
-assign etiket_gecerli_w = yo_uop_i[`UOP_RD_ALLOC] && !okuma_hatasi_w;
+assign etiket_gecerli_w = yo_uop_i[`UOP_RD_ALLOC] && !okuma_hatasi_w && uop_gecerli_w;
 
 assign csr_adres_o = yo_uop_i[`UOP_CSR_ADDR];
 assign csr_etiket_o = etiket_w;
-assign csr_etiket_gecerli_o = yo_uop_i[`UOP_CSR_ALLOC] && !okuma_hatasi_w;
+assign csr_etiket_gecerli_o = yo_uop_i[`UOP_CSR_ALLOC] && !okuma_hatasi_w && uop_gecerli_w;
 
 assign csr_oku_gecerli_w = yo_uop_i[`UOP_CSR_EN];
 
@@ -122,7 +122,7 @@ assign yaz_adres_w = geriyaz_adres_i;
 assign yaz_etiket_w = geriyaz_etiket_i; 
 assign yaz_gecerli_w = geriyaz_gecerli_i; 
 
-assign duraklat_o = okuma_hatasi_w;
+assign duraklat_o = uop_gecerli_w && okuma_hatasi_w;
 
 assign yurut_uop_o = uop_r;
 

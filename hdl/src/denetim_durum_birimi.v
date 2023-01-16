@@ -86,7 +86,7 @@ begin
     `CSR_SPEC_MINSTRET      : csr_adres_donustur = `CSR_MINSTRET ;
     `CSR_SPEC_MCYCLEH       : csr_adres_donustur = `CSR_MCYCLEH  ;
     `CSR_SPEC_MINSTRETH     : csr_adres_donustur = `CSR_MINSTRETH;
-    default                 : csr_adres_donustur = {`CSR_ARCH_BIT{1'b0}};
+    default                 : csr_adres_donustur = `CSR_UNIMPLEMENTED;
     endcase
 end
 endfunction
@@ -137,7 +137,6 @@ endtask
 
 task odd_sec();
 begin
-    odd_gecerli_cmb = bellek_odd_gecerli_i || yurut_odd_gecerli_i || coz_odd_gecerli_i;
     odd_kod_cmb = {`EXC_CODE_BIT{1'b0}};
     odd_ps_cmb = {`PS_BIT{1'b0}};
     odd_bilgi_cmb = {`MXLEN{1'b0}};
@@ -173,6 +172,7 @@ always @* begin
     getir_ps_gecerli_cmb = `LOW;
     bosalt_cmb = `LOW;
 
+    odd_gecerli_cmb = bellek_odd_gecerli_i || yurut_odd_gecerli_i || coz_odd_gecerli_i;
     odd_sec();
 
     if (oku_istek_etiket_gecerli_i) begin
@@ -211,7 +211,10 @@ always @(posedge clk_i) begin
         csr_init();
     end
     else begin
-        for (i = 0; i < `CSR_ARCH_N_REGS; i = i + 1) begin
+        csr_r[0] <= {`MXLEN{1'b0}};
+        csr_etiket_r[i] <= {`UOP_TAG_BIT{1'b0}};
+        csr_gecerli_r[i] <= `HIGH;
+        for (i = 1; i < `CSR_ARCH_N_REGS; i = i + 1) begin
             csr_r[i] <= csr_ns[i];
             csr_etiket_r[i] <= csr_etiket_ns[i];
             csr_gecerli_r[i] <= csr_gecerli_ns[i];

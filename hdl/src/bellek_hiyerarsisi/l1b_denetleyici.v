@@ -124,7 +124,7 @@ reg [$clog2(`L1B_YOL)-1:0] vy_hedef_yol_ns;
 
 reg [`ADRES_BIT-1:0] vy_istek_adres_r;
 reg [`ADRES_BIT-1:0] vy_istek_adres_ns;
-assign vy_istek_adres_o = vy_istek_adres_r;
+assign vy_istek_adres_o = vy_istek_adres_r & ((~{`ADRES_BIT{1'b0}}) << `ADRES_BYTE_BIT);
 
 reg [`L1_BLOK_BIT-1:0] vy_istek_veri_r;
 reg [`L1_BLOK_BIT-1:0] vy_istek_veri_ns;
@@ -439,7 +439,7 @@ always @* begin
         end
     end
     endcase
-    
+
     port_istek_hazir_ns = l1_durum_ns == L1_BOSTA || l1_durum_ns == L1_SATIR_ACIK;
 end
 
