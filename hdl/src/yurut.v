@@ -103,9 +103,9 @@ always @* begin
     ddb_odd_kod_cmb = yurut_uop_i[`UOP_CSR_OP];
     ddb_odd_bilgi_cmb = {`MXLEN{1'b0}}; // mcause
     ddb_odd_gecerli_cmb = `LOW;
+    uop_ns[`UOP_RD] = amb_sonuc_w;
 
-    case(uop_yaz_sec_w)
-    `UOP_YAZ_NOP: uop_ns[`UOP_RD] = {`VERI_BIT{1'b0}};
+    case(uop_yaz_sec_w) 
     `UOP_YAZ_AMB: uop_ns[`UOP_RD] = amb_sonuc_w;
     `UOP_YAZ_IS1: uop_ns[`UOP_RD] = amb_islec1_w;
     `UOP_YAZ_DAL: uop_ns[`UOP_RD] = uop_ps_w + 32'd4;   // dallanma biriminden gelmesi gerekiyor
