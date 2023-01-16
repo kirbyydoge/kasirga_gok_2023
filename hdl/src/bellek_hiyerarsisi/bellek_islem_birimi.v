@@ -9,7 +9,7 @@ module bellek_islem_birimi(
     // Buyruk türüne göre maske oluşturur ve erişilecek adresi hesaplar
     input   [`UOP_BEL_BIT-1:0]   uop_buyruk_secim_i,
     input   [`UOP_RS1_BIT-1:0]   uop_rs1_i,
-    input   [`UOP_RS2_BIT-1:0]   uop_rs2_i,
+    // input   [`UOP_RS2_BIT-1:0]   uop_rs2_i, buna gerek yok, rs1'la adres hesaplanıyor rs2'deki değer veri yolu biriminde gerekli
     input   [`UOP_IMM_BIT-1:0]   uop_imm_i,
 
     output  [`VERI_BIT-1:0]      maske_o,

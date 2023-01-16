@@ -37,6 +37,9 @@ wire [`UOP_RS1_BIT-1:0]         uop_rs1_w;
 wire [`UOP_RS2_BIT-1:0]         uop_rs2_w;
 wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
 
+wire [`VERI_BIT-1:0]            maske_w;
+wire [`ADRES_BIT-1:0]           erisilecek_adres_w;
+
 
 
 always @* begin
@@ -54,9 +57,17 @@ always @(posedge clk_i) begin
     end
 end
 
-// bellek_islem_birimi bib(
+bellek_islem_birimi bib(
+.clk_i                    ( clk_i               ),
+.rstn_i                   ( rstn_i              ),  
+.uop_buyruk_secim_i       ( uop_buyruk_secim_w  ),          
+.uop_rs1_i                ( uop_rs1_w           ),  
+.uop_rs2_i                ( uop_rs2_w           ),  
+.uop_imm_i                ( uop_imm_w           ),  
+.maske_o                  ( maske_w             ),  
+.erisilecek_adres_o       ( erisilecek_adres_w  )          
 
-// );
+);
 
 assign duraklat_o = `LOW;
 assign geri_yaz_uop_o = uop_r;
