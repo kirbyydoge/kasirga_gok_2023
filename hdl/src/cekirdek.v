@@ -13,16 +13,16 @@ module cekirdek(
     output                          buyruk_istek_gecerli_o,
     input                           buyruk_istek_hazir_i,
 
-    // Cekirdek <> Veri Yolu Denetleyicisi
-    input   [`VERI_BIT-1:0]         vy_yanit_veri_i,
-    input                           vy_yanit_gecerli_i,
-    output                          vy_yanit_hazir_o,
+    // Cekirdek <> L1 Veri Onbellek Denetleyicisi
+    input   [`VERI_BIT-1:0]         l1v_yanit_veri_i,
+    input                           l1v_yanit_gecerli_i,
+    output                          l1v_yanit_hazir_o,
 
-    output  [`VERI_BIT-1:0]         vy_istek_veri_o,
-    output  [`ADRES_BIT-1:0]        vy_istek_adres_o,
-    output                          vy_istek_yaz_o,
-    output                          vy_istek_gecerli_o,
-    input                           vy_istek_hazir_i
+    output  [`VERI_BIT-1:0]         l1v_istek_veri_o,
+    output  [`ADRES_BIT-1:0]        l1v_istek_adres_o,
+    output                          l1v_istek_yaz_o,
+    output                          l1v_istek_gecerli_o,
+    input                           l1v_istek_hazir_i
 );
 
 // ---- GETIR1 ----
@@ -453,16 +453,16 @@ assign io_yurut_yurut_uop_w = io_yo_yurut_uop_w;
 assign io_bellek_bellek_uop_w = io_yurut_bellek_uop_w;
 
 // Bellek < L1V
-assign io_bellek_l1v_veri_w = vy_yanit_veri_i;
-assign io_bellek_l1v_veri_gecerli_w = vy_yanit_gecerli_i;
-assign io_bellek_l1v_istek_hazir_w = vy_istek_hazir_i;
+assign io_bellek_l1v_veri_w = l1v_yanit_veri_i;
+assign io_bellek_l1v_veri_gecerli_w = l1v_yanit_gecerli_i;
+assign io_bellek_l1v_istek_hazir_w = l1v_istek_hazir_i;
 
 // L1V < Bellek
-// assign vy_istek_veri_o = ?? @Sevval burayi duzelt
-assign vy_yanit_hazir_o = io_bellek_l1v_veri_hazir_w;
-assign vy_istek_adres_o = io_bellek_l1v_istek_adres_w;
-// assign vy_istek_yaz_o = ?? @Sevval burayi duzelt
-assign vy_istek_gecerli_o = io_bellek_l1v_istek_gecerli_w;
+// assign l1v_istek_veri_o = ?? @Sevval burayi duzelt
+assign l1v_yanit_hazir_o = io_bellek_l1v_veri_hazir_w;
+assign l1v_istek_adres_o = io_bellek_l1v_istek_adres_w;
+// assign l1v_istek_yaz_o = ?? @Sevval burayi duzelt
+assign l1v_istek_gecerli_o = io_bellek_l1v_istek_gecerli_w;
 
 // Geri Yaz < Bellek
 assign io_gy_gy_uop_w = io_bellek_gy_uop_w;

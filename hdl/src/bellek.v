@@ -57,16 +57,14 @@ always @(posedge clk_i) begin
     end
 end
 
-bellek_islem_birimi bib(
-.clk_i                    ( clk_i               ),
-.rstn_i                   ( rstn_i              ),  
-.uop_buyruk_secim_i       ( uop_buyruk_secim_w  ),          
-.uop_rs1_i                ( uop_rs1_w           ),  
-.uop_rs2_i                ( uop_rs2_w           ),  
-.uop_imm_i                ( uop_imm_w           ),  
-.maske_o                  ( maske_w             ),  
-.erisilecek_adres_o       ( erisilecek_adres_w  )          
-
+bellek_islem_birimi bib (
+    .clk_i                    ( clk_i               ),
+    .rstn_i                   ( rstn_i              ),  
+    .uop_buyruk_secim_i       ( uop_buyruk_secim_w  ),          
+    .uop_rs1_i                ( uop_rs1_w           ),  
+    .uop_imm_i                ( uop_imm_w           ),  
+    .maske_o                  ( maske_w             ),  
+    .erisilecek_adres_o       ( erisilecek_adres_w  )          
 );
 
 assign duraklat_o = `LOW;

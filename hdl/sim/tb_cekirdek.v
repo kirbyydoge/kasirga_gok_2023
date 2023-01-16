@@ -12,14 +12,14 @@ wire                            buyruk_yanit_hazir_o;
 wire    [`ADRES_BIT-1:0]        buyruk_istek_adres_o;
 wire                            buyruk_istek_gecerli_o;
 reg                             buyruk_istek_hazir_i;
-reg     [`VERI_BIT-1:0]         vy_yanit_veri_i;
-reg                             vy_yanit_gecerli_i;
-wire                            vy_yanit_hazir_o;
-wire    [`VERI_BIT-1:0]         vy_istek_veri_o;
-wire    [`ADRES_BIT-1:0]        vy_istek_adres_o;
-wire                            vy_istek_yaz_o;
-wire                            vy_istek_gecerli_o;
-reg                             vy_istek_hazir_i;
+reg     [`VERI_BIT-1:0]         l1v_yanit_veri_i;
+reg                             l1v_yanit_gecerli_i;
+wire                            l1v_yanit_hazir_o;
+wire    [`VERI_BIT-1:0]         l1v_istek_veri_o;
+wire    [`ADRES_BIT-1:0]        l1v_istek_adres_o;
+wire                            l1v_istek_yaz_o;
+wire                            l1v_istek_gecerli_o;
+reg                             l1v_istek_hazir_i;
 
 localparam COMB_DELAY = 2;
 
@@ -32,14 +32,14 @@ cekirdek cekirdek (
     .buyruk_istek_adres_o    ( buyruk_istek_adres_o ),
     .buyruk_istek_gecerli_o  ( buyruk_istek_gecerli_o ),
     .buyruk_istek_hazir_i    ( buyruk_istek_hazir_i ),
-    .vy_yanit_veri_i         ( vy_yanit_veri_i ),
-    .vy_yanit_gecerli_i      ( vy_yanit_gecerli_i ),
-    .vy_yanit_hazir_o        ( vy_yanit_hazir_o ),
-    .vy_istek_veri_o         ( vy_istek_veri_o ),
-    .vy_istek_adres_o        ( vy_istek_adres_o ),
-    .vy_istek_yaz_o          ( vy_istek_yaz_o ),
-    .vy_istek_gecerli_o      ( vy_istek_gecerli_o ),
-    .vy_istek_hazir_i        ( vy_istek_hazir_i )
+    .l1v_yanit_veri_i        ( l1v_yanit_veri_i ),
+    .l1v_yanit_gecerli_i     ( l1v_yanit_gecerli_i ),
+    .l1v_yanit_hazir_o       ( l1v_yanit_hazir_o ),
+    .l1v_istek_veri_o        ( l1v_istek_veri_o ),
+    .l1v_istek_adres_o       ( l1v_istek_adres_o ),
+    .l1v_istek_yaz_o         ( l1v_istek_yaz_o ),
+    .l1v_istek_gecerli_o     ( l1v_istek_gecerli_o ),
+    .l1v_istek_hazir_i       ( l1v_istek_hazir_i )
 );
 
 always begin
@@ -91,9 +91,9 @@ initial begin
     rstn_i = 0;
     repeat(20) @(posedge clk_i) #COMB_DELAY;
     rstn_i = 1;
-    vy_yanit_veri_i = 0;
-    vy_yanit_gecerli_i = 0;
-    vy_istek_hazir_i = 0;
+    l1v_yanit_veri_i = 0;
+    l1v_yanit_gecerli_i = 0;
+    l1v_istek_hazir_i = 0;
 
     // buyruklar['h000] = 'h00500113; // addi x2, x0, 5
     // buyruklar['h001] = 'h00108093; // addi x1, x1, 1

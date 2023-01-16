@@ -106,6 +106,7 @@ always @* begin
     uop_ns[`UOP_RD] = amb_sonuc_w;
 
     case(uop_yaz_sec_w) 
+    `UOP_YAZ_NOP: uop_ns[`UOP_RD] = amb_sonuc_w;
     `UOP_YAZ_AMB: uop_ns[`UOP_RD] = amb_sonuc_w;
     `UOP_YAZ_IS1: uop_ns[`UOP_RD] = amb_islec1_w;
     `UOP_YAZ_DAL: uop_ns[`UOP_RD] = uop_ps_w + 32'd4;   // dallanma biriminden gelmesi gerekiyor

@@ -34,14 +34,14 @@ wire                            io_cek_buyruk_yanit_hazir_w;
 wire    [`ADRES_BIT-1:0]        io_cek_buyruk_istek_adres_w;
 wire                            io_cek_buyruk_istek_gecerli_w;
 wire                            io_cek_buyruk_istek_hazir_w;
-wire    [`VERI_BIT-1:0]         io_cek_vy_yanit_veri_w;
-wire                            io_cek_vy_yanit_gecerli_w;
-wire                            io_cek_vy_yanit_hazir_w;
-wire    [`VERI_BIT-1:0]         io_cek_vy_istek_veri_w;
-wire    [`ADRES_BIT-1:0]        io_cek_vy_istek_adres_w;
-wire                            io_cek_vy_istek_yaz_w;
-wire                            io_cek_vy_istek_gecerli_w;
-wire                            io_cek_vy_istek_hazir_w;
+wire    [`VERI_BIT-1:0]         io_cek_l1vd_yanit_veri_w;
+wire                            io_cek_l1vd_yanit_gecerli_w;
+wire                            io_cek_l1vd_yanit_hazir_w;
+wire    [`VERI_BIT-1:0]         io_cek_l1vd_istek_veri_w;
+wire    [`ADRES_BIT-1:0]        io_cek_l1vd_istek_adres_w;
+wire                            io_cek_l1vd_istek_yaz_w;
+wire                            io_cek_l1vd_istek_gecerli_w;
+wire                            io_cek_l1vd_istek_hazir_w;
 
 cekirdek cekirdek (
     .clk_i                      ( io_cek_clk_w ),
@@ -52,14 +52,14 @@ cekirdek cekirdek (
     .buyruk_istek_adres_o       ( io_cek_buyruk_istek_adres_w ),
     .buyruk_istek_gecerli_o     ( io_cek_buyruk_istek_gecerli_w ),
     .buyruk_istek_hazir_i       ( io_cek_buyruk_istek_hazir_w ),
-    .vy_yanit_veri_i            ( io_cek_vy_yanit_veri_w ),
-    .vy_yanit_gecerli_i         ( io_cek_vy_yanit_gecerli_w ),
-    .vy_yanit_hazir_o           ( io_cek_vy_yanit_hazir_w ),
-    .vy_istek_veri_o            ( io_cek_vy_istek_veri_w ),
-    .vy_istek_adres_o           ( io_cek_vy_istek_adres_w ),
-    .vy_istek_yaz_o             ( io_cek_vy_istek_yaz_w ),
-    .vy_istek_gecerli_o         ( io_cek_vy_istek_gecerli_w ),
-    .vy_istek_hazir_i           ( io_cek_vy_istek_hazir_w )
+    .l1v_yanit_veri_i           ( io_cek_l1vd_yanit_veri_w ),
+    .l1v_yanit_gecerli_i        ( io_cek_l1vd_yanit_gecerli_w ),
+    .l1v_yanit_hazir_o          ( io_cek_l1vd_yanit_hazir_w ),
+    .l1v_istek_veri_o           ( io_cek_l1vd_istek_veri_w ),
+    .l1v_istek_adres_o          ( io_cek_l1vd_istek_adres_w ),
+    .l1v_istek_yaz_o            ( io_cek_l1vd_istek_yaz_w ),
+    .l1v_istek_gecerli_o        ( io_cek_l1vd_istek_gecerli_w ),
+    .l1v_istek_hazir_i          ( io_cek_l1vd_istek_hazir_w )
 );
 
 // ---- L1 Buyruk Denetleyicisi ----
@@ -206,9 +206,9 @@ assign io_cek_clk_w = clk;
 assign io_cek_rstn_w = resetn;
 
 // Cekirdek < Veri Yolu Denetleyicisi
-assign io_cek_vy_yanit_veri_w = 0;
-assign io_cek_vy_yanit_gecerli_w = `LOW;
-assign io_cek_vy_istek_hazir_w = `HIGH;
+assign io_cek_l1vd_yanit_veri_w = 0;
+assign io_cek_l1vd_yanit_gecerli_w = `LOW;
+assign io_cek_l1vd_istek_hazir_w = `HIGH;
 
 // L1BD < Sistem
 assign io_l1bd_clk_w = clk;
