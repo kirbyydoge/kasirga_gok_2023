@@ -18,11 +18,14 @@ module bram_model #(
 
 localparam UNDEFINED = HARDCORE_DEBUG == "TRUE" ? {DATA_WIDTH{1'bZ}} : {DATA_WIDTH{1'b0}};
 
-reg [DATA_WIDTH-1:0] mem_r[0:BRAM_DEPTH-1];
+reg [DATA_WIDTH-1:0] mem_r [0:BRAM_DEPTH-1];
 reg [DATA_WIDTH-1:0] data_r;
 
 integer i;
 initial begin
+	for (i = 0; i < BRAM_DEPTH; i = i + 1) begin
+		mem_r[i] <= UNDEFINED;
+	end
 	data_r <= UNDEFINED;
 end
 

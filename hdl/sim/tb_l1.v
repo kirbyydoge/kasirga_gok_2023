@@ -23,12 +23,12 @@ reg                                             port_veri_hazir_i;
 // l1 denetleyici <> l1 SRAM (BRAM)
 wire                                            l1_istek_gecersiz_o;
 wire    [`ADRES_SATIR_BIT-1:0]                  l1_istek_satir_o;
-wire    [`L1_YOL-1:0]                           l1_istek_yaz_o;
-wire    [(`ADRES_ETIKET_BIT * `L1_YOL)-1:0]     l1_istek_etiket_o;
-wire    [(`L1_BLOK_BIT * `L1_YOL)-1:0]          l1_istek_blok_o;
+wire    [`L1V_YOL-1:0]                          l1_istek_yaz_o;
+wire    [(`ADRES_ETIKET_BIT * `L1V_YOL)-1:0]    l1_istek_etiket_o;
+wire    [(`L1_BLOK_BIT * `L1V_YOL)-1:0]         l1_istek_blok_o;
 
-wire    [(`ADRES_ETIKET_BIT * `L1_YOL)-1:0]     l1_veri_etiket_i;
-wire    [(`L1_BLOK_BIT * `L1_YOL)-1:0]          l1_veri_blok_i;
+wire    [(`ADRES_ETIKET_BIT * `L1V_YOL)-1:0]    l1_veri_etiket_i;
+wire    [(`L1_BLOK_BIT * `L1V_YOL)-1:0]         l1_veri_blok_i;
 reg                                             l1_veri_gecerli_i;
 
 // l1 denetleyici <> veri yolu denetleyici
@@ -115,14 +115,14 @@ vy_denetleyici abd (
 );
 
 
-wire [`L1_BLOK_BIT-1:0] bram_yaz_bloklar [0:`L1_YOL-1];
-wire [`L1_BLOK_BIT-1:0] bram_oku_bloklar [0:`L1_YOL-1];
-wire [`ADRES_ETIKET_BIT-1:0] bram_yaz_etiketler [0:`L1_YOL-1];
-wire [`ADRES_ETIKET_BIT-1:0] bram_oku_etiketler [0:`L1_YOL-1];
+wire [`L1_BLOK_BIT-1:0] bram_yaz_bloklar [0:`L1V_YOL-1];
+wire [`L1_BLOK_BIT-1:0] bram_oku_bloklar [0:`L1V_YOL-1];
+wire [`ADRES_ETIKET_BIT-1:0] bram_yaz_etiketler [0:`L1V_YOL-1];
+wire [`ADRES_ETIKET_BIT-1:0] bram_oku_etiketler [0:`L1V_YOL-1];
 
 genvar gen_i;
 generate
-    for (gen_i = 0; gen_i < `L1_YOL; gen_i = gen_i + 1 ) begin
+    for (gen_i = 0; gen_i < `L1V_YOL; gen_i = gen_i + 1 ) begin
         assign bram_yaz_bloklar[gen_i] = l1_istek_blok_o[gen_i * `L1_BLOK_BIT +: `L1_BLOK_BIT];
         assign bram_yaz_etiketler[gen_i] = l1_istek_etiket_o[gen_i * `ADRES_ETIKET_BIT +: `ADRES_ETIKET_BIT];
 
@@ -131,7 +131,7 @@ generate
 
         bram_model #(
             .DATA_WIDTH(`ADRES_ETIKET_BIT),
-            .BRAM_DEPTH(`L1_SATIR)
+            .BRAM_DEPTH(`L1V_SATIR)
         ) l1_etiket (
             .clk_i(clk_i), 
             .cmd_en_i(!l1_istek_gecersiz_o),
@@ -143,7 +143,7 @@ generate
         
         bram_model #(
             .DATA_WIDTH(`L1_BLOK_BIT),
-            .BRAM_DEPTH(`L1_SATIR)
+            .BRAM_DEPTH(`L1V_SATIR)
         ) l1_veri (
             .clk_i(clk_i), 
             .cmd_en_i(!l1_istek_gecersiz_o),
@@ -156,10 +156,10 @@ generate
 endgenerate
 
 always @(posedge clk_i) begin
-    l1_veri_gecerli_i <=  !l1_istek_gecersiz_o && (l1_istek_yaz_o == {`L1_YOL{`LOW}});
+    l1_veri_gecerli_i <=  !l1_istek_gecersiz_o && (l1_istek_yaz_o == {`L1V_YOL{`LOW}});
 end
 
-l1_denetleyici l1b (
+l1v_denetleyici l1vd (
     .clk_i                  ( clk_i ),
     .rstn_i                 ( rstn_i ),
     .port_istek_adres_i     ( port_istek_adres_i ),
