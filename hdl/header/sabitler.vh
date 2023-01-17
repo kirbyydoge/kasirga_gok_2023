@@ -57,7 +57,18 @@
 `define ALL_ONES_32          32'hFFFF_FFFF
 
 // ----Maskeleme İçin Yardımcı Tanımlar
-`define NOP_MASKE                   32'h0000_0000;
-`define EN_ANLAMLI_BYTE_MASKE       32'hFF00_0000; 
-`define EN_ANLAMLI_HALF_WORD_MASKE  32'hFFFF_0000;
-`define WORD_MASKE                  `ALL_ONES_32;
+`define NOP_MASKE           4'b0000  // Böyle mi olmalı ?
+
+`define BYTE_MAKSE_0        4'b0001
+`define BYTE_MAKSE_1        4'b0010
+`define BYTE_MAKSE_2        4'b0100
+`define BYTE_MAKSE_3        4'b0100
+
+`define HALF_WORD_MASKE_0   4'b0011
+`define HALF_WORD_MASKE_1   4'b0110  // Bu erişimi yapabildiğiniz varsaydık
+`define HALF_WORD_MASKE_2   4'b1100
+
+`define WORD_MASKE          4'b1111
+
+
+

@@ -36,6 +36,8 @@ wire [`UOP_BEL_BIT-1:0]         uop_buyruk_secim_w;
 wire [`UOP_RS1_BIT-1:0]         uop_rs1_w;
 wire [`UOP_RS2_BIT-1:0]         uop_rs2_w;
 wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
+wire [`UOP_RD_BIT-1:0]          uop_rd_w;
+
 
 wire [`VERI_BIT-1:0]            maske_w;
 wire [`ADRES_BIT-1:0]           erisilecek_adres_w;
@@ -45,7 +47,7 @@ wire [`ADRES_BIT-1:0]           erisilecek_adres_w;
 always @* begin
     uop_ns = bellek_uop_i;
     uop_ns[`UOP_VALID] = uop_gecerli_w; 
-    //Doldurulacak (Şevval)
+   
 end
 
 always @(posedge clk_i) begin
@@ -57,14 +59,12 @@ always @(posedge clk_i) begin
     end
 end
 
-bellek_islem_birimi bib (
-    .clk_i                    ( clk_i               ),
-    .rstn_i                   ( rstn_i              ),  
-    .uop_buyruk_secim_i       ( uop_buyruk_secim_w  ),          
-    .uop_rs1_i                ( uop_rs1_w           ),  
-    .uop_imm_i                ( uop_imm_w           ),  
-    .maske_o                  ( maske_w             ),  
-    .erisilecek_adres_o       ( erisilecek_adres_w  )          
+bellek_islem_birimi bib(
+.clk_i                    ( clk_i               ),
+.rstn_i                   ( rstn_i              ),  
+.uop_buyruk_secim_i       ( uop_buyruk_secim_w  ),          
+.uop_rd_i                 ( uop_rd_w            ),  
+.maske_o                  ( maske_w             ) 
 );
 
 assign duraklat_o = `LOW;
@@ -75,6 +75,7 @@ assign uop_tag_w = bellek_uop_i[`UOP_TAG];
 
 assign uop_rs1_w = bellek_uop_i[`UOP_RS1];
 assign uop_rs2_w = bellek_uop_i[`UOP_RS2];
+assign uop_rd_w = bellek_uop_i[`UOP_RD];
 assign uop_imm_w = bellek_uop_i[`UOP_IMM];
 assign uop_taken_w = bellek_uop_i[`UOP_TAKEN];
 assign uop_buyruk_secim_w = bellek_uop_i[`UOP_BEL];
