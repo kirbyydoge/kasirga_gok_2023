@@ -50,7 +50,6 @@ always @* begin
     end
 end
 
-integer i;
 always @(posedge clk_i) begin
     if (!rstn_i) begin
         for (i = 0; i < `N_YAZMAC; i = i + 1) begin

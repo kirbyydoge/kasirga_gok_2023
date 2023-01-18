@@ -47,6 +47,25 @@ wire [`ADRES_BIT-1:0]           erisilecek_adres_w;
 always @* begin
     uop_ns = bellek_uop_i;
     uop_ns[`UOP_VALID] = uop_gecerli_w; 
+<<<<<<< HEAD
+=======
+
+    bib_istek_gecerli_ns = bib_istek_gecerli_r;
+    bib_veri_ns = bib_veri_r;
+    bellek_veri_ns = bellek_veri_r;
+   
+
+    if (yaz_w || oku_w) begin // ikisinden biri birse bibden sonuç gelmiş demektir
+        bib_istek_gecerli_ns = 1'b1; // veri yolu birimi başlayabilir 
+        if (yaz_w) begin
+            bib_veri_ns = uop_rs2_w;  // store buyrukları için    
+            // SONRA 0 YAPALI MIYIM YAZI?
+        end 
+        else if (oku_w && bellek_gecerli_w) begin
+           // Uop'a bellek_veri_w yi yaz ilet 
+        end
+    end
+>>>>>>> c84c9ab (Yazmac obegi hatasini cozer ve bellegi gunceller.)
    
 end
 
@@ -59,6 +78,7 @@ always @(posedge clk_i) begin
     end
 end
 
+<<<<<<< HEAD
 bellek_islem_birimi bib(
 .clk_i                    ( clk_i               ),
 .rstn_i                   ( rstn_i              ),  
@@ -67,6 +87,39 @@ bellek_islem_birimi bib(
 .maske_o                  ( maske_w             ) 
 );
 
+=======
+bellek_islem_birimi bib (
+    .clk_i                            ( clk_i               ),
+    .rstn_i                           ( rstn_i              ),  
+    .uop_buyruk_secim_i               ( uop_buyruk_secim_w  ),          
+    .uop_rd_i                         ( uop_rd_w            ),  
+    .maske_o                          ( maske_w             ),
+    .oku_o                            ( oku_w               ),
+    .yaz_o                            ( yaz_w               )    
+);
+
+veri_yolu_birimi vyb (
+    .clk_i                            (clk_i                ),
+    .rstn_i                           (rstn_i               ),
+    .port_istek_adres_o               (l1v_istek_adres_o    ),
+    .port_istek_gecerli_o             (l1v_istek_gecerli_o  ),
+    .port_istek_yaz_o                 (l1v_istek_yaz_o      ),
+    .port_istek_veri_o                (l1v_istek_veri_o     ),
+    .port_istek_hazir_i               (l1v_istek_hazir_i    ),
+    .port_veri_i                      (l1v_veri_i           ),
+    .port_veri_gecerli_i              (l1v_veri_gecerli_i   ),
+    .port_veri_hazir_o                (l1v_veri_hazir_o     ),
+    .bib_istek_gecerli_i              (bib_istek_gecerli_w  ),
+    .bib_istek_yaz_i                  (bib_istek_yaz_w      ),
+    .bib_veri_i                       (bib_veri_w           ),  // yazılacak veri
+    .bib_istek_oku_i                  (bib_istek_oku_w      ),
+    .bib_istek_adres_i                (bib_istek_adres_w    ),
+    .bib_istek_maske_i                (bib_istek_maske_w    ),
+    .bellek_veri_o                    (bellek_veri_w        ),
+    .bellek_gecerli_o                 (bellek_gecerli_w     ) // hazır sinyali
+);
+
+>>>>>>> c84c9ab (Yazmac obegi hatasini cozer ve bellegi gunceller.)
 assign duraklat_o = `LOW;
 assign geri_yaz_uop_o = uop_r;
 
@@ -82,5 +135,3 @@ assign uop_buyruk_secim_w = bellek_uop_i[`UOP_BEL];
 
 
 endmodule
-
-
