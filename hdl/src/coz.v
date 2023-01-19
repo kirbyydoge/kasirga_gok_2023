@@ -992,7 +992,6 @@ always @* begin
     CASE_LHU     : uop_rv32lhu();
     CASE_SB      : uop_rv32sb();
     CASE_SH      : uop_rv32sh();   
-    CASE_BLT     : uop_rv32blt(); 
     default      : uop_nop();
     endcase
 

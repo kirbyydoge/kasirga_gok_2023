@@ -208,20 +208,20 @@ task set_veri;
 endtask
 
 // Verilogda (maalesef) structlarimiz yok. O nedenle bu tip cozumlere gitmemiz gerekiyor.
-`define FN_L1_SORGU_YOL     $clog2(`L1V_YOL)-1:0
-`define FN_L1_SORGU_SONUC   $clog2(`L1V_YOL)
+`define FN_L1V_SORGU_YOL     $clog2(`L1V_YOL)-1:0
+`define FN_L1V_SORGU_SONUC   $clog2(`L1V_YOL)
 reg [$clog2(`L1V_YOL):0] fn_l1_ara_sonuc_cmb;
 function [$clog2(`L1V_YOL):0] l1_ara;
     input [`ADRES_BIT-1:0] adres;
     begin
-        l1_ara[`FN_L1_SORGU_YOL] = 0;
-        l1_ara[`FN_L1_SORGU_SONUC] = `LOW;
+        l1_ara[`FN_L1V_SORGU_YOL] = 0;
+        l1_ara[`FN_L1V_SORGU_SONUC] = `LOW;
         for (i = 0; i < `L1V_YOL; i = i + 1) begin
             if (acik_satir_gecerli_durumu_w[i]
             && l1_buffer_etiketler_r[i] == get_etiket(adres)
             && get_satir(son_adres_r) == get_satir(adres)) begin
-                l1_ara[`FN_L1_SORGU_YOL] = i;
-                l1_ara[`FN_L1_SORGU_SONUC] = `HIGH;
+                l1_ara[`FN_L1V_SORGU_YOL] = i;
+                l1_ara[`FN_L1V_SORGU_SONUC] = `HIGH;
             end
         end
     end
@@ -341,13 +341,13 @@ always @* begin
             port_istek_adres_ns = port_istek_adres_i;
             port_istek_veri_ns = port_istek_veri_i;
             port_yazma_istegi_ns = port_istek_yaz_i;
-            if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
+            if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
                 if (port_istek_yaz_i) begin
-                    set_veri(fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL], port_istek_adres_i, port_istek_veri_i);
+                    set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_i, port_istek_veri_i);
                     port_yazma_istegi_ns = `LOW;
                 end
                 else begin
-                    port_veri_ns = get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], port_istek_adres_i);
+                    port_veri_ns = get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL]], port_istek_adres_i);
                     port_veri_gecerli_ns = `HIGH;
                     l1_durum_ns = L1_YANIT;
                 end
@@ -378,14 +378,14 @@ always @* begin
     end
     L1_SORGU: begin
         fn_l1_ara_sonuc_cmb = l1_ara(port_istek_adres_r);
-        if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
+        if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
             if (port_yazma_istegi_r) begin
-                set_veri(fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL], port_istek_adres_r, port_istek_veri_r);
+                set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_r, port_istek_veri_r);
                 port_yazma_istegi_ns = `LOW;
                 l1_durum_ns = L1_SATIR_ACIK;
             end
             else begin
-                port_veri_ns =  get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], port_istek_adres_r);
+                port_veri_ns =  get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL]], port_istek_adres_r);
                 port_veri_gecerli_ns = `HIGH;
                 l1_durum_ns = L1_YANIT;
             end

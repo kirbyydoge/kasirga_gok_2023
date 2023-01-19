@@ -29,7 +29,7 @@ always @* begin
     `UOP_AMB_SLL    : islem_sonuc_cmb = islem_islec1_i << islem_islec2_i;
     `UOP_AMB_SLT    : islem_sonuc_cmb = islem_kucuktur_o ? {{`VERI_BIT-1{1'b0}}, 1'b1} : {`VERI_BIT{1'b0}};
     `UOP_AMB_SLTU   : islem_sonuc_cmb = islem_kucuktur_isaretsiz_w ? {{`VERI_BIT-1{1'b0}}, 1'b1}: {`VERI_BIT{1'b0}};
-    `UOP_AMB_NOP    : islem_sonuc_cmb = {`VERI_BIT{1'b0}};
+    default         : islem_sonuc_cmb = {`VERI_BIT{1'b0}};
     endcase
 end
 

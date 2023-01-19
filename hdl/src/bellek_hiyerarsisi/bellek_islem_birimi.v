@@ -60,11 +60,6 @@ endfunction
 always @* begin
     // 16 VE 8 BİT lOAD YAPARKEN REGISTERIN EN ANLAMLI BYTELARINA YAZILMIŞTIR, BELLEĞE STORE YAPARKEN VERİ ÖBEĞİNİN EN ANLAMLI BYTLEARINA YAZILDI 
     case(uop_buyruk_secim_i)
-        `UOP_BEL_NOP: begin
-            maske_cmb = maske_sec(nop_islem, uop_rd_i); 
-            oku_cmb = 0;
-            yaz_cmb = 0;  
-        end
         // Load Buyrukları
         `UOP_BEL_LW: begin // 32 Bit Okur
             maske_cmb = maske_sec(w_islem, uop_rd_i); 
@@ -106,6 +101,11 @@ always @* begin
             maske_cmb = maske_sec(byte_islem, uop_rd_i);
             oku_cmb = 0;
             yaz_cmb = 1;          
+        end
+        default: begin
+            maske_cmb = maske_sec(nop_islem, uop_rd_i); 
+            oku_cmb = 0;
+            yaz_cmb = 0;  
         end
     endcase
 end

@@ -160,6 +160,105 @@ generate
     end
 endgenerate
 
+// ---- L1 Veri Denetleyicisi ----
+wire                                            io_l1vd_clk_w;
+wire                                            io_l1vd_rstn_w;
+wire    [`ADRES_BIT-1:0]                        io_l1vd_port_istek_adres_w;
+wire                                            io_l1vd_port_istek_gecerli_w;
+wire                                            io_l1vd_port_istek_yaz_w;
+wire    [`VERI_BIT-1:0]                         io_l1vd_port_istek_veri_w;
+wire    [`VERI_BYTE-1:0]                        io_l1vd_port_istek_maske_w;
+wire                                            io_l1vd_port_istek_hazir_w;
+wire    [`VERI_BIT-1:0]                         io_l1vd_port_veri_w;
+wire                                            io_l1vd_port_veri_gecerli_w;
+wire                                            io_l1vd_port_veri_hazir_w;
+wire                                            io_l1vd_l1_istek_gecersiz_w;
+wire    [`ADRES_SATIR_BIT-1:0]                  io_l1vd_l1_istek_satir_w;
+wire    [`L1V_YOL-1:0]                          io_l1vd_l1_istek_yaz_w;
+wire    [(`ADRES_ETIKET_BIT * `L1V_YOL)-1:0]    io_l1vd_l1_istek_etiket_w;
+wire    [(`L1_BLOK_BIT * `L1V_YOL)-1:0]         io_l1vd_l1_istek_blok_w;
+wire    [(`ADRES_ETIKET_BIT * `L1V_YOL)-1:0]    io_l1vd_l1_veri_etiket_w;
+wire    [(`L1_BLOK_BIT * `L1V_YOL)-1:0]         io_l1vd_l1_veri_blok_w;
+wire                                            io_l1vd_l1_veri_gecerli_w;
+wire    [`ADRES_BIT-1:0]                        io_l1vd_vy_istek_adres_w;
+wire                                            io_l1vd_vy_istek_gecerli_w;
+wire                                            io_l1vd_vy_istek_hazir_w;
+wire                                            io_l1vd_vy_istek_yaz_w;
+wire    [`L1_BLOK_BIT-1:0]                      io_l1vd_vy_istek_veri_w;
+wire    [`L1_BLOK_BIT-1:0]                      io_l1vd_vy_veri_w;
+wire                                            io_l1vd_vy_veri_gecerli_w;
+wire                                            io_l1vd_vy_veri_hazir_w;
+
+l1v_denetleyici l1vd (
+    .clk_i                                      ( io_l1vd_clk_w ),
+    .rstn_i                                     ( io_l1vd_rstn_w ),
+    .port_istek_adres_i                         ( io_l1vd_port_istek_adres_w ),
+    .port_istek_gecerli_i                       ( io_l1vd_port_istek_gecerli_w ),
+    .port_istek_yaz_i                           ( io_l1vd_port_istek_yaz_w ),
+    .port_istek_veri_i                          ( io_l1vd_port_istek_veri_w ),
+    .port_istek_maske_i                         ( io_l1vd_port_istek_maske_w ),
+    .port_istek_hazir_o                         ( io_l1vd_port_istek_hazir_w ),
+    .port_veri_o                                ( io_l1vd_port_veri_w ),
+    .port_veri_gecerli_o                        ( io_l1vd_port_veri_gecerli_w ),
+    .port_veri_hazir_i                          ( io_l1vd_port_veri_hazir_w ),
+    .l1_istek_gecersiz_o                        ( io_l1vd_l1_istek_gecersiz_w ),
+    .l1_istek_satir_o                           ( io_l1vd_l1_istek_satir_w ),
+    .l1_istek_yaz_o                             ( io_l1vd_l1_istek_yaz_w ),
+    .l1_istek_etiket_o                          ( io_l1vd_l1_istek_etiket_w ),
+    .l1_istek_blok_o                            ( io_l1vd_l1_istek_blok_w ),
+    .l1_veri_etiket_i                           ( io_l1vd_l1_veri_etiket_w ),
+    .l1_veri_blok_i                             ( io_l1vd_l1_veri_blok_w ),
+    .l1_veri_gecerli_i                          ( io_l1vd_l1_veri_gecerli_w ),
+    .vy_istek_adres_o                           ( io_l1vd_vy_istek_adres_w ),
+    .vy_istek_gecerli_o                         ( io_l1vd_vy_istek_gecerli_w ),
+    .vy_istek_hazir_i                           ( io_l1vd_vy_istek_hazir_w ),
+    .vy_istek_yaz_o                             ( io_l1vd_vy_istek_yaz_w ),
+    .vy_istek_veri_o                            ( io_l1vd_vy_istek_veri_w ),
+    .vy_veri_i                                  ( io_l1vd_vy_veri_w ),
+    .vy_veri_gecerli_i                          ( io_l1vd_vy_veri_gecerli_w ),
+    .vy_veri_hazir_o                            ( io_l1vd_vy_veri_hazir_w )
+);
+
+// ---- L1 Buyruk Onbellegi ----
+wire                            io_l1vv_clk_w;
+wire                            io_l1vv_komut_gecerli_w;
+wire [`L1V_YOL-1:0]             io_l1vv_komut_yaz_w;
+wire [`ADRES_SATIR_BIT-1:0]     io_l1vv_komut_adres_w;
+
+wire [`ADRES_ETIKET_BIT-1:0]    io_l1vv_yaz_etiket_bw       [0:`L1V_YOL-1];
+wire [`L1_BLOK_BIT-1:0]         io_l1vv_yaz_blok_bw         [0:`L1V_YOL-1];
+
+wire [`ADRES_ETIKET_BIT-1:0]    io_l1vv_oku_etiket_bw       [0:`L1V_YOL-1];
+wire [`L1_BLOK_BIT-1:0]         io_l1vv_oku_blok_bw         [0:`L1V_YOL-1];
+
+generate
+    for (i = 0; i < `L1V_YOL; i = i + 1) begin
+        bram_model #(
+            .DATA_WIDTH(`ADRES_ETIKET_BIT),
+            .BRAM_DEPTH(`L1B_SATIR)
+        ) l1v_etiket (
+            .clk_i          ( io_l1vv_clk_w ), 
+            .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
+            .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
+            .addr_i         ( io_l1vv_komut_adres_w ), 
+            .data_i         ( io_l1vv_yaz_etiket_bw[i] ), 
+            .data_o         ( io_l1vv_oku_etiket_bw[i] )
+        );
+        
+        bram_model #(
+            .DATA_WIDTH(`L1_BLOK_BIT),
+            .BRAM_DEPTH(`L1V_SATIR)
+        ) l1v_veri (
+            .clk_i          ( io_l1vv_clk_w ),
+            .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
+            .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
+            .addr_i         ( io_l1vv_komut_adres_w ), 
+            .data_i         ( io_l1vv_yaz_blok_bw[i] ), 
+            .data_o         ( io_l1vv_oku_blok_bw[i] )
+        );
+    end
+endgenerate
+
 // ---- Veri Yolu Denetleyicisi ----
 wire                            io_vyd_clk_w;
 wire                            io_vyd_rstn_w;
@@ -242,7 +341,12 @@ always @(posedge io_l1bd_clk_w) begin
         io_sistem_l1bv_istek_r <= {`L1_ONBELLEK_GECIKME{1'b0}};
     end
     else begin
-        io_sistem_l1bv_istek_r <= {io_sistem_l1bv_istek_r[`L1_ONBELLEK_GECIKME-2:0], (!io_l1bd_l1_istek_gecersiz_w && !(|io_l1bd_l1_istek_yaz_w))};
+        if (`L1_ONBELLEK_GECIKME > 1) begin
+            io_sistem_l1bv_istek_r <= {io_sistem_l1bv_istek_r[`L1_ONBELLEK_GECIKME-2:0], (!io_l1bd_l1_istek_gecersiz_w && !(|io_l1bd_l1_istek_yaz_w))};
+        end
+        else begin
+            io_sistem_l1bv_istek_r <= (!io_l1bd_l1_istek_gecersiz_w && !(|io_l1bd_l1_istek_yaz_w));
+        end
     end
 end
 assign io_sistem_l1bv_gecerli_w = io_sistem_l1bv_istek_r[`L1_ONBELLEK_GECIKME-1];
@@ -269,7 +373,55 @@ generate
     end
 endgenerate
 
-// TODO: Veri Onbellegi Eklenince port bunlarin arbitrate edilmesi lazim
+// L1VD < Cekirdek
+assign io_l1vd_port_istek_adres_w = io_cek_l1vd_istek_adres_w;
+assign io_l1vd_port_istek_gecerli_w = io_cek_l1vd_istek_gecerli_w;
+assign io_l1vd_port_istek_yaz_w = io_cek_l1vd_istek_yaz_w;
+assign io_l1vd_port_istek_veri_w = io_cek_l1vd_istek_veri_w; 
+assign io_l1vd_port_istek_maske_w = io_cek_l1vd_istek_maske_w;
+assign io_l1vd_port_veri_hazir_w = io_cek_l1vd_istek_hazir_w;
+
+// L1VD < L1VV Okuma / Yazma Gecikmesi
+reg [`L1_ONBELLEK_GECIKME-1:0]  io_sistem_l1vv_istek_r;
+wire                            io_sistem_l1vv_gecerli_w;
+
+always @(posedge io_l1vd_clk_w) begin
+    if (!resetn) begin
+        io_sistem_l1vv_istek_r <= {`L1_ONBELLEK_GECIKME{1'b0}};
+    end
+    else begin
+        if (`L1_ONBELLEK_GECIKME > 1) begin
+            io_sistem_l1vv_istek_r <= {io_sistem_l1vv_istek_r[`L1_ONBELLEK_GECIKME-2:0], (!io_l1vd_l1_istek_gecersiz_w && !(|io_l1vd_l1_istek_yaz_w))};
+        end
+        else begin
+            io_sistem_l1vv_istek_r <= (!io_l1vd_l1_istek_gecersiz_w && !(|io_l1vd_l1_istek_yaz_w));
+        end
+    end
+end
+assign io_sistem_l1vv_gecerli_w = io_sistem_l1vv_istek_r[`L1_ONBELLEK_GECIKME-1];
+
+// L1VD < L1VV
+assign io_l1vd_l1_veri_gecerli_w = io_sistem_l1vv_gecerli_w;
+
+generate
+    for (i = 0; i < `L1V_YOL; i = i + 1) begin
+        assign io_l1vd_l1_veri_etiket_w[i * `ADRES_ETIKET_BIT +: `ADRES_ETIKET_BIT] = io_l1vv_oku_etiket_bw[i];
+        assign io_l1vd_l1_veri_blok_w[i * `L1_BLOK_BIT +: `L1_BLOK_BIT]   = io_l1vv_oku_blok_bw[i];
+    end
+endgenerate
+
+// L1VV < L1VD
+assign io_l1vv_komut_gecerli_w = !io_l1vd_l1_istek_gecersiz_w;
+assign io_l1vv_komut_adres_w = io_l1vd_l1_istek_satir_w;
+assign io_l1vv_komut_yaz_w = io_l1vd_l1_istek_yaz_w;
+
+generate
+    for (i = 0; i < `L1V_YOL; i = i + 1) begin
+        assign io_l1vv_yaz_etiket_bw[i] = io_l1vd_l1_istek_etiket_w[i * `ADRES_ETIKET_BIT +: `ADRES_ETIKET_BIT];
+        assign io_l1vv_yaz_blok_bw[i] = io_l1vd_l1_istek_blok_w[i * `L1_BLOK_BIT +: `L1_BLOK_BIT];
+    end
+endgenerate
+
 // L1BD < Veri Yolu Denetleyicisi
 assign io_l1bd_vy_istek_hazir_w = io_vyd_l1_istek_hazir_w;
 assign io_l1bd_vy_veri_w = io_vyd_l1_veri_w;
@@ -301,7 +453,6 @@ always @(posedge clk) begin
     if (!resetn) begin
         bellek_istek_bosta <= 1'b1;
         bellek_oku_istek <= 1'b0;
-        bellek_veri_gecerli <= 1'b0;
     end
     else begin
         if (bellek_istek_bosta && io_vyd_mem_istek_gecerli_w) begin

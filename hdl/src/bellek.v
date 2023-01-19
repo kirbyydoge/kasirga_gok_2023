@@ -39,7 +39,7 @@ wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
 wire [`UOP_RD_BIT-1:0]          uop_rd_w;
 
 
-wire [`VERI_BIT-1:0]            maske_w;
+wire [`VERI_BYTE-1:0]           maske_w;
 wire [`ADRES_BIT-1:0]           erisilecek_adres_w;
 
 
@@ -72,6 +72,9 @@ end
 always @(posedge clk_i) begin
     if (!rstn_i) begin
         uop_r <= {`UOP_BIT{`LOW}};
+        bib_istek_gecerli_r <= 1'b0;
+        bib_veri_r <= {`VERI_BIT{1'b0}};
+        bellek_veri_r <= 1'b0;
     end
     else begin
         uop_r <= bellek_uop_i;
