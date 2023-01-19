@@ -116,7 +116,7 @@ always @* begin
         if (port_veri_gecerli_i && port_veri_hazir_o) begin
             port_veri_hazir_ns = `LOW;
             bellek_veri_cmb = port_veri_i;
-            bellek_gecerli_cmb = `HIGH;;
+            bellek_gecerli_cmb = `HIGH;
             vyb_durum_ns = HAZIR;
         end
     end
@@ -147,7 +147,7 @@ always @(posedge clk_i) begin
     end
 end
 
-assign port_istek_adres_o = port_istek_adres_r;
+assign port_istek_adres_o = port_istek_adres_r & 32'hFFFF_FFFC;
 assign port_istek_gecerli_o = port_istek_gecerli_r;
 assign port_istek_maske_o = port_istek_maske_r;
 assign port_veri_hazir_o = port_veri_hazir_r;
@@ -156,6 +156,5 @@ assign bellek_veri_o = bellek_veri_cmb;
 assign port_istek_yaz_o = port_istek_yaz_r;
 assign port_istek_veri_o = port_istek_veri_r;
 assign bellek_hazir_o = vyb_durum_r == HAZIR;
-
 
 endmodule

@@ -3,7 +3,7 @@
 module bram_model #(
 	parameter DATA_WIDTH = 32,
 	parameter BRAM_DEPTH = 128,
-	parameter HARDCORE_DEBUG = "TRUE",
+	parameter HARDCORE_DEBUG = "FALSE",
 
 	localparam ADDR_WIDTH = $clog2(BRAM_DEPTH)
 )(

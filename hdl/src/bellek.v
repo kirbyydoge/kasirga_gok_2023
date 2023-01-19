@@ -48,7 +48,7 @@ wire bib_istek_gecerli_w;
 wire bib_istek_yaz_w;
 wire [`VERI_BIT-1:0] bib_veri_w;
 wire bib_istek_oku_w;
-wire [`ADRES_BIT-1:0]  bib_istek_adres_w;
+wire [`ADRES_BIT-1:0] bib_istek_adres_w;
 wire [`VERI_BYTE-1:0] bib_istek_maske_w;
 wire [`VERI_BIT-1:0] bellek_veri_w;
 wire bellek_gecerli_w;
@@ -64,9 +64,8 @@ reg duraklat_cmb;
 reg[1:0] durum_r;
 reg[1:0] durum_ns;
 
-localparam BEKLE = 0;
-localparam OKU = 1;
-localparam HAZIR = 2;
+localparam OKU = 0;
+localparam HAZIR = 1;
 
 always @* begin
     uop_ns = bellek_uop_i;
@@ -86,7 +85,7 @@ always @* begin
             if (oku_w && uop_gecerli_w) begin
                 bib_istek_gecerli_cmb = `HIGH;
                 duraklat_cmb = `HIGH;
-                durum_ns = vyb_hazir_w ? HAZIR : OKU;
+                durum_ns = vyb_hazir_w ? OKU : HAZIR;
             end
         end
         OKU: begin
@@ -173,7 +172,7 @@ veri_yolu_birimi vyb (
     .bib_istek_maske_i                ( bib_istek_maske_w    ),
     .bellek_hazir_o                   ( vyb_hazir_w          ),
     .bellek_veri_o                    ( bellek_veri_w        ),
-    .bellek_gecerli_o                 ( bellek_gecerli_w     ) // hazır sinyali
+    .bellek_gecerli_o                 ( bellek_gecerli_w     )   // islem bitti sinyali
 );
 
 assign geri_yaz_uop_o = uop_r;

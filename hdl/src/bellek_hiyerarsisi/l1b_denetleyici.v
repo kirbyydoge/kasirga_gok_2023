@@ -321,6 +321,10 @@ always @* begin
     port_yazma_istegi_ns = port_yazma_istegi_r;
     l1_yol_guncellendi_ns = l1_yol_guncellendi_r;
 
+    if (port_veri_hazir_i && port_veri_gecerli_o) begin
+        port_veri_gecerli_ns = `LOW;
+    end
+
     case(l1_durum_r)
     L1_BOSTA: begin
         port_istek_hazir_ns = `HIGH;
@@ -346,10 +350,12 @@ always @* begin
                     set_veri(fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL], port_istek_adres_i, port_istek_veri_i);
                     port_yazma_istegi_ns = `LOW;
                 end
+                else if (port_veri_gecerli_o && !port_veri_hazir_i) begin
+                    l1_durum_ns = L1_SORGU;
+                end
                 else begin
                     port_veri_ns = get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], port_istek_adres_i);
                     port_veri_gecerli_ns = `HIGH;
-                    l1_durum_ns = L1_YANIT;
                 end
             end
             else begin
@@ -384,10 +390,13 @@ always @* begin
                 port_yazma_istegi_ns = `LOW;
                 l1_durum_ns = L1_SATIR_ACIK;
             end
+            else if (port_veri_gecerli_o && !port_veri_hazir_i) begin
+                l1_durum_ns = L1_SORGU;
+            end
             else begin
                 port_veri_ns =  get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], port_istek_adres_r);
                 port_veri_gecerli_ns = `HIGH;
-                l1_durum_ns = L1_YANIT;
+                l1_durum_ns = L1_SATIR_ACIK;
             end
         end
         else begin

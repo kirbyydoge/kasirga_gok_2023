@@ -73,7 +73,7 @@ always begin
 end
 
 localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32test/rv32imc-hex/rv32ui-p-sh.hex";
-localparam RAM_DELAY = 16;
+localparam RAM_DELAY = 1;
 reg [RAM_DELAY-1:0] delay_q;
 
 always @(posedge clk) begin
@@ -82,7 +82,12 @@ always @(posedge clk) begin
     end
     else begin
         if (!(|delay_q)) begin
-            delay_q <= {delay_q[RAM_DELAY-2:0], iomem_valid};
+            if (RAM_DELAY > 1) begin
+                delay_q <= {delay_q[RAM_DELAY-2:0], iomem_valid};
+            end
+            else begin
+                delay_q <= iomem_valid;
+            end
         end
         else begin
             delay_q <= delay_q << 1;
