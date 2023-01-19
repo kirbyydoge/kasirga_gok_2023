@@ -65,6 +65,9 @@ reg [`ADRES_BIT-1:0] port_istek_adres_ns;
 reg [`VERI_BIT-1:0] port_istek_veri_r;
 reg [`VERI_BIT-1:0] port_istek_veri_ns;
 
+reg [`VERI_BYTE-1:0] port_istek_maske_r;
+reg [`VERI_BYTE-1:0] port_istek_maske_ns;
+
 reg port_istek_hazir_r; 
 reg port_istek_hazir_ns;
 assign port_istek_hazir_o = port_istek_hazir_r;
@@ -199,8 +202,13 @@ task set_veri;
     input [$clog2(`L1V_YOL)-1:0] yol_idx;
     input [`ADRES_BIT-1:0] adres;
     input [`VERI_BIT-1:0] veri;
+    input [`VERI_BYTE-1:0] maske;
     begin
-        l1_buffer_bloklar_ns[yol_idx][get_bytes(adres) * 8 +: `VERI_BIT] = veri;
+        for (i = 0; i < `VERI_BYTE; i = i + 1) begin
+            if (maske[i]) begin
+                l1_buffer_bloklar_ns[yol_idx][get_bytes(adres) * 8 +: `VERI_BIT] = veri;
+            end
+        end
         l1_buffer_etiketler_ns[yol_idx] = get_etiket(adres);
         l1_yol_guncellendi_ns[yol_idx] = `HIGH;
         satir_kirli_ns[get_satir(adres)][yol_idx] = `HIGH;
@@ -309,6 +317,7 @@ always @* begin
     cikarma_sayaci_ns = cikarma_sayaci_r + 1;
     l1_istek_satir_ns = l1_istek_satir_r;
     port_veri_gecerli_ns = port_veri_gecerli_r;
+    port_istek_maske_ns = port_istek_maske_r;
     port_veri_ns = port_veri_r;
     l1_istek_gecerli_ns = `LOW;        // Tek cevrim 1 olmali
     l1_istek_yaz_ns = {`L1V_YOL{`LOW}}; // Tek cevrim 1 olmali
@@ -328,6 +337,7 @@ always @* begin
             port_istek_hazir_ns = `LOW;
             port_istek_adres_ns = port_istek_adres_i;
             port_istek_veri_ns = port_istek_veri_i;
+            port_istek_maske_ns = port_istek_maske_i;
             port_yazma_istegi_ns = port_istek_yaz_i;
             l1_cikar(port_istek_adres_i);
         end
@@ -340,10 +350,11 @@ always @* begin
             port_istek_hazir_ns = `LOW;
             port_istek_adres_ns = port_istek_adres_i;
             port_istek_veri_ns = port_istek_veri_i;
+            port_istek_maske_ns = port_istek_maske_i;
             port_yazma_istegi_ns = port_istek_yaz_i;
             if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
                 if (port_istek_yaz_i) begin
-                    set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_i, port_istek_veri_i);
+                    set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_i, port_istek_veri_i, port_istek_maske_i);
                     port_yazma_istegi_ns = `LOW;
                 end
                 else begin
@@ -380,7 +391,7 @@ always @* begin
         fn_l1_ara_sonuc_cmb = l1_ara(port_istek_adres_r);
         if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
             if (port_yazma_istegi_r) begin
-                set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_r, port_istek_veri_r);
+                set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_r, port_istek_veri_r, port_istek_maske_r);
                 port_yazma_istegi_ns = `LOW;
                 l1_durum_ns = L1_SATIR_ACIK;
             end
@@ -471,6 +482,7 @@ always @(posedge clk_i) begin
         port_istek_veri_r <= 0;
         port_veri_r <= 0;
         l1_yol_guncellendi_r <= 0;
+        port_istek_maske_r <= 0;
         l1_durum_r <= L1_BOSTA;
     end
     else begin
@@ -500,6 +512,7 @@ always @(posedge clk_i) begin
         port_veri_r <= port_veri_ns;
         port_yazma_istegi_r <= port_yazma_istegi_ns;
         l1_yol_guncellendi_r <= l1_yol_guncellendi_ns;
+        port_istek_maske_r <= port_istek_maske_ns;
         l1_durum_r <= l1_durum_ns;
     end
 end

@@ -304,17 +304,19 @@ veri_yolu_denetleyici vyd (
 assign io_cek_clk_w = clk;
 assign io_cek_rstn_w = resetn;
 
-// Cekirdek < Veri Yolu Denetleyicisi
-assign io_cek_l1vd_yanit_veri_w = 0;
-assign io_cek_l1vd_yanit_gecerli_w = `LOW;
-assign io_cek_l1vd_istek_hazir_w = `HIGH;
-
 // L1BD < Sistem
 assign io_l1bd_clk_w = clk;
 assign io_l1bd_rstn_w = resetn;
 
 // L1BV < Sistem
 assign io_l1bv_clk_w = clk;
+
+// L1VD < Sistem
+assign io_l1vd_clk_w = clk;
+assign io_l1vd_rstn_w = resetn;
+
+// L1VV < Sistem
+assign io_l1vv_clk_w = clk;
 
 // Veri yolu denetleyicisi < Sistem
 assign io_vyd_clk_w = clk;
@@ -331,6 +333,11 @@ assign io_l1bd_port_istek_gecerli_w = io_cek_buyruk_istek_gecerli_w;
 assign io_l1bd_port_istek_yaz_w = `LOW; // Getir asla yazmaz
 assign io_l1bd_port_istek_veri_w = {`L1_BLOK_BIT{1'b0}}; // Getir asla yazmaz
 assign io_l1bd_port_veri_hazir_w = io_cek_buyruk_yanit_hazir_w;
+
+// Cekirdek < L1VD
+assign io_cek_l1vd_yanit_veri_w = io_l1vd_port_veri_w;
+assign io_cek_l1vd_yanit_gecerli_w = io_l1vd_port_veri_gecerli_w;
+assign io_cek_l1vd_istek_hazir_w = io_l1vd_port_istek_hazir_w;
 
 // L1BD < L1BV Okuma / Yazma Gecikmesi
 reg [`L1_ONBELLEK_GECIKME-1:0]  io_sistem_l1bv_istek_r;
@@ -379,7 +386,7 @@ assign io_l1vd_port_istek_gecerli_w = io_cek_l1vd_istek_gecerli_w;
 assign io_l1vd_port_istek_yaz_w = io_cek_l1vd_istek_yaz_w;
 assign io_l1vd_port_istek_veri_w = io_cek_l1vd_istek_veri_w; 
 assign io_l1vd_port_istek_maske_w = io_cek_l1vd_istek_maske_w;
-assign io_l1vd_port_veri_hazir_w = io_cek_l1vd_istek_hazir_w;
+assign io_l1vd_port_veri_hazir_w = io_cek_l1vd_yanit_hazir_w;
 
 // L1VD < L1VV Okuma / Yazma Gecikmesi
 reg [`L1_ONBELLEK_GECIKME-1:0]  io_sistem_l1vv_istek_r;

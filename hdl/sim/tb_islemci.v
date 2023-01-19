@@ -72,7 +72,7 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32test/rv32imc-hex/rv32ui-p-sltu.hex";
+localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32test/rv32imc-hex/rv32ui-p-sh.hex";
 localparam RAM_DELAY = 16;
 reg [RAM_DELAY-1:0] delay_q;
 

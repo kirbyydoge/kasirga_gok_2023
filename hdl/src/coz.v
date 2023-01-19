@@ -740,8 +740,10 @@ begin
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
-    uop_ns[`UOP_BEL] = `UOP_BEL_LB; 
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_BEL] = `UOP_BEL_LB;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
 end
 endtask
@@ -759,7 +761,9 @@ begin
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
     uop_ns[`UOP_BEL] = `UOP_BEL_LH; 
     uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
 end
@@ -778,7 +782,9 @@ begin
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;    
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;    
     uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
     uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
 end
@@ -797,7 +803,9 @@ begin
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
     uop_ns[`UOP_BEL] = `UOP_BEL_LBU; 
     uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
 end
@@ -816,7 +824,9 @@ begin
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
     uop_ns[`UOP_BEL] = `UOP_BEL_LHU; 
     uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
 end
@@ -826,7 +836,7 @@ task uop_rv32sb();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
     buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{20{getir_buyruk_i[`S_IMM_HI]}}, getir_buyruk_i[`S_IMM_LO]};
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[`S_IMM_HI], getir_buyruk_i[`S_IMM_LO]};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -835,7 +845,9 @@ begin
     uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
     uop_ns[`UOP_RS2_EN] = `HIGH;
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
     uop_ns[`UOP_BEL] = `UOP_BEL_SB; 
 end
@@ -845,7 +857,7 @@ task uop_rv32sw();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
     buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{20{getir_buyruk_i[`S_IMM_HI]}}, getir_buyruk_i[`S_IMM_LO]};
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[`S_IMM_HI], getir_buyruk_i[`S_IMM_LO]};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -854,9 +866,11 @@ begin
     uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
     uop_ns[`UOP_RS2_EN] = `HIGH;
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
-    uop_ns[`UOP_BEL] = `UOP_BEL_SW; 
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW;
 end
 endtask
 
@@ -864,7 +878,7 @@ task uop_rv32sh();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
     buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{20{getir_buyruk_i[`S_IMM_HI]}}, getir_buyruk_i[`S_IMM_LO]};
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[`S_IMM_HI], getir_buyruk_i[`S_IMM_LO]};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -873,9 +887,11 @@ begin
     uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
     uop_ns[`UOP_RS2_EN] = `HIGH;
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
-    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
-    uop_ns[`UOP_BEL] = `UOP_BEL_NOP; 
+    uop_ns[`UOP_BEL] = `UOP_BEL_SH; 
 end
 endtask
 
@@ -924,7 +940,6 @@ endtask
 task uop_nop();
 begin
     uop_ns = {`UOP_BIT{1'b0}};
-    uop_ns[`UOP_VALID] = `HIGH;
     // Asagidaki gibi de yapabiliriz belki
     // uop_ns[`UOP_VALID] = `HIGH;
     // uop_ns[`UOP_AMB] = `UOP_AMB_NOP;

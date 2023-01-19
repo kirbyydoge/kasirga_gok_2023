@@ -97,7 +97,6 @@ endfunction
 // TODO: ANLIK DEGERLER GENISLETILECEKSE BUNUN MIKROISLEME EKLENMESI YA DA COZDE ARADAN HALLEDILMESI LAZIM
 always @* begin
     uop_ns = yurut_uop_i;
-    uop_ns[`UOP_VALID] = uop_gecerli_w; // simdilik her sey tek cevrim
     bosalt_cmb = `LOW;
     ddb_odd_ps_cmb = uop_ps_w;
     ddb_odd_kod_cmb = yurut_uop_i[`UOP_CSR_OP];
@@ -106,11 +105,12 @@ always @* begin
     uop_ns[`UOP_RD] = amb_sonuc_w;
 
     case(uop_yaz_sec_w) 
-    `UOP_YAZ_NOP: uop_ns[`UOP_RD] = amb_sonuc_w;
     `UOP_YAZ_AMB: uop_ns[`UOP_RD] = amb_sonuc_w;
     `UOP_YAZ_IS1: uop_ns[`UOP_RD] = amb_islec1_w;
     `UOP_YAZ_DAL: uop_ns[`UOP_RD] = uop_ps_w + 32'd4;   // dallanma biriminden gelmesi gerekiyor
     `UOP_YAZ_CSR: uop_ns[`UOP_RD] = uop_csr_w;
+    `UOP_YAZ_BEL: uop_ns[`UOP_RD] = amb_sonuc_w;
+    default     : uop_ns[`UOP_RD] = amb_sonuc_w;
     endcase
 
     case(uop_csr_islem_sec_w)
@@ -194,6 +194,7 @@ always @* begin
     
     duraklat_cmb = `LOW; // asla duraklatma
 
+    uop_ns[`UOP_VALID] = uop_gecerli_w && !bosalt_cmb; // simdilik her sey tek cevrim
     if (cek_duraklat_i) begin
         uop_ns = uop_r;
     end
