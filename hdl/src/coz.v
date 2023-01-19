@@ -4,6 +4,7 @@
 `include "mikroislem.vh"
 `include "coz.vh"
 `include "opcode.vh"
+`include "opcode_x.vh"
 
 module coz(
     input                           clk_i,
@@ -69,6 +70,12 @@ localparam CASE_SH         = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SH;
 localparam CASE_BLTU       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `BLTU;
 localparam CASE_BGEU       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `BGEU;
 localparam CASE_SLT        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SLT;
+localparam CASE_HMDST      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `HMDST;     
+localparam CASE_PKG        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `PKG; 
+localparam CASE_RVRS       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `RVRS;     
+localparam CASE_SLADD      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SLADD;     
+localparam CASE_CNTZ       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNTZ;     
+localparam CASE_CNTP       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNTP;     
 
 wire coz_aktif_w;
 
@@ -140,6 +147,12 @@ generate
     assign buyruk[`BLTU]    = match(getir_buyruk_i, `MASK_BLTU, `MATCH_BLTU) && coz_aktif_w;
     assign buyruk[`BGEU]    = match(getir_buyruk_i, `MASK_BGEU, `MATCH_BGEU) && coz_aktif_w;
     assign buyruk[`SLT]     = match(getir_buyruk_i, `MASK_SLT, `MATCH_SLT) && coz_aktif_w;
+    assign buyruk[`HMDST]   = match(getir_buyruk_i, `MASK_HMDST, `MATCH_HMDST) && coz_aktif_w;
+    assign buyruk[`PKG]     = match(getir_buyruk_i, `MASK_PKG, `MATCH_PKG) && coz_aktif_w;
+    assign buyruk[`RVRS]    = match(getir_buyruk_i, `MASK_RVRS, `MATCH_RVRS) && coz_aktif_w;
+    assign buyruk[`SLADD]   = match(getir_buyruk_i, `MASK_SLADD, `MATCH_SLADD) && coz_aktif_w;
+    assign buyruk[`CNTZ]    = match(getir_buyruk_i, `MASK_CNTZ, `MATCH_CNTZ) && coz_aktif_w;
+    assign buyruk[`CNTP]    = match(getir_buyruk_i, `MASK_CNTP, `MATCH_CNTP) && coz_aktif_w;
 
     assign gecersiz_buyruk_o = !(|buyruk) && coz_aktif_w;
 endgenerate
@@ -937,15 +950,123 @@ begin
 end
 endtask
 
+task uop_xhmdst();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_HMDST;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_xpkg();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_PKG;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_xrvrs();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB] = `UOP_AMB_RVRS;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_xsladd();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SLADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_xcntz();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB] = `UOP_AMB_CNTZ;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_xcntp();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB] = `UOP_AMB_CNTP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
 task uop_nop();
 begin
     uop_ns = {`UOP_BIT{1'b0}};
-    // Asagidaki gibi de yapabiliriz belki
-    // uop_ns[`UOP_VALID] = `HIGH;
-    // uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
-    // uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
-    // uop_ns[`UOP_DAL] = `UOP_DAL_NOP; 
-    // uop_ns[`UOP_BEL] = `UOP_BEL_NOP;
 end
 endtask
 
@@ -1007,6 +1128,12 @@ always @* begin
     CASE_LHU     : uop_rv32lhu();
     CASE_SB      : uop_rv32sb();
     CASE_SH      : uop_rv32sh();   
+    CASE_HMDST   : uop_nop();   
+    CASE_PKG     : uop_nop();   
+    CASE_RVRS    : uop_nop();   
+    CASE_SLADD   : uop_nop();   
+    CASE_CNTZ    : uop_nop();   
+    CASE_CNTP    : uop_nop();   
     default      : uop_nop();
     endcase
 

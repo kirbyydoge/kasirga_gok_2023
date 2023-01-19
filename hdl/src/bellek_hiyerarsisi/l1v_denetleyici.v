@@ -329,6 +329,8 @@ always @* begin
     vy_hedef_yol_ns = vy_hedef_yol_r;
     port_yazma_istegi_ns = port_yazma_istegi_r;
     l1_yol_guncellendi_ns = l1_yol_guncellendi_r;
+    port_istek_veri_ns = port_istek_veri_r;
+    vy_istek_adres_ns = vy_istek_adres_r;
 
     if (port_veri_hazir_i && port_veri_gecerli_o) begin
         port_veri_gecerli_ns = `LOW;

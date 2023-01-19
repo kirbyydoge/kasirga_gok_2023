@@ -78,6 +78,12 @@
 `define UOP_AMB_SRA         10
 `define UOP_AMB_SLT         11
 `define UOP_AMB_SLTU        12
+`define UOP_AMB_HMDST       13
+`define UOP_AMB_PKG         14
+`define UOP_AMB_RVRS        15
+`define UOP_AMB_SLADD       16
+`define UOP_AMB_CNTZ        17
+`define UOP_AMB_CNTP        18
 
 `define UOP_AMB_OP_NOP      0
 `define UOP_AMB_OP_RS1      1
@@ -86,7 +92,7 @@
 `define UOP_AMB_OP_CSR      4
 `define UOP_AMB_OP_PC       5
 
-`define UOP_AMB_OP_BIT      4
+`define UOP_AMB_OP_BIT      5
 
 // Islecler hangi veriler olmali?
 `define UOP_AMB_OP2_BIT     `UOP_AMB_OP_BIT
@@ -167,7 +173,6 @@
 `define UOP_CSR_OP              `UOP_CSR_OP_PTR +: `UOP_CSR_OP_BIT
 
 // TODO: Yapaz Zeka Birimi
-// TODO: Kriptografi Birimi
 
 `define UOP_BIT                 (`UOP_CSR_OP_PTR + `UOP_CSR_OP_BIT)
 

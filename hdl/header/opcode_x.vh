@@ -1,0 +1,13 @@
+// Kriptografi buyruklari
+`define MATCH_HMDST     32'ha001033
+`define MASK_HMDST      32'hfe00707f
+`define MATCH_PKG       32'h4004033
+`define MASK_PKG        32'hfe00707f
+`define MATCH_RVRS      32'h6b805013
+`define MASK_RVRS       32'hfff0707f
+`define MATCH_SLADD     32'h20002033
+`define MASK_SLADD      32'hfe00707f
+`define MATCH_CNTZ      32'h60101013
+`define MASK_CNTZ       32'hfff0707f
+`define MATCH_CNTP      32'h60201013
+`define MASK_CNTP       32'hfff0707f

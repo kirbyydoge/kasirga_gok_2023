@@ -72,5 +72,11 @@
 `define BLTU        'd41
 `define BGEU        'd42
 `define SLT         'd43
+`define HMDST       'd44
+`define PKG         'd45
+`define RVRS        'd46
+`define SLADD       'd47
+`define CNTZ        'd48
+`define CNTP        'd49
 
-`define N_BUYRUK    'd44    // Kac buyruk var?
+`define N_BUYRUK    'd50    // Kac buyruk var?
