@@ -120,6 +120,7 @@
 `define UOP_YAZ_DAL         3
 `define UOP_YAZ_CSR         4
 `define UOP_YAZ_BEL         5
+`define UOP_YAZ_YZB         6
 
 `define UOP_YAZ_BIT         3
 `define UOP_YAZ_PTR         (`UOP_AMB_PTR + `UOP_AMB_BIT)
@@ -178,8 +179,22 @@
 `define UOP_CSR_OP_PTR          (`UOP_BEL_PTR + `UOP_BEL_BIT)
 `define UOP_CSR_OP              `UOP_CSR_OP_PTR +: `UOP_CSR_OP_BIT
 
-// TODO: Yapaz Zeka Birimi
+// Yapaz Zeka Birimi
+`define UOP_YZB_NOP             0
+`define UOP_YZB_LDX_OP1         1
+`define UOP_YZB_LDX_OP2         2
+`define UOP_YZB_LDX_ALL         3
+`define UOP_YZB_LDW_OP1         4
+`define UOP_YZB_LDW_OP2         5
+`define UOP_YZB_LDW_ALL         6
+`define UOP_YZB_CLRX            7
+`define UOP_YZB_CLRW            8
+`define UOP_YZB_RUN             9
 
-`define UOP_BIT                 (`UOP_CSR_OP_PTR + `UOP_CSR_OP_BIT)
+`define UOP_YZB_BIT             4
+`define UOP_YZB_PTR             (`UOP_CSR_OP_PTR + `UOP_CSR_OP_BIT)
+`define UOP_YZB                 `UOP_YZB_PTR +: `UOP_YZB_BIT
+
+`define UOP_BIT                 (`UOP_YZB_PTR + `UOP_YZB_BIT)
 
 //!!! TODO: HER ASAMA ICIN MIKROISLEM TANIMLARI (COZ_UOP, YURUT_UOP...) YAPILMALI, BU SAYEDE UOP YAZMACLARI KUCULTULEBILIR !!!

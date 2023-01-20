@@ -56,6 +56,12 @@ wire                            amb_esittir_w;
 wire                            amb_kucuktur_w;
 wire [`VERI_BIT-1:0]            amb_sonuc_w;
 
+wire [`UOP_YZB_BIT-1:0]         uop_yzb_islem_sec_w;
+wire [`VERI_BIT-1:0]            yzb_islec1_w;
+wire [`VERI_BIT-1:0]            yzb_islec2_w;
+wire [`VERI_BIT-1:0]            yzb_sonuc_w;
+wire                            yzb_gecerli_w;
+
 
 reg                             duraklat_cmb;
 reg                             bosalt_cmb;
@@ -98,6 +104,7 @@ endfunction
 always @* begin
     uop_ns = yurut_uop_i;
     bosalt_cmb = `LOW;
+    duraklat_cmb = `LOW; 
     ddb_odd_ps_cmb = uop_ps_w;
     ddb_odd_kod_cmb = yurut_uop_i[`UOP_CSR_OP];
     ddb_odd_bilgi_cmb = {`MXLEN{1'b0}}; // mcause
@@ -110,6 +117,7 @@ always @* begin
     `UOP_YAZ_DAL: uop_ns[`UOP_RD] = uop_ps_w + 32'd4;   // dallanma biriminden gelmesi gerekiyor
     `UOP_YAZ_CSR: uop_ns[`UOP_RD] = uop_csr_w;
     `UOP_YAZ_BEL: uop_ns[`UOP_RD] = amb_sonuc_w;
+    `UOP_YAZ_YZB: uop_ns[`UOP_RD] = yzb_sonuc_w;
     default     : uop_ns[`UOP_RD] = amb_sonuc_w;
     endcase
 
@@ -191,8 +199,12 @@ always @* begin
         g2_hatali_tahmin_cmb = `LOW;
     end
     endcase
-    
-    duraklat_cmb = `LOW; // asla duraklatma
+
+    case(uop_yzb_islem_sec_w)
+    `UOP_YZB_RUN: begin
+        duraklat_cmb = !yzb_gecerli_w;
+    end
+    endcase
 
     uop_ns[`UOP_VALID] = uop_gecerli_w && !bosalt_cmb; // simdilik her sey tek cevrim
     if (cek_duraklat_i) begin
@@ -210,13 +222,23 @@ always @(posedge clk_i) begin
 end
 
 amb amb (
-    .clk_i             ( clk_i               ),
-    .islem_kod_i       ( uop_amb_islem_sec_w ),
-    .islem_islec1_i    ( amb_islec1_w        ),
-    .islem_islec2_i    ( amb_islec2_w        ),
-    .islem_esittir_o   ( amb_esittir_w       ),
-    .islem_kucuktur_o  ( amb_kucuktur_w      ),
-    .islem_sonuc_o     ( amb_sonuc_w         )
+    .clk_i             ( clk_i                ),
+    .islem_kod_i       ( uop_amb_islem_sec_w  ),
+    .islem_islec1_i    ( amb_islec1_w         ),
+    .islem_islec2_i    ( amb_islec2_w         ),
+    .islem_esittir_o   ( amb_esittir_w        ),
+    .islem_kucuktur_o  ( amb_kucuktur_w       ),
+    .islem_sonuc_o     ( amb_sonuc_w          )
+);
+
+yapay_zeka_birimi yzb (
+    .clk_i              ( clk_i               ),
+    .rstn_i             ( rstn_i              ),
+    .islem_kod_i        ( uop_yzb_islem_sec_w ),
+    .islem_islec1_i     ( yzb_islec1_w        ),
+    .islem_islec2_i     ( yzb_islec2_w        ),
+    .islem_sonuc_o      ( yzb_sonuc_w         ),
+    .islem_gecerli_o    ( yzb_gecerli_w       )
 );
 
 assign uop_gecerli_w = yurut_uop_i[`UOP_VALID];
@@ -234,12 +256,16 @@ assign uop_amb_islem_sec_w = yurut_uop_i[`UOP_AMB];
 assign uop_dal_islem_sec_w = yurut_uop_i[`UOP_DAL];
 assign uop_csr_islem_sec_w = yurut_uop_i[`UOP_CSR_OP];
 assign uop_yaz_sec_w = yurut_uop_i[`UOP_YAZ];
+assign uop_yzb_islem_sec_w = yurut_uop_i[`UOP_YZB];
 
 assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w, uop_csr_w, uop_ps_w);
 assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w, uop_csr_w, uop_ps_w);
 
+assign yzb_islec1_w = uop_rs1_w;
+assign yzb_islec2_w = uop_rs2_w;
+
 assign bosalt_o = bosalt_cmb && uop_gecerli_w;
-assign duraklat_o = `LOW && uop_gecerli_w;
+assign duraklat_o = duraklat_cmb && uop_gecerli_w;
 
 assign g1_ps_o = g1_ps_cmb;
 assign g1_ps_gecerli_o = g1_ps_gecerli_cmb && uop_gecerli_w;

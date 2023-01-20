@@ -5,6 +5,7 @@
 `include "coz.vh"
 `include "opcode.vh"
 `include "opcode_x.vh"
+`include "opcode_cnn.vh"
 
 module coz(
     input                           clk_i,
@@ -90,6 +91,11 @@ localparam CASE_DIVU       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `DIVU;
 localparam CASE_REM        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `REM;
 localparam CASE_REMU       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `REMU;
 localparam CASE_SFENCE_VMA = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SFENCE_VMA;
+localparam CASE_CNN_LDX    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_LDX; 
+localparam CASE_CNN_CLRX   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_CLRX;     
+localparam CASE_CNN_LDW    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_LDW; 
+localparam CASE_CNN_CLRW   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_CLRW;     
+localparam CASE_CNN_RUN    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_RUN; 
 
 wire coz_aktif_w;
 
@@ -99,6 +105,8 @@ reg [`VERI_BIT-1:0]         buyruk_rs2_cmb;
 reg [`YAZMAC_BIT-1:0]       buyruk_rd_cmb;
 reg [`CSR_ADRES_BIT-1:0]    buyruk_csr_cmb;
 reg                         buyruk_etiket_gecerli_cmb;
+reg                         buyruk_cnn_rs1_en_cmb;
+reg                         buyruk_cnn_rs2_en_cmb;
 
 reg [`UOP_TAG_BIT-1:0]  buyruk_etiket_r;
 reg [`UOP_TAG_BIT-1:0]  buyruk_etiket_ns;
@@ -181,6 +189,11 @@ generate
     assign buyruk[`REM]        = match(getir_buyruk_i, `MASK_REM, `MATCH_REM) && coz_aktif_w;
     assign buyruk[`REMU]       = match(getir_buyruk_i, `MASK_REMU, `MATCH_REMU) && coz_aktif_w;
     assign buyruk[`SFENCE_VMA] = match(getir_buyruk_i, `MASK_SFENCE_VMA, `MATCH_SFENCE_VMA) && coz_aktif_w;
+    assign buyruk[`CNN_LDX]    = match(getir_buyruk_i, `MASK_CNN_LDX, `MATCH_CNN_LDX) && coz_aktif_w;
+    assign buyruk[`CNN_CLRX]   = match(getir_buyruk_i, `MASK_CNN_CLRX, `MATCH_CNN_CLRX) && coz_aktif_w;
+    assign buyruk[`CNN_LDW]    = match(getir_buyruk_i, `MASK_CNN_LDW, `MATCH_CNN_LDW) && coz_aktif_w;
+    assign buyruk[`CNN_CLRW]   = match(getir_buyruk_i, `MASK_CNN_CLRW, `MATCH_CNN_CLRW) && coz_aktif_w;
+    assign buyruk[`CNN_RUN]    = match(getir_buyruk_i, `MASK_CNN_RUN, `MATCH_CNN_RUN) && coz_aktif_w;
 
     assign gecersiz_buyruk_o = !(|buyruk) && coz_aktif_w;
 endgenerate
@@ -1345,6 +1358,65 @@ begin
 end
 endtask
 
+task uop_cnnldx();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS2]};
+    buyruk_cnn_rs1_en_cmb = getir_buyruk_i[`CNN_RS1_EN];
+    buyruk_cnn_rs2_en_cmb = getir_buyruk_i[`CNN_RS2_EN];
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = buyruk_cnn_rs1_en_cmb;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = buyruk_cnn_rs2_en_cmb;
+    uop_ns[`UOP_YZB] =  buyruk_cnn_rs1_en_cmb && buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDX_ALL :
+                                                 buyruk_cnn_rs1_en_cmb  ? `UOP_YZB_LDX_OP1 :
+                                                 buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDX_OP2 : `UOP_YZB_NOP;
+end
+endtask
+
+task uop_cnnclrx();
+begin
+    uop_ns[`UOP_YZB] =  `UOP_YZB_CLRX;
+end
+endtask
+
+task uop_cnnldw();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS2]};
+    buyruk_cnn_rs1_en_cmb = getir_buyruk_i[`CNN_RS1_EN];
+    buyruk_cnn_rs2_en_cmb = getir_buyruk_i[`CNN_RS2_EN];
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = buyruk_cnn_rs1_en_cmb;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = buyruk_cnn_rs2_en_cmb;
+    uop_ns[`UOP_YZB] =  buyruk_cnn_rs1_en_cmb && buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDW_ALL :
+                                                 buyruk_cnn_rs1_en_cmb  ? `UOP_YZB_LDW_OP1 :
+                                                 buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDW_OP2 : `UOP_YZB_NOP;
+end
+endtask
+
+task uop_cnnclrw();
+begin
+    uop_ns[`UOP_YZB] =  `UOP_YZB_CLRW;
+end
+endtask
+
+task uop_cnnrun();
+begin
+    buyruk_rd_cmb = getir_buyruk_i[`CNN_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_YZB] = `UOP_YZB_RUN;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_YZB;
+end
+endtask
+
 task uop_nop();
 begin
     uop_ns = {`UOP_BIT{1'b0}};
@@ -1357,6 +1429,8 @@ always @* begin
     buyruk_rs2_cmb = {`VERI_BIT{1'b0}};
     buyruk_rd_cmb = {`YAZMAC_BIT{1'b0}};
     buyruk_csr_cmb = {`CSR_ADRES_BIT{1'b0}};
+    buyruk_cnn_rs1_en_cmb = `LOW;
+    buyruk_cnn_rs2_en_cmb = `LOW;
     buyruk_etiket_gecerli_cmb = `LOW;
     uop_ns = {`UOP_BIT{`LOW}};
     buyruk_etiket_ns = buyruk_etiket_r;
@@ -1425,12 +1499,17 @@ always @* begin
     CASE_REMU        : uop_rv32remu(); 
     CASE_SFENCE_VMA  : uop_nop();
     CASE_WFI         : uop_nop();   
-    CASE_HMDST       : uop_nop();   
-    CASE_PKG         : uop_nop();   
-    CASE_RVRS        : uop_nop();   
-    CASE_SLADD       : uop_nop();   
-    CASE_CNTZ        : uop_nop();   
-    CASE_CNTP        : uop_nop();   
+    CASE_HMDST       : uop_xhmdst();   
+    CASE_PKG         : uop_xpkg();   
+    CASE_RVRS        : uop_xrvrs();   
+    CASE_SLADD       : uop_xsladd();   
+    CASE_CNTZ        : uop_xcntz();   
+    CASE_CNTP        : uop_xcntp();
+    CASE_CNN_LDX     : uop_cnnldx();   
+    CASE_CNN_CLRX    : uop_cnnclrx();   
+    CASE_CNN_LDW     : uop_cnnldw();   
+    CASE_CNN_CLRW    : uop_cnnclrw();   
+    CASE_CNN_RUN     : uop_cnnrun();      
     default          : uop_nop();
     endcase
 

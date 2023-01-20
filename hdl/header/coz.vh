@@ -5,6 +5,12 @@
 `define R_RS1           19:15
 `define R_RS2           24:20
 
+`define CNN_RD          11:7
+`define CNN_RS1         19:15
+`define CNN_RS2         24:20
+`define CNN_RS1_EN      30
+`define CNN_RS2_EN      31
+
 `define I_RD            11:7
 `define I_RS1           19:15
 `define I_IMM           31:20
@@ -100,5 +106,11 @@
 `define REM         'd61
 `define REMU        'd62
 `define SFENCE_VMA  'd63
+`define CNN_LDX     'd64
+`define CNN_CLRX    'd65
+`define CNN_LDW     'd66
+`define CNN_CLRW    'd67
+`define CNN_RUN     'd68
 
-`define N_BUYRUK    'd64    // Kac buyruk var?
+
+`define N_BUYRUK    'd69    // Kac buyruk var?

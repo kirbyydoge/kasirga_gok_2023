@@ -56,7 +56,7 @@
 `define ALL_ONES_64          64'hFFFF_FFFF_FFFF_FFFF
 `define ALL_ONES_32          32'hFFFF_FFFF
 
-// ----Maskeleme İçin Yardımcı Tanımlar
+// ----Maskeleme İçin Yardımcı Tanımlar----
 `define NOP_MASKE           4'b0000  // Böyle mi olmalı ?
 
 `define BYTE_MAKSE_0        4'b0001
@@ -70,5 +70,8 @@
 
 `define WORD_MASKE          4'b1111
 
+// ----Yapay Zeka Birimi Tanimlamalar----
+`define N_CNN_YAZMAC        16
+`define CNN_YAZMAC_BIT      $clog2(`N_CNN_YAZMAC + 1)
 
 
