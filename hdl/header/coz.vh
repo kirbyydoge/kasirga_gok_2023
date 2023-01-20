@@ -16,6 +16,14 @@
 `define S_IMM_HI        31:25
 `define S_SIGN          31
 
+`define B_RS1           19:15
+`define B_RS2           24:20
+`define B_IMM_ST        31
+`define B_IMM_ND        7
+`define B_IMM_RD        30:25
+`define B_IMM_TH        11:8
+`define B_SIGN          31
+
 `define U_RD            11:7
 `define U_IMM           31:12
 `define U_SIGN          31
@@ -78,5 +86,19 @@
 `define SLADD       'd47
 `define CNTZ        'd48
 `define CNTP        'd49
+`define SLTIU       'd50
+`define SLL         'd51
+`define SRL         'd52
+`define SRA         'd53
+`define WFI         'd54
+`define MUL         'd55
+`define MULHU       'd56
+`define MULH        'd57
+`define MULHSU      'd58
+`define DIV         'd59
+`define DIVU        'd60
+`define REM         'd61
+`define REMU        'd62
+`define SFENCE_VMA  'd63
 
-`define N_BUYRUK    'd50    // Kac buyruk var?
+`define N_BUYRUK    'd64    // Kac buyruk var?

@@ -84,6 +84,12 @@
 `define UOP_AMB_SLADD       16
 `define UOP_AMB_CNTZ        17
 `define UOP_AMB_CNTP        18
+`define UOP_AMB_MULH        19
+`define UOP_AMB_MULHSU      20
+`define UOP_AMB_MULHU       21
+`define UOP_AMB_DIVU        22
+`define UOP_AMB_REM         23
+`define UOP_AMB_REMU        24
 
 `define UOP_AMB_OP_NOP      0
 `define UOP_AMB_OP_RS1      1
@@ -92,7 +98,7 @@
 `define UOP_AMB_OP_CSR      4
 `define UOP_AMB_OP_PC       5
 
-`define UOP_AMB_OP_BIT      5
+`define UOP_AMB_OP_BIT      3
 
 // Islecler hangi veriler olmali?
 `define UOP_AMB_OP2_BIT     `UOP_AMB_OP_BIT
@@ -103,7 +109,7 @@
 `define UOP_AMB_OP1_PTR     (`UOP_AMB_OP2_PTR + `UOP_AMB_OP2_BIT)
 `define UOP_AMB_OP1         `UOP_AMB_OP1_PTR +: `UOP_AMB_OP1_BIT
 
-`define UOP_AMB_BIT         4
+`define UOP_AMB_BIT         5
 `define UOP_AMB_PTR         (`UOP_AMB_OP1_PTR + `UOP_AMB_OP1_BIT)
 `define UOP_AMB             `UOP_AMB_PTR +: `UOP_AMB_BIT
 

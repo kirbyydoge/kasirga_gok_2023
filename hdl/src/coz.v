@@ -76,6 +76,20 @@ localparam CASE_RVRS       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `RVRS;
 localparam CASE_SLADD      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SLADD;     
 localparam CASE_CNTZ       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNTZ;     
 localparam CASE_CNTP       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNTP;     
+localparam CASE_SLTIU      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SLTIU;
+localparam CASE_SLL        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SLL;
+localparam CASE_SRL        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SRL;
+localparam CASE_SRA        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SRA;
+localparam CASE_WFI        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `WFI;
+localparam CASE_MUL        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `MUL;
+localparam CASE_MULHU      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `MULHU;
+localparam CASE_MULHSU     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `MULHSU;
+localparam CASE_MULH       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `MULH;
+localparam CASE_DIV        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `DIV;
+localparam CASE_DIVU       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `DIVU;
+localparam CASE_REM        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `REM;
+localparam CASE_REMU       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `REMU;
+localparam CASE_SFENCE_VMA = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `SFENCE_VMA;
 
 wire coz_aktif_w;
 
@@ -101,58 +115,72 @@ begin
     match = &(~((buyruk & maske) ^ eslik));
 end
 endfunction
-
-generate   
-    assign buyruk[`LUI]     = match(getir_buyruk_i, `MASK_LUI, `MATCH_LUI) && coz_aktif_w;
-    assign buyruk[`AUIPC]   = match(getir_buyruk_i, `MASK_AUIPC, `MATCH_AUIPC) && coz_aktif_w;
-    assign buyruk[`JALR]    = match(getir_buyruk_i, `MASK_JALR, `MATCH_JALR) && coz_aktif_w;
-    assign buyruk[`JAL]     = match(getir_buyruk_i, `MASK_JAL, `MATCH_JAL) && coz_aktif_w;
-    assign buyruk[`BEQ]     = match(getir_buyruk_i, `MASK_BEQ, `MATCH_BEQ) && coz_aktif_w;
-    assign buyruk[`BNE]     = match(getir_buyruk_i, `MASK_BNE, `MATCH_BNE) && coz_aktif_w;
-    assign buyruk[`BLT]     = match(getir_buyruk_i, `MASK_BLT, `MATCH_BLT) && coz_aktif_w;
-    assign buyruk[`LW]      = match(getir_buyruk_i, `MASK_LW, `MATCH_LW) && coz_aktif_w;
-    assign buyruk[`SW]      = match(getir_buyruk_i, `MASK_SW, `MATCH_SW) && coz_aktif_w;
-    assign buyruk[`ADDI]    = match(getir_buyruk_i, `MASK_ADDI, `MATCH_ADDI) && coz_aktif_w;
-    assign buyruk[`ADD]     = match(getir_buyruk_i, `MASK_ADD, `MATCH_ADD) && coz_aktif_w;
-    assign buyruk[`SUB]     = match(getir_buyruk_i, `MASK_SUB, `MATCH_SUB) && coz_aktif_w;
-    assign buyruk[`OR]      = match(getir_buyruk_i, `MASK_OR, `MATCH_OR) && coz_aktif_w;
-    assign buyruk[`AND]     = match(getir_buyruk_i, `MASK_AND, `MATCH_AND) && coz_aktif_w;
-    assign buyruk[`XOR]     = match(getir_buyruk_i, `MASK_XOR, `MATCH_XOR) && coz_aktif_w;
-    assign buyruk[`CSRRW]   = match(getir_buyruk_i, `MASK_CSRRW, `MATCH_CSRRW) && coz_aktif_w;
-    assign buyruk[`CSRRS]   = match(getir_buyruk_i, `MASK_CSRRS, `MATCH_CSRRS) && coz_aktif_w;
-    assign buyruk[`CSRRWI]  = match(getir_buyruk_i, `MASK_CSRRWI, `MATCH_CSRRWI) && coz_aktif_w;
-    assign buyruk[`CSRRSI]  = match(getir_buyruk_i, `MASK_CSRRSI, `MATCH_CSRRSI) && coz_aktif_w;
-    assign buyruk[`FENCE]   = match(getir_buyruk_i, `MASK_FENCE, `MATCH_FENCE) && coz_aktif_w;
-    assign buyruk[`ECALL]   = match(getir_buyruk_i, `MASK_ECALL, `MATCH_ECALL) && coz_aktif_w;
-    assign buyruk[`MRET]    = match(getir_buyruk_i, `MASK_MRET, `MATCH_MRET) && coz_aktif_w;
-    assign buyruk[`SLLI]    = match(getir_buyruk_i, `MASK_SLLI, `MATCH_SLLI) && coz_aktif_w;
-    assign buyruk[`ORI]     = match(getir_buyruk_i, `MASK_ORI, `MATCH_ORI) && coz_aktif_w;
-    assign buyruk[`BGE]     = match(getir_buyruk_i, `MASK_BGE, `MATCH_BGE) && coz_aktif_w;
-    assign buyruk[`SLTI]    = match(getir_buyruk_i, `MASK_SLTI, `MATCH_SLTI) && coz_aktif_w;
-    assign buyruk[`SLTU]    = match(getir_buyruk_i, `MASK_SLTU, `MATCH_SLTU) && coz_aktif_w;
-    assign buyruk[`XORI]    = match(getir_buyruk_i, `MASK_XORI, `MATCH_XORI) && coz_aktif_w;
-    assign buyruk[`ANDI]    = match(getir_buyruk_i, `MASK_ANDI, `MATCH_ANDI) && coz_aktif_w;
-    assign buyruk[`SRLI]    = match(getir_buyruk_i, `MASK_SRLI, `MATCH_SRLI) && coz_aktif_w;
-    assign buyruk[`SRAI]    = match(getir_buyruk_i, `MASK_SRAI, `MATCH_SRAI) && coz_aktif_w;
-    assign buyruk[`FENCE_I] = match(getir_buyruk_i, `MASK_FENCE_I, `MATCH_FENCE_I) && coz_aktif_w;
-    assign buyruk[`CSRRC]   = match(getir_buyruk_i, `MASK_CSRRC, `MATCH_CSRRC) && coz_aktif_w;
-    assign buyruk[`CSRRCI]  = match(getir_buyruk_i, `MASK_CSRRCI, `MATCH_CSRRCI) && coz_aktif_w;
-    assign buyruk[`EBREAK]  = match(getir_buyruk_i, `MASK_EBREAK, `MATCH_EBREAK) && coz_aktif_w;
-    assign buyruk[`LB]      = match(getir_buyruk_i, `MASK_LB, `MATCH_LB) && coz_aktif_w;
-    assign buyruk[`LH]      = match(getir_buyruk_i, `MASK_LH, `MATCH_LH) && coz_aktif_w;
-    assign buyruk[`LBU]     = match(getir_buyruk_i, `MASK_LBU, `MATCH_LBU) && coz_aktif_w;
-    assign buyruk[`LHU]     = match(getir_buyruk_i, `MASK_LHU, `MATCH_LHU) && coz_aktif_w;
-    assign buyruk[`SB]      = match(getir_buyruk_i, `MASK_SB, `MATCH_SB) && coz_aktif_w;
-    assign buyruk[`SH]      = match(getir_buyruk_i, `MASK_SH, `MATCH_SH) && coz_aktif_w;
-    assign buyruk[`BLTU]    = match(getir_buyruk_i, `MASK_BLTU, `MATCH_BLTU) && coz_aktif_w;
-    assign buyruk[`BGEU]    = match(getir_buyruk_i, `MASK_BGEU, `MATCH_BGEU) && coz_aktif_w;
-    assign buyruk[`SLT]     = match(getir_buyruk_i, `MASK_SLT, `MATCH_SLT) && coz_aktif_w;
-    assign buyruk[`HMDST]   = match(getir_buyruk_i, `MASK_HMDST, `MATCH_HMDST) && coz_aktif_w;
-    assign buyruk[`PKG]     = match(getir_buyruk_i, `MASK_PKG, `MATCH_PKG) && coz_aktif_w;
-    assign buyruk[`RVRS]    = match(getir_buyruk_i, `MASK_RVRS, `MATCH_RVRS) && coz_aktif_w;
-    assign buyruk[`SLADD]   = match(getir_buyruk_i, `MASK_SLADD, `MATCH_SLADD) && coz_aktif_w;
-    assign buyruk[`CNTZ]    = match(getir_buyruk_i, `MASK_CNTZ, `MATCH_CNTZ) && coz_aktif_w;
-    assign buyruk[`CNTP]    = match(getir_buyruk_i, `MASK_CNTP, `MATCH_CNTP) && coz_aktif_w;
+   
+generate      
+    assign buyruk[`LUI]        = match(getir_buyruk_i, `MASK_LUI, `MATCH_LUI) && coz_aktif_w;
+    assign buyruk[`AUIPC]      = match(getir_buyruk_i, `MASK_AUIPC, `MATCH_AUIPC) && coz_aktif_w;
+    assign buyruk[`JALR]       = match(getir_buyruk_i, `MASK_JALR, `MATCH_JALR) && coz_aktif_w;
+    assign buyruk[`JAL]        = match(getir_buyruk_i, `MASK_JAL, `MATCH_JAL) && coz_aktif_w;
+    assign buyruk[`BEQ]        = match(getir_buyruk_i, `MASK_BEQ, `MATCH_BEQ) && coz_aktif_w;
+    assign buyruk[`BNE]        = match(getir_buyruk_i, `MASK_BNE, `MATCH_BNE) && coz_aktif_w;
+    assign buyruk[`BLT]        = match(getir_buyruk_i, `MASK_BLT, `MATCH_BLT) && coz_aktif_w;
+    assign buyruk[`LW]         = match(getir_buyruk_i, `MASK_LW, `MATCH_LW) && coz_aktif_w;
+    assign buyruk[`SW]         = match(getir_buyruk_i, `MASK_SW, `MATCH_SW) && coz_aktif_w;
+    assign buyruk[`ADDI]       = match(getir_buyruk_i, `MASK_ADDI, `MATCH_ADDI) && coz_aktif_w;
+    assign buyruk[`ADD]        = match(getir_buyruk_i, `MASK_ADD, `MATCH_ADD) && coz_aktif_w;
+    assign buyruk[`SUB]        = match(getir_buyruk_i, `MASK_SUB, `MATCH_SUB) && coz_aktif_w;
+    assign buyruk[`OR]         = match(getir_buyruk_i, `MASK_OR, `MATCH_OR) && coz_aktif_w;
+    assign buyruk[`AND]        = match(getir_buyruk_i, `MASK_AND, `MATCH_AND) && coz_aktif_w;
+    assign buyruk[`XOR]        = match(getir_buyruk_i, `MASK_XOR, `MATCH_XOR) && coz_aktif_w;
+    assign buyruk[`CSRRW]      = match(getir_buyruk_i, `MASK_CSRRW, `MATCH_CSRRW) && coz_aktif_w;
+    assign buyruk[`CSRRS]      = match(getir_buyruk_i, `MASK_CSRRS, `MATCH_CSRRS) && coz_aktif_w;
+    assign buyruk[`CSRRWI]     = match(getir_buyruk_i, `MASK_CSRRWI, `MATCH_CSRRWI) && coz_aktif_w;
+    assign buyruk[`CSRRSI]     = match(getir_buyruk_i, `MASK_CSRRSI, `MATCH_CSRRSI) && coz_aktif_w;
+    assign buyruk[`FENCE]      = match(getir_buyruk_i, `MASK_FENCE, `MATCH_FENCE) && coz_aktif_w;
+    assign buyruk[`ECALL]      = match(getir_buyruk_i, `MASK_ECALL, `MATCH_ECALL) && coz_aktif_w;
+    assign buyruk[`MRET]       = match(getir_buyruk_i, `MASK_MRET, `MATCH_MRET) && coz_aktif_w;
+    assign buyruk[`SLLI]       = match(getir_buyruk_i, `MASK_SLLI, `MATCH_SLLI) && coz_aktif_w;
+    assign buyruk[`ORI]        = match(getir_buyruk_i, `MASK_ORI, `MATCH_ORI) && coz_aktif_w;
+    assign buyruk[`BGE]        = match(getir_buyruk_i, `MASK_BGE, `MATCH_BGE) && coz_aktif_w;
+    assign buyruk[`SLTI]       = match(getir_buyruk_i, `MASK_SLTI, `MATCH_SLTI) && coz_aktif_w;
+    assign buyruk[`SLTU]       = match(getir_buyruk_i, `MASK_SLTU, `MATCH_SLTU) && coz_aktif_w;
+    assign buyruk[`XORI]       = match(getir_buyruk_i, `MASK_XORI, `MATCH_XORI) && coz_aktif_w;
+    assign buyruk[`ANDI]       = match(getir_buyruk_i, `MASK_ANDI, `MATCH_ANDI) && coz_aktif_w;
+    assign buyruk[`SRLI]       = match(getir_buyruk_i, `MASK_SRLI, `MATCH_SRLI) && coz_aktif_w;
+    assign buyruk[`SRAI]       = match(getir_buyruk_i, `MASK_SRAI, `MATCH_SRAI) && coz_aktif_w;
+    assign buyruk[`FENCE_I]    = match(getir_buyruk_i, `MASK_FENCE_I, `MATCH_FENCE_I) && coz_aktif_w;
+    assign buyruk[`CSRRC]      = match(getir_buyruk_i, `MASK_CSRRC, `MATCH_CSRRC) && coz_aktif_w;
+    assign buyruk[`CSRRCI]     = match(getir_buyruk_i, `MASK_CSRRCI, `MATCH_CSRRCI) && coz_aktif_w;
+    assign buyruk[`EBREAK]     = match(getir_buyruk_i, `MASK_EBREAK, `MATCH_EBREAK) && coz_aktif_w;
+    assign buyruk[`LB]         = match(getir_buyruk_i, `MASK_LB, `MATCH_LB) && coz_aktif_w;
+    assign buyruk[`LH]         = match(getir_buyruk_i, `MASK_LH, `MATCH_LH) && coz_aktif_w;
+    assign buyruk[`LBU]        = match(getir_buyruk_i, `MASK_LBU, `MATCH_LBU) && coz_aktif_w;
+    assign buyruk[`LHU]        = match(getir_buyruk_i, `MASK_LHU, `MATCH_LHU) && coz_aktif_w;
+    assign buyruk[`SB]         = match(getir_buyruk_i, `MASK_SB, `MATCH_SB) && coz_aktif_w;
+    assign buyruk[`SH]         = match(getir_buyruk_i, `MASK_SH, `MATCH_SH) && coz_aktif_w;
+    assign buyruk[`BLTU]       = match(getir_buyruk_i, `MASK_BLTU, `MATCH_BLTU) && coz_aktif_w;
+    assign buyruk[`BGEU]       = match(getir_buyruk_i, `MASK_BGEU, `MATCH_BGEU) && coz_aktif_w;
+    assign buyruk[`SLT]        = match(getir_buyruk_i, `MASK_SLT, `MATCH_SLT) && coz_aktif_w;
+    assign buyruk[`HMDST]      = match(getir_buyruk_i, `MASK_HMDST, `MATCH_HMDST) && coz_aktif_w;
+    assign buyruk[`PKG]        = match(getir_buyruk_i, `MASK_PKG, `MATCH_PKG) && coz_aktif_w;
+    assign buyruk[`RVRS]       = match(getir_buyruk_i, `MASK_RVRS, `MATCH_RVRS) && coz_aktif_w;
+    assign buyruk[`SLADD]      = match(getir_buyruk_i, `MASK_SLADD, `MATCH_SLADD) && coz_aktif_w;
+    assign buyruk[`CNTZ]       = match(getir_buyruk_i, `MASK_CNTZ, `MATCH_CNTZ) && coz_aktif_w;
+    assign buyruk[`CNTP]       = match(getir_buyruk_i, `MASK_CNTP, `MATCH_CNTP) && coz_aktif_w;
+    assign buyruk[`SLTIU]      = match(getir_buyruk_i, `MASK_SLTIU, `MATCH_SLTIU) && coz_aktif_w;
+    assign buyruk[`SLL]        = match(getir_buyruk_i, `MASK_SLL, `MATCH_SLL) && coz_aktif_w;
+    assign buyruk[`SRL]        = match(getir_buyruk_i, `MASK_SRL, `MATCH_SRL) && coz_aktif_w;
+    assign buyruk[`SRA]        = match(getir_buyruk_i, `MASK_SRA, `MATCH_SRA) && coz_aktif_w;
+    assign buyruk[`WFI]        = match(getir_buyruk_i, `MASK_WFI, `MATCH_WFI) && coz_aktif_w;
+    assign buyruk[`MUL]        = match(getir_buyruk_i, `MASK_MUL, `MATCH_MUL) && coz_aktif_w;
+    assign buyruk[`MULH]       = match(getir_buyruk_i, `MASK_MULH, `MATCH_MULH) && coz_aktif_w;
+    assign buyruk[`MULHSU]     = match(getir_buyruk_i, `MASK_MULHSU, `MATCH_MULHSU) && coz_aktif_w;
+    assign buyruk[`MULHU]      = match(getir_buyruk_i, `MASK_MULHU, `MATCH_MULHU) && coz_aktif_w;
+    assign buyruk[`DIV]        = match(getir_buyruk_i, `MASK_DIV, `MATCH_DIV) && coz_aktif_w;
+    assign buyruk[`DIVU]       = match(getir_buyruk_i, `MASK_DIVU, `MATCH_DIVU) && coz_aktif_w;
+    assign buyruk[`REM]        = match(getir_buyruk_i, `MASK_REM, `MATCH_REM) && coz_aktif_w;
+    assign buyruk[`REMU]       = match(getir_buyruk_i, `MASK_REMU, `MATCH_REMU) && coz_aktif_w;
+    assign buyruk[`SFENCE_VMA] = match(getir_buyruk_i, `MASK_SFENCE_VMA, `MATCH_SFENCE_VMA) && coz_aktif_w;
 
     assign gecersiz_buyruk_o = !(|buyruk) && coz_aktif_w;
 endgenerate
@@ -273,9 +301,9 @@ endtask
 
 task uop_rv32bne();
 begin
-    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
-    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`B_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -294,9 +322,9 @@ endtask
 
 task uop_rv32beq();
 begin
-    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
-    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`B_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -315,9 +343,9 @@ endtask
 
 task uop_rv32bge();
 begin
-    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
-    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`B_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -431,6 +459,28 @@ begin
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
     uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
     uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SLL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32sll();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+    
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
     uop_ns[`UOP_AMB] = `UOP_AMB_SLL;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
 end
@@ -614,6 +664,28 @@ begin
 end
 endtask
 
+task uop_rv32srl();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+    
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SRL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
 task uop_rv32srai();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
@@ -629,6 +701,27 @@ begin
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
     uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
     uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SRA;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32sra();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
     uop_ns[`UOP_AMB] = `UOP_AMB_SRA;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
 end
@@ -910,9 +1003,9 @@ endtask
 
 task uop_rv32blt();
 begin
-    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
-    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`B_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -931,9 +1024,9 @@ endtask
 
 task uop_rv32bltu();
 begin
-    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS1]};
-    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`S_RS2]};
-    buyruk_imm_cmb = {{21{getir_buyruk_i[`S_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`B_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
@@ -947,6 +1040,194 @@ begin
     uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
     uop_ns[`UOP_DAL] = `UOP_DAL_BLTU;
+end
+endtask
+
+task uop_rv32bgeu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`B_RS2]};
+    buyruk_imm_cmb = {{21{getir_buyruk_i[`B_SIGN]}}, getir_buyruk_i[7], getir_buyruk_i[30:25], getir_buyruk_i[11:8], 1'b0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_DAL] = `UOP_DAL_BGEU;
+end
+endtask
+
+task uop_rv32mul();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_MUL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32mulh();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_MULH;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32mulhu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_MULHU;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32mulhsu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_MULHSU;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32div();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_DIV;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+task uop_rv32divu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_DIVU;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32rem();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_REM;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32remu();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
+    buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS2]};
+    buyruk_rd_cmb = getir_buyruk_i[`R_RD];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_REMU;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
 end
 endtask
 
@@ -1084,57 +1365,73 @@ always @* begin
     uop_ns[`UOP_TAG] = buyruk_etiket_r;
     uop_ns[`UOP_VALID] = coz_aktif_w;
     uop_ns[`UOP_TAKEN] = getir_atladi_i;
-
-    case (buyruk)
-    CASE_LUI     : uop_rv32lui();
-    CASE_AUIPC   : uop_rv32auipc();
-    CASE_JALR    : uop_rv32jalr();
-    CASE_JAL     : uop_rv32jal();
-    CASE_BEQ     : uop_rv32beq();
-    CASE_BNE     : uop_rv32bne();
-    CASE_BGE     : uop_rv32bge();
-    CASE_BLT     : uop_rv32blt();
-    CASE_LW      : uop_rv32lw();
-    CASE_SW      : uop_rv32sw();
-    CASE_ADD     : uop_rv32add();
-    CASE_ADDI    : uop_rv32addi();
-    CASE_SUB     : uop_rv32sub();
-    CASE_OR      : uop_rv32or();
-    CASE_ORI     : uop_rv32ori();
-    CASE_AND     : uop_rv32and();
-    CASE_XOR     : uop_rv32xor();
-    CASE_SLLI    : uop_rv32slli();
-    CASE_CSRRW   : uop_rv32csrrw();
-    CASE_CSRRWI  : uop_rv32csrrwi();
-    CASE_CSRRS   : uop_rv32csrrs();
-    CASE_CSRRSI  : uop_rv32csrrsi();
-    CASE_FENCE   : uop_nop();
-    CASE_ECALL   : uop_nop();
-    CASE_MRET    : uop_rv32mret();
-    CASE_SLT     : uop_rv32slt();
-    CASE_SLTI    : uop_rv32slti();
-    CASE_SLTU    : uop_rv32sltu();
-    CASE_XORI    : uop_rv32xori();
-    CASE_ANDI    : uop_rv32andi();
-    CASE_SRLI    : uop_rv32srli();
-    CASE_SRAI    : uop_rv32srai();
-    CASE_FENCE_I : uop_nop();
-    CASE_CSRRC   : uop_rv32csrrc();
-    CASE_CSRRCI  : uop_rv32csrrci();
-    CASE_EBREAK  : uop_nop();
-    CASE_LB      : uop_rv32lb();
-    CASE_LH      : uop_rv32lh();
-    CASE_LBU     : uop_rv32lbu();
-    CASE_LHU     : uop_rv32lhu();
-    CASE_SB      : uop_rv32sb();
-    CASE_SH      : uop_rv32sh();   
-    CASE_HMDST   : uop_nop();   
-    CASE_PKG     : uop_nop();   
-    CASE_RVRS    : uop_nop();   
-    CASE_SLADD   : uop_nop();   
-    CASE_CNTZ    : uop_nop();   
-    CASE_CNTP    : uop_nop();   
-    default      : uop_nop();
+    
+    case (buyruk)    
+    CASE_LUI         : uop_rv32lui();
+    CASE_AUIPC       : uop_rv32auipc();
+    CASE_JALR        : uop_rv32jalr();
+    CASE_JAL         : uop_rv32jal();
+    CASE_BEQ         : uop_rv32beq();
+    CASE_BNE         : uop_rv32bne();
+    CASE_BGE         : uop_rv32bge();
+    CASE_BLT         : uop_rv32blt();
+    CASE_LW          : uop_rv32lw();
+    CASE_SW          : uop_rv32sw();
+    CASE_ADD         : uop_rv32add();
+    CASE_ADDI        : uop_rv32addi();
+    CASE_SUB         : uop_rv32sub();
+    CASE_OR          : uop_rv32or();
+    CASE_ORI         : uop_rv32ori();
+    CASE_AND         : uop_rv32and();
+    CASE_XOR         : uop_rv32xor();
+    CASE_SLLI        : uop_rv32slli();
+    CASE_SLL         : uop_rv32sll();
+    CASE_CSRRW       : uop_rv32csrrw();
+    CASE_CSRRWI      : uop_rv32csrrwi();
+    CASE_CSRRS       : uop_rv32csrrs();
+    CASE_CSRRSI      : uop_rv32csrrsi();
+    CASE_FENCE       : uop_nop();
+    CASE_ECALL       : uop_nop();
+    CASE_MRET        : uop_rv32mret();
+    CASE_SLT         : uop_rv32slt();
+    CASE_SLTI        : uop_rv32slti();
+    CASE_SLTU        : uop_rv32sltu();
+    CASE_SLTIU       : uop_rv32sltiu();
+    CASE_XORI        : uop_rv32xori();
+    CASE_ANDI        : uop_rv32andi();
+    CASE_SRLI        : uop_rv32srli();
+    CASE_SRL         : uop_rv32srl();
+    CASE_SRAI        : uop_rv32srai();
+    CASE_SRA         : uop_rv32sra();
+    CASE_FENCE_I     : uop_nop();
+    CASE_CSRRC       : uop_rv32csrrc();
+    CASE_CSRRCI      : uop_rv32csrrci();
+    CASE_EBREAK      : uop_nop();
+    CASE_LB          : uop_rv32lb();
+    CASE_LH          : uop_rv32lh();
+    CASE_LBU         : uop_rv32lbu();
+    CASE_LHU         : uop_rv32lhu();
+    CASE_SB          : uop_rv32sb();
+    CASE_SH          : uop_rv32sh();
+    CASE_BLTU        : uop_rv32bltu();
+    CASE_BGEU        : uop_rv32bgeu();
+    CASE_MUL         : uop_rv32mul();
+    CASE_MULH        : uop_rv32mulh();
+    CASE_MULHU       : uop_rv32mulhu();
+    CASE_MULHSU      : uop_rv32mulhsu();
+    CASE_DIV         : uop_rv32div();
+    CASE_DIVU        : uop_rv32divu();
+    CASE_REM         : uop_rv32rem();
+    CASE_REMU        : uop_rv32remu(); 
+    CASE_SFENCE_VMA  : uop_nop();
+    CASE_WFI         : uop_nop();   
+    CASE_HMDST       : uop_nop();   
+    CASE_PKG         : uop_nop();   
+    CASE_RVRS        : uop_nop();   
+    CASE_SLADD       : uop_nop();   
+    CASE_CNTZ        : uop_nop();   
+    CASE_CNTP        : uop_nop();   
+    default          : uop_nop();
     endcase
 
     if (buyruk_etiket_gecerli_cmb && !cek_duraklat_i) begin
