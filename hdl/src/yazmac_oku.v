@@ -95,7 +95,7 @@ yazmac_obegi rf (
     .etiket_gecerli_i    ( etiket_gecerli_w       )
 );
 
-assign uop_gecerli_w = yo_uop_i[`UOP_VALID];
+assign uop_gecerli_w = yo_uop_i[`UOP_VALID] && !cek_bosalt_i;
 assign uop_ps_w = yo_uop_i[`UOP_PC];
 
 assign oku_adres1_w = yo_uop_i[`UOP_RS1];

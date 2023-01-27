@@ -20,8 +20,7 @@ integer i;
 reg  [`VERI_BIT-1:0]        islem_sonuc_r;
 reg  [`VERI_BIT-1:0]        islem_sonuc_ns;
 
-reg                         islem_gecerli_r;
-reg                         islem_gecerli_ns;
+reg                         islem_gecerli_cmb;
 
 reg [`VERI_BIT-1:0]         bellek_x_r [0:`N_CNN_YAZMAC-1];
 reg [`VERI_BIT-1:0]         bellek_x_ns [0:`N_CNN_YAZMAC-1];
@@ -49,7 +48,7 @@ always @* begin
     sayac_w_ns = sayac_w_r;
     sayac_sonuc_ns = sayac_sonuc_r;
     islem_sonuc_ns = islem_sonuc_r;
-    islem_gecerli_ns = `LOW;
+    islem_gecerli_cmb = `HIGH;
 
     case(islem_kod_i)
     `UOP_YZB_LDX_OP1: begin
@@ -81,7 +80,7 @@ always @* begin
         islem_sonuc_ns = {`VERI_BIT{1'b0}};
     end
     `UOP_YZB_RUN: begin
-        islem_gecerli_ns = sayac_sonuc_r == sayac_min_w;
+        islem_gecerli_cmb = sayac_sonuc_r == sayac_min_w;
     end
     endcase
 
@@ -101,7 +100,6 @@ always @(posedge clk_i) begin
         sayac_w_r <= {`CNN_YAZMAC_BIT{1'b0}};
         sayac_sonuc_r <= {`CNN_YAZMAC_BIT{1'b0}};
         islem_sonuc_r <= {`VERI_BIT{1'b0}};
-        islem_gecerli_r <= `LOW;
     end
     else begin
         for (i = 0; i < `N_CNN_YAZMAC; i = i + 1) begin
@@ -112,12 +110,11 @@ always @(posedge clk_i) begin
         sayac_w_r <= sayac_w_ns;
         sayac_sonuc_r <= sayac_sonuc_ns;
         islem_sonuc_r <= islem_sonuc_ns;
-        islem_gecerli_r <= islem_gecerli_ns;
     end
 end
 
 assign sayac_min_w = sayac_x_r < sayac_w_r ? sayac_x_r : sayac_w_r;
 assign islem_sonuc_o = islem_sonuc_r;
-assign islem_gecerli_o = islem_gecerli_r;
+assign islem_gecerli_o = islem_gecerli_cmb;
 
 endmodule
