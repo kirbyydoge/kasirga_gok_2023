@@ -109,7 +109,7 @@ assign okuma_hatasi_w = (oku_adres1_gecerli_w && !oku_veri1_gecerli_w)
 
 assign etiket_w = yo_uop_i[`UOP_TAG];
 assign etiket_adres_w = yo_uop_i[`UOP_RD_ADDR];
-assign etiket_gecerli_w = yo_uop_i[`UOP_RD_ALLOC] && !okuma_hatasi_w && uop_gecerli_w;
+assign etiket_gecerli_w = yo_uop_i[`UOP_RD_ALLOC] && !okuma_hatasi_w && uop_gecerli_w && !cek_duraklat_i;
 
 assign csr_adres_o = yo_uop_i[`UOP_CSR_ADDR];
 assign csr_etiket_o = etiket_w;

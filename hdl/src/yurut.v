@@ -153,6 +153,7 @@ amb amb (
     .clk_i                          ( clk_i ),
     .rstn_i                         ( rstn_i ),
     .islem_kod_i                    ( uop_amb_islem_sec_w ),
+    .islem_kod_gecerli_i            ( uop_gecerli_w ),
     .islem_islec1_i                 ( amb_islec1_w ),
     .islem_islec2_i                 ( amb_islec2_w ),
     .islem_esittir_o                ( amb_esittir_w ),

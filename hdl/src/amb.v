@@ -9,6 +9,7 @@ module amb (
     input                       rstn_i,
 
     input   [`UOP_AMB_BIT-1:0]  islem_kod_i,
+    input                       islem_kod_gecerli_i,
     input   [`VERI_BIT-1:0]     islem_islec1_i,
     input   [`VERI_BIT-1:0]     islem_islec2_i,
 
@@ -20,19 +21,31 @@ module amb (
     output                      islem_gecerli_o
 );
 
-reg [`VERI_BIT-1:0] islem_sonuc_cmb;
+reg [`VERI_BIT-1:0]     islem_sonuc_cmb;
 
-reg [`VERI_BIT-1:0] islem_sonuc_r;
-reg [`VERI_BIT-1:0] islem_sonuc_ns;
+reg [`VERI_BIT-1:0]     islem_sonuc_r;
+reg [`VERI_BIT-1:0]     islem_sonuc_ns;
 
-reg [`VERI_BIT-1:0] islem_temp0_cmb;
-reg [`VERI_BIT-1:0] islem_temp1_cmb;
-reg                 islem_flag0_cmb;
+reg [`VERI_BIT-1:0]     islem_temp0_cmb;
+reg [`VERI_BIT-1:0]     islem_temp1_cmb;
+reg                     islem_flag0_cmb;
 
-reg [5:0]           islem_sayac_r;
-reg [5:0]           islem_sayac_ns;
+reg [5:0]               islem_sayac_r;
+reg [5:0]               islem_sayac_ns;
 
-reg                 islem_gecerli_cmb;
+reg                     islem_gecerli_cmb;
+
+reg  [`VERI_BIT-1:0]    toplayici_is0_cmb;
+reg  [`VERI_BIT-1:0]    toplayici_is1_cmb;
+wire [`VERI_BIT-1:0]    toplayici_sonuc_w;
+
+reg  [`VERI_BIT-1:0]    carpici_is0_cmb;
+reg  [`VERI_BIT-1:0]    carpici_is1_cmb;
+reg                     carpici_gecerli_cmb;
+wire [2*`VERI_BIT-1:0]  carpici_sonuc_w;
+wire                    carpici_sonuc_gecerli_w;
+
+wire [`VERI_BIT-1:0]    negatif_islec2_w;
 
 integer i;
 always @* begin
@@ -43,22 +56,56 @@ always @* begin
     islem_temp0_cmb = {`VERI_BIT{1'b0}};
     islem_temp1_cmb = {`VERI_BIT{1'b0}};
     islem_flag0_cmb = `LOW;
+    toplayici_is0_cmb = islem_islec1_i;
+    toplayici_is1_cmb = islem_islec2_i;
+
+    carpici_is0_cmb = islem_islec1_i;
+    carpici_is1_cmb = islem_islec2_i;
+    carpici_gecerli_cmb = `LOW;
 
     case (islem_kod_i)
-    `UOP_AMB_ADD    : islem_sonuc_cmb = islem_islec1_i + islem_islec2_i;
-    `UOP_AMB_SUB    : islem_sonuc_cmb = islem_islec1_i - islem_islec2_i;
     `UOP_AMB_AND    : islem_sonuc_cmb = islem_islec1_i & islem_islec2_i;
     `UOP_AMB_OR     : islem_sonuc_cmb = islem_islec1_i | islem_islec2_i;
     `UOP_AMB_XOR    : islem_sonuc_cmb = islem_islec1_i ^ islem_islec2_i;
     `UOP_AMB_SLL    : islem_sonuc_cmb = islem_islec1_i << islem_islec2_i;
     `UOP_AMB_SLT    : islem_sonuc_cmb = islem_kucuktur_o ? {{`VERI_BIT-1{1'b0}}, 1'b1} : {`VERI_BIT{1'b0}};
     `UOP_AMB_SLTU   : islem_sonuc_cmb = islem_kucuktur_isaretsiz_o ? {{`VERI_BIT-1{1'b0}}, 1'b1}: {`VERI_BIT{1'b0}};
+    `UOP_AMB_MUL    : begin
+        toplayici_is0_cmb = islem_islec1_i;
+        toplayici_is1_cmb = islem_islec2_i;
+        carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
+        islem_sonuc_cmb = carpici_sonuc_w[0 +: `VERI_BIT];
+        islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+
+        islem_sayac_ns = islem_sayac_r + 5'b1;
+    end
+    `UOP_AMB_MULH   : begin
+        toplayici_is0_cmb = islem_islec1_i;
+        toplayici_is1_cmb = islem_islec2_i;
+        carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
+        islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
+        islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+
+        islem_sayac_ns = islem_sayac_r + 5'b1;
+    end
+    `UOP_AMB_ADD    : begin
+        toplayici_is0_cmb = islem_islec1_i;
+        toplayici_is1_cmb = islem_islec2_i;
+        islem_sonuc_cmb = toplayici_sonuc_w;
+    end
+    `UOP_AMB_SUB    : begin 
+        toplayici_is0_cmb = islem_islec1_i;
+        toplayici_is1_cmb = negatif_islec2_w;
+        islem_sonuc_cmb = toplayici_sonuc_w;
+    end
     `UOP_AMB_HMDST: begin
         islem_temp1_cmb = islem_islec1_i ^ islem_islec2_i;
         for (i = 0; i < `HMDST_STEP; i = i + 1) begin
             islem_temp0_cmb = islem_temp0_cmb + islem_temp1_cmb[islem_sayac_r * `HMDST_STEP + i];
         end
-        islem_sonuc_ns = islem_sonuc_r + islem_temp0_cmb;
+        toplayici_is0_cmb = islem_sonuc_r;
+        toplayici_is1_cmb = islem_temp0_cmb;
+        islem_sonuc_ns = toplayici_sonuc_w;
         islem_sayac_ns = islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
         islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `HMDST_STEP);
@@ -85,7 +132,9 @@ always @* begin
                 islem_flag0_cmb = `LOW;
             end
         end
-        islem_sonuc_ns = islem_sonuc_r + islem_temp0_cmb;
+        toplayici_is0_cmb = islem_sonuc_r;
+        toplayici_is1_cmb = islem_temp0_cmb;
+        islem_sonuc_ns = toplayici_sonuc_w;
         islem_sayac_ns = islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
         islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTZ_STEP);
@@ -95,7 +144,9 @@ always @* begin
         for (i = 0; i < `CNTP_STEP; i = i + 1) begin
             islem_temp0_cmb = islem_temp0_cmb + islem_islec1_i[islem_sayac_r * `CNTP_STEP + i];
         end
-        islem_sonuc_ns = islem_sonuc_r + islem_temp0_cmb;
+        toplayici_is0_cmb = islem_sonuc_r;
+        toplayici_is1_cmb = islem_temp0_cmb;
+        islem_sonuc_ns = toplayici_sonuc_w;
         islem_sayac_ns = islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
         islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTP_STEP);
@@ -109,15 +160,32 @@ always @(posedge clk_i) begin
         islem_sonuc_r <= {`VERI_BIT{1'b0}};
     end
     else begin
-        islem_sayac_r <= islem_gecerli_o ? {`CTR_BIT{1'b0}} : islem_sayac_ns;
-        islem_sonuc_r <= islem_gecerli_o ? {`VERI_BIT{1'b0}} : islem_sonuc_ns;
+        islem_sayac_r <= islem_gecerli_o || !islem_kod_gecerli_i ? {`CTR_BIT{1'b0}} : islem_sayac_ns;
+        islem_sonuc_r <= islem_gecerli_o || !islem_kod_gecerli_i ? {`VERI_BIT{1'b0}} : islem_sonuc_ns;
     end
 end
+
+toplayici topla (
+    .islec0_i ( toplayici_is0_cmb ),
+    .islec1_i ( toplayici_is1_cmb ),
+    .carry_i  ( 1'b0 ),
+    .toplam_o ( toplayici_sonuc_w )
+);
+
+carpici carp (
+    .clk_i            ( clk_i ),
+    .islec0_i         ( carpici_is0_cmb ),
+    .islec1_i         ( carpici_is1_cmb ),
+    .islem_gecerli_i  ( carpici_gecerli_cmb ),
+    .carpim_o         ( carpici_sonuc_w ),
+    .carpim_gecerli_o ( carpici_sonuc_gecerli_w )
+);
 
 assign islem_sonuc_o = islem_sonuc_cmb;
 assign islem_esittir_o = islem_islec1_i == islem_islec2_i;
 assign islem_kucuktur_o = $signed(islem_islec1_i) < $signed(islem_islec2_i);
 assign islem_kucuktur_isaretsiz_o = islem_islec1_i < islem_islec2_i;
 assign islem_gecerli_o = islem_gecerli_cmb;
+assign negatif_islec2_w = (~islem_islec2_i) + 1'b1;
 
 endmodule
