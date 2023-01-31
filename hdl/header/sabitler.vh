@@ -74,4 +74,7 @@
 `define N_CNN_YAZMAC        16
 `define CNN_YAZMAC_BIT      $clog2(`N_CNN_YAZMAC + 1)
 
+// ----SPI Denetleyici Tanimlamalar----
+`define SPI_TXN_SIZE 8
+
 
