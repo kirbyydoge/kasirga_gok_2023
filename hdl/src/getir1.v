@@ -98,7 +98,7 @@ always @(posedge clk_i) begin
     end
 end
 
-assign l1b_istek_adres_o = ps_cmb;
+assign l1b_istek_adres_o = ps_cmb & 32'hFFFF_FFFC;
 assign l1b_istek_gecerli_o = ps_gecerli_cmb;
 assign g2_ps_o = g2_ps_r;
 assign g2_ps_gecerli_o = g2_ps_gecerli_r;

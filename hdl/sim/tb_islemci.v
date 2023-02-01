@@ -46,7 +46,7 @@ wire              cmd_valid_w;
 
 memory_model #(
     .BASE_ADDR   ('h4000_0000), 
-    .MEM_DEPTH   ('h0000_1000),
+    .MEM_DEPTH   ('h0001_0000),
     .DATA_WIDTH  ('d32),
     .ADDR_WIDTH  ('d32)
 )
@@ -72,7 +72,7 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32test/rv32imc-hex/rv32um-p-mul.hex"; 
+localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32test/rv32imc-hex/rv32uc-p-rvc.hex"; 
 localparam RAM_DELAY = 1;
 reg [RAM_DELAY-1:0] delay_q;
 
