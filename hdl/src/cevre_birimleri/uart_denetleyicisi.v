@@ -32,6 +32,19 @@ reg [3:0] uart_status;
 reg [7:0] uart_rdata;
 reg [7:0] uart_wdata;
 
+always @* begin
+
+end
+
+always @ (posedge clk_i) begin
+
+end
+
+
+
+
+
+
 
 fifo #(
     .DATA_WIDTH(32),
