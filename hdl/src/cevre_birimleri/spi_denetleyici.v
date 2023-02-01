@@ -193,7 +193,7 @@ always @* begin
         end
     end
     DURUM_VERI_BEKLE: begin
-        if (fifo_miso_empty_w) begin
+        if (!fifo_miso_empty_w) begin
             spi_veri_ns = fifo_miso_rd_data_w;
             spi_gecerli_ns = `HIGH;
             durum_ns = DURUM_BOSTA;
