@@ -41,7 +41,7 @@ always @* begin
     gonderilecek_veri_biti_ns =gonderilecek_veri_biti_r;
 
     saat_aktif = sayac_r == baud_div_i - 1;
-    if (sayac_r == baud_div_i) begin
+    if (sayac_r == baud_div_i - 1) begin
         sayac_ns = 0;
     end
 
@@ -50,6 +50,7 @@ always @* begin
             if (basla_i && gelen_veri_gecerli_i) begin
                 tx_r = `LOW;
                 durum_ns = VERI_GONDER;
+                sayac_ns = 16'd0;
             end    
         end
         VERI_GONDER: begin

@@ -6,7 +6,7 @@
 module uart_alici (
     input                   clk_i,
     input                   rstn_i,
-        
+
     output [7:0]            alinan_veri_o,
     input [15:0]            baud_div_i,
     
@@ -41,7 +41,7 @@ always @* begin
     alinan_veri_biti_ns =alinan_veri_biti_r;
 
     saat_aktif = sayac_r == baud_div_i - 1;
-    if (sayac_r == baud_div_i) begin
+    if (sayac_r == baud_div_i - 1) begin
         sayac_ns = 0;
     end
 
@@ -49,6 +49,7 @@ always @* begin
         BOSTA: begin
             if (rx == `LOW) begin 
                 durum_ns = VERI_AL;
+                sayac_ns = 16'd0;
             end    
         end
         VERI_AL: begin
