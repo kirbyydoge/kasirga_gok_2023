@@ -16,6 +16,9 @@ module spi_birimi (
     input  [1:0]                    cmd_dir_i,
     output                          cmd_ready_o,
 
+    output [`SPI_TXN_SIZE-1:0]      recv_data_o,
+    output                          recv_data_valid_o,
+
     input                           miso_i,
     output                          mosi_o,
     output                          csn_o,
@@ -60,6 +63,9 @@ reg           cmd_ready_cmb;
 reg  [5:0]    transfer_sayac_r;
 reg  [5:0]    transfer_sayac_ns;
 
+reg           recv_valid_r;
+reg           recv_valid_ns;
+
 reg  [`SPI_TXN_SIZE-1:0] buf_mosi_r;
 reg  [`SPI_TXN_SIZE-1:0] buf_mosi_ns;
 
@@ -73,6 +79,8 @@ reg           csn_r;
 reg           csn_ns;
 
 wire [`SPI_TXN_SIZE-1:0] cmd_data_reversed_w;
+
+reg                      recv_data_valid_cmb;
 
 genvar gen_i;
 generate
@@ -106,6 +114,8 @@ always @* begin
     buf_miso_ns = buf_miso_r;
     mosi_ns = mosi_r;
     csn_ns = csn_r;
+    recv_valid_ns = recv_valid_r;
+    recv_data_valid_cmb = `LOW;
 
     cmd_ready_cmb = `LOW;
     sck_sample_cmb = cmd_cpol_r ^ cmd_cpha_r ? sck_posedge_r : sck_negedge_r;
@@ -139,6 +149,7 @@ always @* begin
         mosi_ns = buf_mosi_r[transfer_sayac_r];
         csn_ns = cmd_dir_r[1] || cmd_dir_r[0] ? `LOW : csn_r;
         sck_enable_ns = cmd_dir_r[1] || cmd_dir_r[0];
+        recv_valid_ns = `LOW;
 
         durum_ns =  cmd_dir_r[1] ? DURUM_GONDER :
                     cmd_dir_r[0] ? DURUM_GETIR  : DURUM_BOSTA;
@@ -157,13 +168,17 @@ always @* begin
         end
     end
     DURUM_GETIR: begin
-        if (sck_sample_cmb) begin
+        if (sck_flip_cmb) begin
+            recv_valid_ns = `HIGH;
+        end
+        if (sck_sample_cmb && recv_valid_r) begin
             buf_miso_ns[transfer_sayac_r] = miso_i;
             transfer_sayac_ns = transfer_sayac_r + 5'b1;
         end
         if (transfer_sayac_r == `SPI_TXN_SIZE - 1) begin
             csn_ns = cmd_end_cs_r;
             durum_ns = DURUM_BOSTA;
+            recv_data_valid_cmb = `HIGH;
             sck_enable_ns = `LOW;
         end
     end
@@ -189,6 +204,7 @@ always @(posedge clk_i) begin
         buf_miso_r <= 0;
         mosi_r <= 0;
         csn_r <= 0;
+        recv_valid_r <= 0;
     end
     else begin
         durum_r <= durum_ns;
@@ -207,6 +223,7 @@ always @(posedge clk_i) begin
         buf_miso_r <= buf_miso_ns;
         mosi_r <= mosi_ns;
         csn_r <= csn_ns;
+        recv_valid_r <= recv_valid_ns;
     end
 end
 
@@ -214,5 +231,7 @@ assign cmd_ready_o = cmd_ready_cmb;
 assign mosi_o = mosi_r;
 assign csn_o = csn_r;
 assign sck_o = sck_clk_r;
+assign recv_data_o = buf_miso_r;
+assign recv_data_valid_o = recv_data_valid_cmb;
 
 endmodule

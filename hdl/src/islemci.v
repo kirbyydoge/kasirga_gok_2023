@@ -300,6 +300,39 @@ veri_yolu_denetleyici vyd (
     .l1_veri_hazir_i     ( io_vyd_l1_veri_hazir_w )
 );
 
+// ---- SPI Denetleyicisi ----
+wire                        io_spid_clk_w;
+wire                        io_spid_rstn_w;
+wire  [`ADRES_BIT-1:0]      io_spid_cek_adres_w;
+wire  [`VERI_BIT-1:0]       io_spid_cek_veri_w;
+wire                        io_spid_cek_yaz_w;
+wire                        io_spid_cek_gecerli_w;
+wire                        io_spid_cek_hazir_w;
+wire  [`VERI_BIT-1:0]       io_spid_spi_veri_w;
+wire                        io_spid_spi_gecerli_w;
+wire                        io_spid_spi_hazir_w;
+wire                        io_spid_miso_w;
+wire                        io_spid_mosi_w;
+wire                        io_spid_csn_w;
+wire                        io_spid_sck_w;
+
+spi_denetleyici spid (
+    .clk_i               ( io_spid_clk_w ),
+    .rstn_i              ( io_spid_rstn_w ),
+    .cek_adres_i         ( io_spid_cek_adres_w ),
+    .cek_veri_i          ( io_spid_cek_veri_w ),
+    .cek_yaz_i           ( io_spid_cek_yaz_w ),
+    .cek_gecerli_i       ( io_spid_cek_gecerli_w ),
+    .cek_hazir_o         ( io_spid_cek_hazir_w ),
+    .spi_veri_o          ( io_spid_spi_veri_w ),
+    .spi_gecerli_o       ( io_spid_spi_gecerli_w ),
+    .spi_hazir_i         ( io_spid_spi_hazir_w ),
+    .miso_i              ( io_spid_miso_w ),
+    .mosi_o              ( io_spid_mosi_w ),
+    .csn_o               ( io_spid_csn_w ),
+    .sck_o               ( io_spid_sck_w )
+);
+
 // Cekirdek < Sistem
 assign io_cek_clk_w = clk;
 assign io_cek_rstn_w = resetn;
@@ -321,6 +354,10 @@ assign io_l1vv_clk_w = clk;
 // Veri yolu denetleyicisi < Sistem
 assign io_vyd_clk_w = clk;
 assign io_vyd_rstn_w = resetn;
+
+// SPI Denetleyicisi < Sistem
+assign io_spid_clk_w = clk;
+assign io_spid_rstn_w = resetn;
 
 // Cekirdek < L1BD
 assign io_cek_buyruk_yanit_veri_w = io_l1bd_port_veri_w;
@@ -455,6 +492,7 @@ endgenerate
 reg bellek_istek_bosta;
 reg bellek_oku_istek;
 reg bellek_veri_gecerli;
+reg [31:0] bellek_veri;
 
 always @(posedge clk) begin
     if (!resetn) begin
@@ -473,19 +511,39 @@ always @(posedge clk) begin
 end
 
 always @* begin
-    bellek_veri_gecerli = bellek_oku_istek && iomem_ready;
+    bellek_veri = 0;
+    bellek_veri_gecerli = `LOW;
+    if (bellek_oku_istek && iomem_ready) begin
+        bellek_veri = iomem_rdata;
+        bellek_veri_gecerli = `HIGH;
+    end
+    else if (io_spid_spi_gecerli_w) begin
+        bellek_veri = io_spid_spi_veri_w;
+        bellek_veri_gecerli = `HIGH;
+    end
 end
 
 // Veri Yolu Denetleyicisi < Sistem Veri Yolu
-assign io_vyd_mem_istek_hazir_w = iomem_ready;
+assign io_vyd_mem_istek_hazir_w = (io_vyd_mem_istek_adres_w & ~`RAM_MASK_ADDR) == `RAM_BASE_ADDR ? iomem_ready :
+                                  (io_vyd_mem_istek_adres_w & ~`SPI_MASK_ADDR) == `SPI_BASE_ADDR ? io_spid_cek_hazir_w :
+                                  (io_vyd_mem_istek_adres_w & ~`UART_MASK_ADDR) == `UART_BASE_ADDR ? `LOW : `LOW;
 
-assign io_vyd_mem_veri_w = iomem_rdata;
+assign io_vyd_mem_veri_w = bellek_veri;
 assign io_vyd_mem_veri_gecerli_w = bellek_veri_gecerli;
 
-// ---- Cekirdek ----
-assign spi_cs_o = 0;
-assign spi_sck_o = 0;
-assign spi_mosi_o = 0;
+// SPI Denetleyici < Very Yolu Denetleyicisi
+assign io_spid_cek_adres_w = io_vyd_mem_istek_adres_w;
+assign io_spid_cek_veri_w = io_vyd_mem_istek_veri_w;
+assign io_spid_cek_yaz_w = io_vyd_mem_istek_yaz_w;
+assign io_spid_cek_gecerli_w = io_vyd_mem_istek_gecerli_w;
+assign io_spid_spi_hazir_w = io_vyd_mem_veri_hazir_w;
+
+// ---- Cekirdek <> Cevre Birimleri ----
+assign spi_cs_o = io_spid_csn_w;
+assign spi_sck_o = io_spid_sck_w;
+assign spi_mosi_o = io_spid_mosi_w;
+assign io_spid_miso_w = spi_miso_i;
+
 assign uart_tx_o = 0;
 assign pwm0_o = 0;
 assign pwm1_o = 0;

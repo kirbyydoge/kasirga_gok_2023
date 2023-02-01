@@ -75,6 +75,11 @@
 `define CNN_YAZMAC_BIT      $clog2(`N_CNN_YAZMAC + 1)
 
 // ----SPI Denetleyici Tanimlamalar----
-`define SPI_TXN_SIZE 8
+`define SPI_CTRL_REG        8'h00
+`define SPI_STATUS_REG      8'h04
+`define SPI_RDATA_REG       8'h08
+`define SPI_WDATA_REG       8'h0c
+`define SPI_CMD_REG         8'h10
+`define SPI_TXN_SIZE        8
 
 
