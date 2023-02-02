@@ -10,7 +10,7 @@ module uart_alici (
     output [7:0]            alinan_veri_o,
     input [15:0]            baud_div_i,
     
-    input                   rx,
+    input                   rx_i,
     output                  hazir_o,
     output                  alinan_veri_gecerli_o
     
@@ -21,7 +21,7 @@ localparam VERI_AL = 1;
 localparam BITTI = 2;
 
 reg [7:0] alinan_veri;
-reg alinan_veri_gecerli;
+
 
 reg [1:0] durum_r;
 reg [1:0] durum_ns;
@@ -32,29 +32,33 @@ reg [15:0] sayac_ns;
 reg [2:0] alinan_veri_biti_r;
 reg [2:0] alinan_veri_biti_ns;
 
-reg hazir_r;
-reg saat_aktif;
+reg hazir_cmb;
+reg saat_aktif_cmb;
+reg alinan_veri_gecerli_cmb;
 
 always @* begin
+    hazir_cmb = `LOW;
+    saat_aktif_cmb = `LOW;
+    alinan_veri_gecerli_cmb = `LOW;
     durum_ns = durum_r;
     sayac_ns = sayac_r;
-    alinan_veri_biti_ns =alinan_veri_biti_r;
+    alinan_veri_biti_ns = alinan_veri_biti_r;
 
-    saat_aktif = sayac_r == baud_div_i - 1;
+    saat_aktif_cmb = sayac_r == baud_div_i - 1;
     if (sayac_r == baud_div_i - 1) begin
         sayac_ns = 0;
     end
 
     case (durum_r) 
         BOSTA: begin
-            if (rx == `LOW) begin 
+            if (rx_i == `LOW) begin 
                 durum_ns = VERI_AL;
                 sayac_ns = 16'd0;
             end    
         end
         VERI_AL: begin
-            if (saat_aktif) begin
-                alinan_veri [alinan_veri_biti_r] = rx;
+            if (saat_aktif_cmb) begin
+                alinan_veri [alinan_veri_biti_r] = rx_i;
                 alinan_veri_biti_ns = alinan_veri_biti_r + 1;
                 if (alinan_veri_biti_r == 3'd7) begin
                     durum_ns = BITTI;
@@ -71,10 +75,10 @@ always @* begin
             
         end
         BITTI: begin
-            if (saat_aktif) begin
-                alinan_veri_gecerli = `HIGH;
+            if (saat_aktif_cmb) begin
+                alinan_veri_gecerli_cmb = `HIGH;
                 durum_ns = BOSTA;
-                hazir_r = `HIGH;
+                hazir_cmb = `HIGH;
             end
             else begin
                 durum_ns = BITTI;
@@ -98,9 +102,9 @@ always @ (posedge clk_i) begin
 end
 
 assign tx = tx_r;
-assign hazir_o = hazir_r;
+assign hazir_o = hazir_cmb;
 assign alinan_veri_o = alinan_veri;
-assign alinan_veri_gecerli_o = alinan_veri_gecerli;
+assign alinan_veri_gecerli_o = alinan_veri_gecerli_cmb;
 
 
 

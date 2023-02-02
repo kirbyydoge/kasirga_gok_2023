@@ -21,23 +21,73 @@ module uart_denetleyicisi (
 );
 
 wire        cek_uart_istek_w;
-wire [3:0]  cek_uart_addr_w; // niye 4 bit???
+wire [3:0]  cek_uart_addr_w;
 
 assign cek_uart_istek_w = ((cek_adres_i & ~`UART_MASK_ADDR) == `UART_BASE_ADDR) && cek_gecerli_i;
 assign cek_uart_addr_w = cek_adres_i & `UART_MASK_ADDR;
 
 
-reg [31:0] uart_ctr;
-reg [3:0] uart_status;
+reg [31:0] uart_ctrl_r;
+reg [31:0] uart_ctrl_ns;
+wire tx_en_w;
+wire rx_en_w;
+wire [15:0] baud_div;
+
+wire [3:0] uart_status_w;
 reg [7:0] uart_rdata;
 reg [7:0] uart_wdata;
 
+reg [1:0] durum_r;
+reg [1:0] durum_ns;
+
+localparam BOSTA = 0;
+localparam VERICI_CALISTIR = 1;
+localparam ALICI_CALISTIR = 2;
+
+
 always @* begin
+    durum_ns = durum_r;
+
+    case (durum_r)
+        BOSTA: begin
+            if (cek_uart_istek_w) begin
+                case (cek_uart_addr_w) 
+                    `UART_CTRL_REG: begin
+
+                    end
+                    `UART_STATUS_REG: begin
+
+                    end
+                    `UART_RDATA_REG: begin
+
+                    end
+                    `UART_WDATA_REG: begin
+
+                    end
+
+                endcase
+            end    
+        end
+        VERICI_CALISTIR: begin
+
+        end
+        ALICI_CALISTIR: begin
+
+        end
+    endcase
+
 
 end
 
 always @ (posedge clk_i) begin
-
+    if (!rstn_i) begin
+            durum_r <= BOSTA;
+            
+        end
+        else begin
+            durum_r <= durum_ns; 
+         
+        end
 end
 
 
@@ -47,8 +97,8 @@ end
 
 
 fifo #(
-    .DATA_WIDTH(32),
-    .DATA_DEPTH(8)
+    .DATA_WIDTH(8),
+    .DATA_DEPTH(32)
 )rx_buffer(
     .clk_i    ( clk_i ),         
     .rstn_i   ( rstn_i ),         
@@ -63,5 +113,9 @@ fifo #(
 fifo tx_buffer (
     
 );
+
+
+assign tx_en_w = uart_ctrl_r [0];
+assign rx_en_w = uart_ctrl_r [1];
 
 endmodule

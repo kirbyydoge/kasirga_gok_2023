@@ -13,7 +13,7 @@ module uart_verici (
     input [7:0]             gelen_veri_i,
     input [15:0]            baud_div_i,
     
-    output                  tx,
+    output                  tx_o,
     output                  hazir_o
 );
 
@@ -30,17 +30,20 @@ reg [15:0] sayac_ns;
 reg [2:0] gonderilecek_veri_biti_r;
 reg [2:0] gonderilecek_veri_biti_ns;
 
-reg tx_r;
-reg hazir_r;
-reg saat_aktif;
+reg tx_cmb;
+reg hazir_cmb;
+reg saat_aktif_cmb;
 
 
 always @* begin
+    tx_cmb = `HIGH;
+    hazir_cmb = `LOW;
+    saat_aktif_cmb = `LOW;
     durum_ns = durum_r;
     sayac_ns = sayac_r;
     gonderilecek_veri_biti_ns =gonderilecek_veri_biti_r;
 
-    saat_aktif = sayac_r == baud_div_i - 1;
+    saat_aktif_cmb = sayac_r == baud_div_i - 1;
     if (sayac_r == baud_div_i - 1) begin
         sayac_ns = 0;
     end
@@ -48,14 +51,14 @@ always @* begin
     case (durum_r) 
         BOSTA: begin
             if (basla_i && gelen_veri_gecerli_i) begin
-                tx_r = `LOW;
+                tx_cmb = `LOW;
                 durum_ns = VERI_GONDER;
                 sayac_ns = 16'd0;
             end    
         end
         VERI_GONDER: begin
-            if (saat_aktif) begin
-                tx_r = gelen_veri_i [gonderilecek_veri_biti_r];
+            if (saat_aktif_cmb) begin
+                tx_cmb = gelen_veri_i [gonderilecek_veri_biti_r];
                 gonderilecek_veri_biti_ns = gonderilecek_veri_biti_r + 1;
                 if (gonderilecek_veri_biti_r == 3'd7) begin
                     durum_ns = BITTI;
@@ -72,10 +75,10 @@ always @* begin
             
         end
         BITTI: begin
-            if (saat_aktif) begin
-                tx_r = `HIGH;
+            if (saat_aktif_cmb) begin
+                tx_cmb = `HIGH;
                 durum_ns = BOSTA;
-                hazir_r = `HIGH;
+                hazir_cmb = `HIGH;
             end
             else begin
                 sayac_ns = sayac_r + 1;
@@ -97,7 +100,7 @@ always @ (posedge clk_i) begin
     end
 end
 
-assign tx = tx_r;
-assign hazir_o = hazir_r;
+assign tx_o = tx_cmb;
+assign hazir_o = hazir_cmb;
 
 endmodule
