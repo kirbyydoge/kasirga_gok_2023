@@ -95,12 +95,6 @@ always @* begin
                 case (cek_uart_addr_w) 
                     `UART_CTRL_REG: begin
                         uart_ctrl_ns = cek_veri_i;
-                        if (tx_en_w == `HIGH && !tx_fifo_empty) begin
-                            verici_basla_cmb = `HIGH;  
-                            verici_gelen_veri_gecerli_cmb = `HIGH; 
-                            // OĞuzhana SOr
-                        end
-
                     end
                     `UART_STATUS_REG: begin
 
@@ -161,7 +155,7 @@ fifo #(
     .data_i   ( tx_fifoya_yazilacak_data_cmb ),         
     .wr_en_i  ( tx_fifo_wr_en_cmb),         
     .data_o   ( tx_fifodan_okunan_data_w ),         
-    .rd_en_i  ( tx_fifo_rd_en_cmb ),         
+    .rd_en_i  ( consume_o ),         
     .full_o   ( tx_fifo_full_w ),         
     .empty_o  ( tx_fifo_empty )         
 );
@@ -179,8 +173,8 @@ uart_alici alici (
 uart_verici verici (
 .clk_i                     ( clk_i),
 .rstn_i                    ( rstn_i),
-.basla_i                   ( verici_basla_cmb ),
-.gelen_veri_gecerli_i      ( verici_gelen_veri_gecerli_cmb ),
+.basla_i                   ( tx_en_w ),
+.gelen_veri_gecerli_i      ( !tx_fifo_empty ),
 .gelen_veri_i              ( verici_gelen_veri_cmb ),
 .baud_div_i                ( verici_baud_div_cmb ),
 .tx_o                      ( verici_tx_w ),

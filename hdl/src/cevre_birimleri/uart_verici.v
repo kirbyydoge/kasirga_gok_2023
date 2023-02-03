@@ -7,9 +7,10 @@ module uart_verici (
     input                   clk_i,
     input                   rstn_i,
     
-    input                   basla_i,
-    input                   gelen_veri_gecerli_i,
-    
+    input                   tx_en_i,              // tx_en
+    input                   veri_gecerli_i, // !fifo_empty
+    output                  consume_o,
+
     input [7:0]             gelen_veri_i,
     input [15:0]            baud_div_i,
     
@@ -42,6 +43,7 @@ always @* begin
     durum_ns = durum_r;
     sayac_ns = sayac_r;
     gonderilecek_veri_biti_ns =gonderilecek_veri_biti_r;
+    consume_o = `LOW;
 
     saat_aktif_cmb = sayac_r == baud_div_i - 1;
     if (sayac_r == baud_div_i - 1) begin
@@ -51,6 +53,7 @@ always @* begin
     case (durum_r) 
         BOSTA: begin
             if (basla_i && gelen_veri_gecerli_i) begin
+                consume_o = `HIGH;
                 tx_cmb = `LOW;
                 durum_ns = VERI_GONDER;
                 sayac_ns = 16'd0;
