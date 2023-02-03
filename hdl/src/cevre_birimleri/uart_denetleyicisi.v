@@ -40,9 +40,16 @@ reg [7:0] uart_wdata;
 reg [1:0] durum_r;
 reg [1:0] durum_ns;
 
+reg [`VERI_BIT-1:0] uart_veri_r;
+reg [`VERI_BIT-1:0] uart_veri_ns;
+reg uart_gecerli_r;
+reg uart_gecerli_ns;
+reg [`VERI_BIT-1:0] fifo_buf_veri_r;
+reg [`VERI_BIT-1:0] fifo_buf_veri_ns;
+
 localparam BOSTA = 0;
-localparam VERICI_CALISTIR = 1;
-localparam ALICI_CALISTIR = 2;
+localparam VERI_BEKLE = 1;
+localparam YER_BEKLE = 2;
 
 // ------------ FIFO TX BUFFER I/O-----------------//
 reg  [7:0] tx_fifoya_yazilacak_data_cmb;
@@ -73,7 +80,15 @@ wire                  verici_tx_w;
 wire                  verici_hazir_w;
 
 always @* begin
+
+    if (uart_gecerli_o && uart_hazir_i) begin
+        uart_gecerli_ns = `LOW;
+    end
+
     durum_ns = durum_r;
+    uart_veri_ns =uart_veri_r;
+    uart_gecerli_ns = uart_gecerli_r;
+    fifo_buf_veri_ns = fifo_buf_veri_r;
     tx_fifoya_yazilacak_data_cmb = 8'd0;
     tx_fifo_wr_en_cmb = `LOW;
     tx_fifo_rd_en_cmb = `LOW;
@@ -97,23 +112,53 @@ always @* begin
                         uart_ctrl_ns = cek_veri_i;
                     end
                     `UART_STATUS_REG: begin
+                        if (!cek_yaz_i) begin
+                            uart_veri_ns = uart_status_w;
+                            uart_gecerli_ns = `HIGH;
+                        end
 
                     end
                     `UART_RDATA_REG: begin
+                        if (!cek_yaz_i) begin
+                            if (fifo_miso_empty_w) begin
+                                durum_ns = VERI_BEKLE;
+                            end
+                            else begin
+                                uart_veri_ns = tx_fifodan_okunan_data_w;
+                                uart_gecerli_ns = `HIGH;
+                            end
+                        end
 
                     end
                     `UART_WDATA_REG: begin
-
+                         if (cek_yaz_i) begin
+                            if (rx_fifo_full_w) begin
+                                fifo_buf_veri_ns = cek_veri_i;
+                                durum_ns = YER_BEKLE;
+                            end
+                            else begin
+                                rx_fifoya_yazilacak_data_cmb = cek_veri_i;
+                                rx_fifo_wr_en_cmb = `HIGH;
+                            end
+                        end
                     end
 
                 endcase
             end    
         end
-        VERICI_CALISTIR: begin
-
+        VERI_BEKLE: begin
+             if (!tx_fifo_empty) begin
+                uart_veri_ns = tx_fifodan_okunan_data_w;
+                uart_gecerli_ns = `HIGH;
+                durum_ns = DURUM_BOSTA;
+            end
         end
-        ALICI_CALISTIR: begin
-
+        YER_BEKLE: begin
+            if (!rx_fifo_full_w) begin
+                rx_fifoya_yazilacak_data_cmb = fifo_buf_veri_r;
+                rx_fifo_wr_en_cmb = `HIGH;
+                durum_ns = DURUM_BOSTA;
+            end
         end
     endcase
 
@@ -123,12 +168,18 @@ end
 always @ (posedge clk_i) begin
     if (!rstn_i) begin
             durum_r <= BOSTA;
-            uart_ctrl_r <= 32'd0;
+            uart_ctrl_r <= 0;
+            uart_veri_r <= 0;
+            uart_gecerli_r <= `LOW;
+            fifo_buf_veri_r <= 0;
             
         end
         else begin
             durum_r <= durum_ns; 
             uart_ctrl_r <= uart_ctrl_ns;
+            uart_veri_r <= uart_veri_ns;
+            uart_gecerli_r <= uart_gecerli_ns;
+            fifo_buf_veri_r <= fifo_buf_veri_ns;
         end
 end
 
@@ -184,5 +235,8 @@ uart_verici verici (
 assign tx_en_w = uart_ctrl_r [0];
 assign rx_en_w = uart_ctrl_r [1];
 assign baud_div = uart_ctrl_r [31:16];
+
+assign uart_veri_o = uart_veri_r;
+assign uart_gecerli_o = uart_gecerli_r;
 
 endmodule

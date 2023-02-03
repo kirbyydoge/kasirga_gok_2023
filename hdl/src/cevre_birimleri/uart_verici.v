@@ -52,7 +52,7 @@ always @* begin
 
     case (durum_r) 
         BOSTA: begin
-            if (basla_i && gelen_veri_gecerli_i) begin
+            if (tx_en_i && veri_gecerli_i) begin
                 consume_o = `HIGH;
                 tx_cmb = `LOW;
                 durum_ns = VERI_GONDER;
