@@ -1,7 +1,5 @@
 `timescale 1ns/1ps
 
-`include "sabitler.vh"
-
 module tb_uart_denetleyicisi();
 
 reg                      clk;
@@ -41,41 +39,62 @@ always begin
     #5;
 end
 
+localparam BAUD_DIV = 256;
+
 initial begin
-    resetn = `LOW;
+    resetn = 0;
+    rx_r = 1;
     #200;
-    resetn = `HIGH;
+    resetn = 1;
     #5;
 
+
+    @(posedge clk); #2;
+    
     cek_adres_r = 32'h2000_0000;
-    cek_veri_r = 32'b0000_0000_1111_1111_0000_0000_0000_0011; //rx etkinleştir
-    cek_yaz_r = `HIGH;
-    cek_gecerli_r = `HIGH;
-    uart_hazir_r = `HIGH;
+    cek_veri_r = 32'b0000_0001_0000_0000_0000_0000_0000_0011; //rx etkinleştir
+    cek_yaz_r = 1;
+    cek_gecerli_r = 1;
+    uart_hazir_r = 1;
 
+    @(posedge clk); #2;
 
-    cek_adres_r = 32'h20000004;
+    cek_adres_r = 32'h2000_0004;
     cek_veri_r = 32'b0000_0000_1111_1111_0000_0000_0000_0011; 
-    cek_yaz_r = `LOW;
-    cek_gecerli_r = `HIGH;
-    uart_hazir_r = `HIGH; #5;
+    cek_yaz_r = 0;
+    cek_gecerli_r = 1;
+    uart_hazir_r = 1; 
 
-    cek_adres_r = 32'h2000000c;
+    @(posedge clk); #2;
+
+    cek_adres_r = 32'h2000_000c;
     cek_veri_r = 32'b0000_0000_1111_1111_0000_0000_0000_0011; 
-    cek_yaz_r = `HIGH;
-    cek_gecerli_r = `HIGH;
-    uart_hazir_r = `HIGH; #5;
-    rx_r = 1'b0; #5; //start
-    rx_r = 1'b1; #5;
-    rx_r = 1'b0; #5;
-    rx_r = 1'b1; #5;
-    rx_r = 1'b0; #5;
-    rx_r = 1'b1; #5;
-    rx_r = 1'b0; #5;
-    rx_r = 1'b1; #5;
-    rx_r = 1'b0; #5;
-    rx_r = 1'b1; #5; // stop
+    cek_yaz_r = 1;
+    cek_gecerli_r = 1;
+    uart_hazir_r = 1;
 
+    @(posedge clk); #2;
+
+    cek_adres_r = 32'h2000_0008;
+    cek_veri_r = 32'b0; 
+    cek_yaz_r = 0;
+    cek_gecerli_r = 1;
+    uart_hazir_r = 1;
+    
+    @(posedge clk); #2;
+
+    cek_gecerli_r = 0;
+
+    rx_r = 1'b0; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b1; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b0; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b1; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b0; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b1; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b0; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b0; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b0; repeat(BAUD_DIV) @(posedge clk); #2;
+    rx_r = 1'b1; repeat(BAUD_DIV) @(posedge clk); #2;
 
     // cek_adres_r = 32'h20000008;
     // cek_veri_r = 32'b0000_0000_1111_1111_0000_0000_0000_0011; 

@@ -7,8 +7,16 @@ module bellek (
     input                       clk_i,
     input                       rstn_i,
 
-    //veri yolu birimi + l1 denetleyici 
-    //Okuma girdileri
+    // l1v istek <> bellek
+    output  [`ADRES_BIT-1:0]    l1v_istek_adres_o,
+    output                      l1v_istek_gecerli_o,
+    output                      l1v_istek_onbellekleme_o,
+    output                      l1v_istek_yaz_o,
+    output  [`VERI_BIT-1:0]     l1v_istek_veri_o,
+    output  [`VERI_BYTE-1:0]    l1v_istek_maske_o,
+    input                       l1v_istek_hazir_i,
+
+    // l1v yanit <> bellek
     input   [`VERI_BIT-1:0]     l1v_veri_i,
     input                       l1v_veri_gecerli_i,
     output                      l1v_veri_hazir_o,
@@ -157,6 +165,7 @@ veri_yolu_birimi vyb (
     .rstn_i                           ( rstn_i               ),
     .port_istek_adres_o               ( l1v_istek_adres_o    ),
     .port_istek_gecerli_o             ( l1v_istek_gecerli_o  ),
+    .port_istek_onbellekleme_o        ( l1v_istek_onbellekleme_o ),
     .port_istek_yaz_o                 ( l1v_istek_yaz_o      ),
     .port_istek_veri_o                ( l1v_istek_veri_o     ),
     .port_istek_maske_o               ( l1v_istek_maske_o    ),

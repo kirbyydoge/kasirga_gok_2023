@@ -8,11 +8,10 @@ module uart_alici (
     input                   rstn_i,
 
     output [7:0]            alinan_veri_o,
+    output                  alinan_gecerli_o,
     input [15:0]            baud_div_i,
     
-    input                   rx_i,
-    output                  hazir_o,
-    output                  alinan_veri_gecerli_o
+    input                   rx_i
     
 );
 
@@ -101,9 +100,8 @@ always @ (posedge clk_i) begin
     end
 end
 
-assign hazir_o = hazir_cmb;
 assign alinan_veri_o = alinan_veri;
-assign alinan_veri_gecerli_o = alinan_veri_gecerli_cmb;
+assign alinan_gecerli_o = alinan_veri_gecerli_cmb;
 
 
 

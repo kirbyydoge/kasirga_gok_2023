@@ -12,6 +12,7 @@ module l1v_denetleyici (
     input                                           port_istek_yaz_i,
     input   [`VERI_BIT-1:0]                         port_istek_veri_i,
     output                                          port_istek_hazir_o,
+    input                                           port_istek_onbellekleme_i,
 
     // l1 denetleyici veri <> okuyan birim 
     output  [`VERI_BIT-1:0]                         port_veri_o,
@@ -32,6 +33,7 @@ module l1v_denetleyici (
     // veri yolu denetleyici <> l1 denetleyici oku
     output  [`ADRES_BIT-1:0]                        vy_istek_adres_o,
     output                                          vy_istek_gecerli_o,
+    output                                          vy_istek_onbellekleme_o,
     input                                           vy_istek_hazir_i,
     output                                          vy_istek_yaz_o,
     output  [`L1_BLOK_BIT-1:0]                      vy_istek_veri_o,
@@ -43,15 +45,18 @@ module l1v_denetleyici (
 
 localparam  L1_DURUM_BIT    = 'd4;
 
-localparam  L1_BOSTA        = 'd0;
-localparam  L1_OKU          = 'd1;
-localparam  L1_BEKLE        = 'd2;
-localparam  L1_SORGU        = 'd3;
-localparam  L1_YANIT        = 'd4;
-localparam  L1_SATIR_ACIK   = 'd5;
-localparam  VY_OKU_ISTEK    = 'd6;
-localparam  VY_OKU_BEKLE    = 'd7;
-localparam  VY_YAZ_ISTEK    = 'd8;
+localparam  L1_BOSTA                 = 'd0;
+localparam  L1_OKU                   = 'd1;
+localparam  L1_BEKLE                 = 'd2;
+localparam  L1_SORGU                 = 'd3;
+localparam  L1_YANIT                 = 'd4;
+localparam  L1_SATIR_ACIK            = 'd5;
+localparam  VY_OKU_ISTEK             = 'd6;
+localparam  VY_OKU_BEKLE             = 'd7;
+localparam  VY_YAZ_ISTEK             = 'd8;
+localparam  L1_ONBELLEKSIZ_OKU_ISTEK = 'd9;
+localparam  L1_ONBELLEKSIZ_OKU_BEKLE = 'd10;
+localparam  L1_ONBELLEKSIZ_YAZ_ISTEK = 'd11;
 
 reg [L1_DURUM_BIT-1:0] l1_durum_r; 
 reg [L1_DURUM_BIT-1:0] l1_durum_ns;
@@ -136,6 +141,10 @@ assign vy_istek_veri_o = vy_istek_veri_r;
 reg vy_istek_gecerli_r;
 reg vy_istek_gecerli_ns;
 assign vy_istek_gecerli_o = vy_istek_gecerli_r;
+
+reg vy_istek_onbellekleme_r;
+reg vy_istek_onbellekleme_ns;
+assign vy_istek_onbellekleme_o = vy_istek_onbellekleme_r;
 
 reg vy_istek_yaz_r;
 reg vy_istek_yaz_ns;
@@ -327,6 +336,7 @@ always @* begin
     vy_veri_hazir_ns = vy_veri_hazir_r;
     vy_istek_veri_ns = vy_istek_veri_r;
     vy_hedef_yol_ns = vy_hedef_yol_r;
+    vy_istek_onbellekleme_ns = `LOW;
     port_yazma_istegi_ns = port_yazma_istegi_r;
     l1_yol_guncellendi_ns = l1_yol_guncellendi_r;
     port_istek_veri_ns = port_istek_veri_r;
@@ -345,7 +355,12 @@ always @* begin
             port_istek_veri_ns = port_istek_veri_i;
             port_istek_maske_ns = port_istek_maske_i;
             port_yazma_istegi_ns = port_istek_yaz_i;
-            l1_cikar(port_istek_adres_i);
+            if (port_istek_onbellekleme_i) begin
+                l1_durum_ns = port_istek_yaz_i ? L1_ONBELLEKSIZ_YAZ_ISTEK : L1_ONBELLEKSIZ_OKU_ISTEK;
+            end
+            else begin
+                l1_cikar(port_istek_adres_i);
+            end
         end
     end
     L1_SATIR_ACIK: begin
@@ -358,7 +373,10 @@ always @* begin
             port_istek_veri_ns = port_istek_veri_i;
             port_istek_maske_ns = port_istek_maske_i;
             port_yazma_istegi_ns = port_istek_yaz_i;
-            if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
+            if (port_istek_onbellekleme_i) begin
+                l1_durum_ns = port_istek_yaz_i ? L1_ONBELLEKSIZ_YAZ_ISTEK : L1_ONBELLEKSIZ_OKU_ISTEK;
+            end
+            else if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
                 if (port_istek_yaz_i) begin
                     set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_i, port_istek_veri_i, port_istek_maske_i);
                     port_yazma_istegi_ns = `LOW;
@@ -460,6 +478,40 @@ always @* begin
             l1_durum_ns = VY_OKU_ISTEK;
         end
     end
+    L1_ONBELLEKSIZ_OKU_ISTEK: begin
+        vy_istek_gecerli_ns = `HIGH;
+        vy_istek_yaz_ns = `LOW;
+        vy_istek_adres_ns = port_istek_adres_r;
+        vy_istek_onbellekleme_ns = `HIGH;
+        if (vy_istek_hazir_i && vy_istek_gecerli_o) begin 
+            vy_istek_adres_ns = port_istek_adres_r;
+            vy_istek_onbellekleme_ns = `LOW;
+            vy_istek_gecerli_ns = `LOW;
+            vy_istek_yaz_ns = `LOW; 
+            l1_durum_ns = L1_ONBELLEKSIZ_OKU_BEKLE;
+        end
+    end
+    L1_ONBELLEKSIZ_OKU_BEKLE: begin
+        vy_veri_hazir_ns = `HIGH;
+        vy_istek_adres_ns = port_istek_adres_r;
+        if (vy_veri_hazir_o && vy_veri_gecerli_i) begin
+            port_veri_ns = vy_veri_i[0 +: `VERI_BIT];
+            l1_durum_ns = L1_BOSTA;
+        end
+    end
+    L1_ONBELLEKSIZ_YAZ_ISTEK: begin
+        vy_istek_gecerli_ns = `HIGH;
+        vy_istek_yaz_ns = `HIGH;
+        vy_istek_veri_ns = port_istek_veri_r;
+        vy_istek_adres_ns = port_istek_adres_r;
+        vy_istek_onbellekleme_ns = `HIGH;
+        if (vy_istek_hazir_i && vy_istek_gecerli_o) begin
+            vy_istek_onbellekleme_ns = `LOW;
+            vy_istek_gecerli_ns = `LOW;
+            vy_istek_yaz_ns = `LOW;
+            l1_durum_ns = L1_BOSTA;
+        end
+    end
     endcase
     
     port_istek_hazir_ns = l1_durum_ns == L1_BOSTA || l1_durum_ns == L1_SATIR_ACIK;
@@ -483,6 +535,7 @@ always @(posedge clk_i) begin
         vy_istek_gecerli_r <= `LOW;
         vy_istek_yaz_r <= `LOW;
         vy_istek_veri_r <= 0;
+        vy_istek_onbellekleme_r <= 0;
         vy_veri_hazir_r <= `LOW;
         vy_hedef_yol_r <= 0;
         l1_istek_gecerli_r <= `LOW;
@@ -515,6 +568,7 @@ always @(posedge clk_i) begin
         vy_istek_gecerli_r <= vy_istek_gecerli_ns;
         vy_istek_yaz_r <= vy_istek_yaz_ns;
         vy_istek_veri_r <= vy_istek_veri_ns;
+        vy_istek_onbellekleme_r <= vy_istek_onbellekleme_ns;
         vy_veri_hazir_r <= vy_veri_hazir_ns;
         vy_hedef_yol_r <= vy_hedef_yol_ns;
         port_istek_hazir_r <= port_istek_hazir_ns;

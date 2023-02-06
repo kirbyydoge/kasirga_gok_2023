@@ -11,6 +11,8 @@ module veri_yolu_birimi(
     
     output  [`ADRES_BIT-1:0]                        port_istek_adres_o,
     output                                          port_istek_gecerli_o,
+    output                                          port_istek_onbellekleme_o,
+
     // Yaz
     output                                          port_istek_yaz_o,
     output  [`VERI_BIT-1:0]                         port_istek_veri_o,
@@ -41,6 +43,9 @@ reg  [`ADRES_BIT-1:0]   port_istek_adres_ns;
 
 reg                     port_istek_gecerli_r;
 reg                     port_istek_gecerli_ns;
+
+reg                     port_istek_onbellekleme_r;
+reg                     port_istek_onbellekleme_ns;
 
 // Okuma
 reg                     port_veri_hazir_r;
@@ -78,12 +83,14 @@ always @* begin
     port_istek_veri_ns = port_istek_veri_r;
     bib_oku_istek_ns = bib_oku_istek_r;
     port_istek_maske_ns = port_istek_maske_r;
+    port_istek_onbellekleme_ns = port_istek_onbellekleme_r;
     bellek_gecerli_cmb = `LOW;
     bellek_veri_cmb = {`VERI_BIT{1'b0}};
 
     case(vyb_durum_r)
     HAZIR: begin
         if (bib_istek_gecerli_i) begin
+            port_istek_onbellekleme_ns = (bib_istek_adres_i & ~`RAM_MASK_ADDR) != `RAM_BASE_ADDR;
             if (bib_istek_yaz_i) begin
                 port_istek_adres_ns = bib_istek_adres_i;
                 port_istek_maske_ns = bib_istek_maske_i;
@@ -104,6 +111,7 @@ always @* begin
     ISTEK: begin
         port_istek_gecerli_ns = `HIGH;
         if (port_istek_gecerli_o && port_istek_hazir_i) begin
+            port_istek_onbellekleme_ns = `LOW;
             port_istek_gecerli_ns = `LOW;
             port_istek_yaz_ns = `LOW;
             vyb_durum_ns = bib_oku_istek_r ? BEKLE : HAZIR;
@@ -129,6 +137,7 @@ always @(posedge clk_i) begin
         vyb_durum_r <= HAZIR;
         port_istek_adres_r <= {`ADRES_BIT{1'b0}};    
         port_istek_gecerli_r <= 1'b0;               
+        port_istek_onbellekleme_r <= `LOW;
         port_veri_hazir_r <= 1'b0;                   
         port_istek_yaz_r <= 1'b0;                 
         port_istek_veri_r <= {`VERI_BIT{1'b0}};    
@@ -140,6 +149,7 @@ always @(posedge clk_i) begin
         bib_oku_istek_r <= bib_oku_istek_ns;
         port_istek_adres_r <= port_istek_adres_ns;
         port_istek_gecerli_r <= port_istek_gecerli_ns;
+        port_istek_onbellekleme_r <= port_istek_onbellekleme_ns;
         port_veri_hazir_r <= port_veri_hazir_ns;
         port_istek_yaz_r <= port_istek_yaz_ns;
         port_istek_veri_r <= port_istek_veri_ns;
@@ -149,6 +159,7 @@ end
 
 assign port_istek_adres_o = port_istek_adres_r & 32'hFFFF_FFFC;
 assign port_istek_gecerli_o = port_istek_gecerli_r;
+assign port_istek_onbellekleme_o = port_istek_onbellekleme_r;
 assign port_istek_maske_o = port_istek_maske_r;
 assign port_veri_hazir_o = port_veri_hazir_r;
 assign bellek_gecerli_o = bellek_gecerli_cmb;

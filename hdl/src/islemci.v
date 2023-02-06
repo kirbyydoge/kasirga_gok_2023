@@ -41,6 +41,7 @@ wire    [`VERI_BIT-1:0]         io_cek_l1vd_istek_veri_w;
 wire    [`ADRES_BIT-1:0]        io_cek_l1vd_istek_adres_w;
 wire                            io_cek_l1vd_istek_yaz_w;
 wire                            io_cek_l1vd_istek_gecerli_w;
+wire                            io_cek_l1vd_istek_onbellekleme_w;
 wire                            io_cek_l1vd_istek_hazir_w;
 
 cekirdek cekirdek (
@@ -59,6 +60,7 @@ cekirdek cekirdek (
     .l1v_istek_adres_o          ( io_cek_l1vd_istek_adres_w ),
     .l1v_istek_yaz_o            ( io_cek_l1vd_istek_yaz_w ),
     .l1v_istek_gecerli_o        ( io_cek_l1vd_istek_gecerli_w ),
+    .l1v_istek_onbellekleme_o   ( io_cek_l1vd_istek_onbellekleme_w ),
     .l1v_istek_hazir_i          ( io_cek_l1vd_istek_hazir_w )
 );
 
@@ -165,6 +167,7 @@ wire                                            io_l1vd_clk_w;
 wire                                            io_l1vd_rstn_w;
 wire    [`ADRES_BIT-1:0]                        io_l1vd_port_istek_adres_w;
 wire                                            io_l1vd_port_istek_gecerli_w;
+wire                                            io_l1vd_port_istek_onbellekleme_w;
 wire                                            io_l1vd_port_istek_yaz_w;
 wire    [`VERI_BIT-1:0]                         io_l1vd_port_istek_veri_w;
 wire    [`VERI_BYTE-1:0]                        io_l1vd_port_istek_maske_w;
@@ -182,6 +185,7 @@ wire    [(`L1_BLOK_BIT * `L1V_YOL)-1:0]         io_l1vd_l1_veri_blok_w;
 wire                                            io_l1vd_l1_veri_gecerli_w;
 wire    [`ADRES_BIT-1:0]                        io_l1vd_vy_istek_adres_w;
 wire                                            io_l1vd_vy_istek_gecerli_w;
+wire                                            io_l1vd_vy_istek_onbellekleme_w;
 wire                                            io_l1vd_vy_istek_hazir_w;
 wire                                            io_l1vd_vy_istek_yaz_w;
 wire    [`L1_BLOK_BIT-1:0]                      io_l1vd_vy_istek_veri_w;
@@ -194,6 +198,7 @@ l1v_denetleyici l1vd (
     .rstn_i                                     ( io_l1vd_rstn_w ),
     .port_istek_adres_i                         ( io_l1vd_port_istek_adres_w ),
     .port_istek_gecerli_i                       ( io_l1vd_port_istek_gecerli_w ),
+    .port_istek_onbellekleme_i                  ( io_l1vd_port_istek_onbellekleme_w ),
     .port_istek_yaz_i                           ( io_l1vd_port_istek_yaz_w ),
     .port_istek_veri_i                          ( io_l1vd_port_istek_veri_w ),
     .port_istek_maske_i                         ( io_l1vd_port_istek_maske_w ),
@@ -211,6 +216,7 @@ l1v_denetleyici l1vd (
     .l1_veri_gecerli_i                          ( io_l1vd_l1_veri_gecerli_w ),
     .vy_istek_adres_o                           ( io_l1vd_vy_istek_adres_w ),
     .vy_istek_gecerli_o                         ( io_l1vd_vy_istek_gecerli_w ),
+    .vy_istek_onbellekleme_o   					( io_l1vd_vy_istek_onbellekleme_w ),
     .vy_istek_hazir_i                           ( io_l1vd_vy_istek_hazir_w ),
     .vy_istek_yaz_o                             ( io_l1vd_vy_istek_yaz_w ),
     .vy_istek_veri_o                            ( io_l1vd_vy_istek_veri_w ),
@@ -280,24 +286,33 @@ wire                            io_vyd_l1_veri_gecerli_w;
 wire                            io_vyd_l1_veri_hazir_w;
 
 veri_yolu_denetleyici vyd (
-    .clk_i               ( io_vyd_clk_w ),
-    .rstn_i              ( io_vyd_rstn_w ),
-    .mem_istek_adres_o   ( io_vyd_mem_istek_adres_w ),
-    .mem_istek_veri_o    ( io_vyd_mem_istek_veri_w ),
-    .mem_istek_yaz_o     ( io_vyd_mem_istek_yaz_w ),
-    .mem_istek_gecerli_o ( io_vyd_mem_istek_gecerli_w ),
-    .mem_istek_hazir_i   ( io_vyd_mem_istek_hazir_w ),
-    .mem_veri_i          ( io_vyd_mem_veri_w ),
-    .mem_veri_gecerli_i  ( io_vyd_mem_veri_gecerli_w ),
-    .mem_veri_hazir_o    ( io_vyd_mem_veri_hazir_w ),
-    .l1_istek_adres_i    ( io_vyd_l1_istek_adres_w ),
-    .l1_istek_gecerli_i  ( io_vyd_l1_istek_gecerli_w ),
-    .l1_istek_veri_i     ( io_vyd_l1_istek_veri_w ),
-    .l1_istek_yaz_i      ( io_vyd_l1_istek_yaz_w ),
-    .l1_istek_hazir_o    ( io_vyd_l1_istek_hazir_w ),
-    .l1_veri_o           ( io_vyd_l1_veri_w ),
-    .l1_veri_gecerli_o   ( io_vyd_l1_veri_gecerli_w ),
-    .l1_veri_hazir_i     ( io_vyd_l1_veri_hazir_w )
+    .clk_i               		( io_vyd_clk_w ),
+    .rstn_i              		( io_vyd_rstn_w ),
+    .mem_istek_adres_o   		( io_vyd_mem_istek_adres_w ),
+    .mem_istek_veri_o    		( io_vyd_mem_istek_veri_w ),
+    .mem_istek_yaz_o     		( io_vyd_mem_istek_yaz_w ),
+    .mem_istek_gecerli_o 		( io_vyd_mem_istek_gecerli_w ),
+    .mem_istek_hazir_i   		( io_vyd_mem_istek_hazir_w ),
+    .mem_veri_i          		( io_vyd_mem_veri_w ),
+    .mem_veri_gecerli_i  		( io_vyd_mem_veri_gecerli_w ),
+    .mem_veri_hazir_o    		( io_vyd_mem_veri_hazir_w ),
+    .l1b_istek_adres_i   		( io_vyd_l1b_istek_adres_w ),
+    .l1b_istek_gecerli_i 		( io_vyd_l1b_istek_gecerli_w ),
+    .l1b_istek_veri_i    		( io_vyd_l1b_istek_veri_w ),
+    .l1b_istek_yaz_i     		( io_vyd_l1b_istek_yaz_w ),
+    .l1b_istek_hazir_o   		( io_vyd_l1b_istek_hazir_w ),
+    .l1b_veri_o          		( io_vyd_l1b_veri_w ),
+    .l1b_veri_gecerli_o  		( io_vyd_l1b_veri_gecerli_w ),
+    .l1b_veri_hazir_i    		( io_vyd_l1b_veri_hazir_w ),
+    .l1v_istek_adres_i   		( io_vyd_l1v_istek_adres_w ),
+    .l1v_istek_gecerli_i 		( io_vyd_l1v_istek_gecerli_w ),
+    .l1v_istek_onbellekleme_i   ( io_vyd_l1v_istek_onbellekleme_w ),
+    .l1v_istek_veri_i    		( io_vyd_l1v_istek_veri_w ),
+    .l1v_istek_yaz_i     		( io_vyd_l1v_istek_yaz_w ),
+    .l1v_istek_hazir_o   		( io_vyd_l1v_istek_hazir_w ),
+    .l1v_veri_o          		( io_vyd_l1v_veri_w ),
+    .l1v_veri_gecerli_o  		( io_vyd_l1v_veri_gecerli_w ),
+    .l1v_veri_hazir_i    		( io_vyd_l1v_veri_hazir_w )
 );
 
 // ---- SPI Denetleyicisi ----
@@ -333,6 +348,35 @@ spi_denetleyici spid (
     .sck_o               ( io_spid_sck_w )
 );
 
+// ---- UART Denetleyicisi ----
+wire                        io_uartd_clk_w;
+wire                        io_uartd_rstn_w;
+wire    [`ADRES_BIT-1:0]    io_uartd_cek_adres_w;
+wire    [`VERI_BIT-1:0]     io_uartd_cek_veri_w;
+wire                        io_uartd_cek_yaz_w;
+wire                        io_uartd_cek_gecerli_w;
+wire                        io_uartd_cek_hazir_w;
+wire    [`VERI_BIT-1:0]     io_uartd_uart_veri_w;
+wire                        io_uartd_uart_gecerli_w;
+wire                        io_uartd_uart_hazir_w;
+wire                        io_uartd_rx_w;
+wire                        io_uartd_tx_w;
+
+uart_denetleyicisi uartd (
+    .clk_i                  ( io_uartd_clk_w ),
+    .rstn_i                 ( io_uartd_rstn_w ),
+    .cek_adres_i            ( io_uartd_cek_adres_w ),
+    .cek_veri_i             ( io_uartd_cek_veri_w ),
+    .cek_yaz_i              ( io_uartd_cek_yaz_w ),
+    .cek_gecerli_i          ( io_uartd_cek_gecerli_w ),
+    .cek_hazir_o            ( io_uartd_cek_hazir_w ),
+    .uart_veri_o            ( io_uartd_uart_veri_w ),
+    .uart_gecerli_o         ( io_uartd_uart_gecerli_w ),
+    .uart_hazir_i           ( io_uartd_uart_hazir_w ),
+    .rx_i                   ( io_uartd_rx_w ),
+    .tx_o                   ( io_uartd_tx_w )
+);
+
 // Cekirdek < Sistem
 assign io_cek_clk_w = clk;
 assign io_cek_rstn_w = resetn;
@@ -358,6 +402,10 @@ assign io_vyd_rstn_w = resetn;
 // SPI Denetleyicisi < Sistem
 assign io_spid_clk_w = clk;
 assign io_spid_rstn_w = resetn;
+
+// UART Denetleyicisi < Sistem
+assign io_uartd_clk_w = clk;
+assign io_uartd_rstn_w = resetn;
 
 // Cekirdek < L1BD
 assign io_cek_buyruk_yanit_veri_w = io_l1bd_port_veri_w;
@@ -420,6 +468,7 @@ endgenerate
 // L1VD < Cekirdek
 assign io_l1vd_port_istek_adres_w = io_cek_l1vd_istek_adres_w;
 assign io_l1vd_port_istek_gecerli_w = io_cek_l1vd_istek_gecerli_w;
+assign io_l1vd_port_istek_onbellekleme_w = io_cek_l1vd_istek_onbellekleme_w;
 assign io_l1vd_port_istek_yaz_w = io_cek_l1vd_istek_yaz_w;
 assign io_l1vd_port_istek_veri_w = io_cek_l1vd_istek_veri_w; 
 assign io_l1vd_port_istek_maske_w = io_cek_l1vd_istek_maske_w;
@@ -472,11 +521,24 @@ assign io_l1bd_vy_veri_w = io_vyd_l1_veri_w;
 assign io_l1bd_vy_veri_gecerli_w = io_vyd_l1_veri_gecerli_w;
 
 // Veri Yolu Denetleyicisi < L1BD
-assign io_vyd_l1_istek_adres_w = io_l1bd_vy_istek_adres_w;
-assign io_vyd_l1_istek_gecerli_w = io_l1bd_vy_istek_gecerli_w;
-assign io_vyd_l1_istek_veri_w = io_l1bd_vy_istek_veri_w;
-assign io_vyd_l1_istek_yaz_w = io_l1bd_vy_istek_yaz_w;
-assign io_vyd_l1_veri_hazir_w = io_l1bd_vy_veri_hazir_w;
+assign io_vyd_l1b_istek_adres_w = io_l1bd_vy_istek_adres_w;
+assign io_vyd_l1b_istek_gecerli_w = io_l1bd_vy_istek_gecerli_w;
+assign io_vyd_l1b_istek_veri_w = io_l1bd_vy_istek_veri_w;
+assign io_vyd_l1b_istek_yaz_w = io_l1bd_vy_istek_yaz_w;
+assign io_vyd_l1b_veri_hazir_w = io_l1bd_vy_veri_hazir_w;
+
+// L1VD < Veri Yolu Denetleyicisi
+assign io_l1vd_vy_istek_hazir_w = io_vyd_l1v_istek_hazir_w;
+assign io_l1vd_vy_veri_w = io_vyd_l1v_veri_w;
+assign io_l1vd_vy_veri_gecerli_w = io_vyd_l1v_veri_gecerli_w;
+
+// Veri Yolu Denetleyicisi < L1VD
+assign io_vyd_l1v_istek_adres_w = io_l1vd_vy_istek_adres_w;
+assign io_vyd_l1v_istek_gecerli_w = io_l1vd_vy_istek_gecerli_w;
+assign io_vyd_l1v_istek_onbellekleme_w = io_l1vd_vy_istek_onbellekleme_w;
+assign io_vyd_l1v_istek_veri_w = io_l1vd_vy_istek_veri_w;
+assign io_vyd_l1v_istek_yaz_w = io_l1vd_vy_istek_yaz_w;
+assign io_vyd_l1v_veri_hazir_w = io_l1vd_vy_veri_hazir_w;
 
 // Sistem Veri Yolu < Veri Yolu Denetleyicisi
 assign iomem_wdata = io_vyd_mem_istek_veri_w;
@@ -526,25 +588,33 @@ end
 // Veri Yolu Denetleyicisi < Sistem Veri Yolu
 assign io_vyd_mem_istek_hazir_w = (io_vyd_mem_istek_adres_w & ~`RAM_MASK_ADDR) == `RAM_BASE_ADDR ? iomem_ready :
                                   (io_vyd_mem_istek_adres_w & ~`SPI_MASK_ADDR) == `SPI_BASE_ADDR ? io_spid_cek_hazir_w :
-                                  (io_vyd_mem_istek_adres_w & ~`UART_MASK_ADDR) == `UART_BASE_ADDR ? `LOW : `LOW;
+                                  (io_vyd_mem_istek_adres_w & ~`UART_MASK_ADDR) == `UART_BASE_ADDR ? io_uartd_cek_hazir_w : `LOW;
 
 assign io_vyd_mem_veri_w = bellek_veri;
 assign io_vyd_mem_veri_gecerli_w = bellek_veri_gecerli;
 
-// SPI Denetleyici < Very Yolu Denetleyicisi
+// SPI Denetleyici < Veri Yolu Denetleyicisi
 assign io_spid_cek_adres_w = io_vyd_mem_istek_adres_w;
 assign io_spid_cek_veri_w = io_vyd_mem_istek_veri_w;
 assign io_spid_cek_yaz_w = io_vyd_mem_istek_yaz_w;
 assign io_spid_cek_gecerli_w = io_vyd_mem_istek_gecerli_w;
 assign io_spid_spi_hazir_w = io_vyd_mem_veri_hazir_w;
 
+// UART Denetleyici < Veri Yolu Denetleyicisi
+assign io_uartd_cek_adres_w = io_vyd_mem_istek_adres_w;
+assign io_uartd_cek_veri_w = io_vyd_mem_istek_veri_w;
+assign io_uartd_cek_yaz_w = io_vyd_mem_istek_yaz_w;
+assign io_uartd_cek_gecerli_w = io_vyd_mem_istek_gecerli_w;
+assign io_uartd_uart_hazir_w = io_vyd_mem_veri_hazir_w;
+
 // ---- Cekirdek <> Cevre Birimleri ----
 assign spi_cs_o = io_spid_csn_w;
 assign spi_sck_o = io_spid_sck_w;
 assign spi_mosi_o = io_spid_mosi_w;
 assign io_spid_miso_w = spi_miso_i;
+assign io_uartd_rx_w = uart_rx_i;
 
-assign uart_tx_o = 0;
+assign uart_tx_o = io_uartd_tx_w;
 assign pwm0_o = 0;
 assign pwm1_o = 0;
 
