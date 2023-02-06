@@ -82,4 +82,10 @@
 `define SPI_CMD_REG         8'h10
 `define SPI_TXN_SIZE        8
 
+// ----UART Denetleyici Tanimlamalar----
+`define UART_CTRL_REG        8'h00
+`define UART_STATUS_REG      8'h04
+`define UART_RDATA_REG       8'h08
+`define UART_WDATA_REG       8'h0c
+`define UART_TXN_SIZE        8
 

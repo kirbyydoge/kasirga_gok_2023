@@ -91,7 +91,7 @@ end
 always @ (posedge clk_i) begin
     if (!rstn_i) begin
         durum_r <= BOSTA;
-        sayac_r <= 0;
+        sayac_r <= 16'd0;
         alinan_veri_biti_r <= 0; // En anlamsız bitten yollamaya başlanır.
     end
     else begin
@@ -101,7 +101,6 @@ always @ (posedge clk_i) begin
     end
 end
 
-assign tx = tx_r;
 assign hazir_o = hazir_cmb;
 assign alinan_veri_o = alinan_veri;
 assign alinan_veri_gecerli_o = alinan_veri_gecerli_cmb;

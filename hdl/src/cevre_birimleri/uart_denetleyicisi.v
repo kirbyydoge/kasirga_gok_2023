@@ -58,13 +58,14 @@ wire [7:0] tx_fifodan_okunan_data_w;
 reg        tx_fifo_rd_en_cmb;
 wire       tx_fifo_full_w;
 wire       tx_fifo_empty;
+wire       consume_w;
 // ------------ FIFO RX BUFFER I/O-----------------//
 reg  [7:0] rx_fifoya_yazilacak_data_cmb;
 reg        rx_fifo_wr_en_cmb;
 wire [7:0] rx_fifodan_okunan_data_w;
 reg        rx_fifo_rd_en_cmb;
 wire       rx_fifo_full_w;
-wire       rx_fifp_empty;
+wire       rx_fifo_empty;
 // ------------ UART ALICI I/O --------------------//
 wire [7:0]            alici_alinan_veri_w;
 reg [15:0]            alici_baud_div_cmb;
@@ -119,8 +120,9 @@ always @* begin
 
                     end
                     `UART_RDATA_REG: begin
+                        verici_baud_div_cmb = baud_div;
                         if (!cek_yaz_i) begin
-                            if (fifo_miso_empty_w) begin
+                            if (tx_fifo_empty) begin
                                 durum_ns = VERI_BEKLE;
                             end
                             else begin
@@ -131,6 +133,7 @@ always @* begin
 
                     end
                     `UART_WDATA_REG: begin
+                        alici_baud_div_cmb = baud_div;
                          if (cek_yaz_i) begin
                             if (rx_fifo_full_w) begin
                                 fifo_buf_veri_ns = cek_veri_i;
@@ -150,14 +153,14 @@ always @* begin
              if (!tx_fifo_empty) begin
                 uart_veri_ns = tx_fifodan_okunan_data_w;
                 uart_gecerli_ns = `HIGH;
-                durum_ns = DURUM_BOSTA;
+                durum_ns = BOSTA;
             end
         end
         YER_BEKLE: begin
             if (!rx_fifo_full_w) begin
                 rx_fifoya_yazilacak_data_cmb = fifo_buf_veri_r;
                 rx_fifo_wr_en_cmb = `HIGH;
-                durum_ns = DURUM_BOSTA;
+                durum_ns = BOSTA;
             end
         end
     endcase
@@ -194,7 +197,7 @@ fifo #(
     .data_o   ( rx_fifodan_okunan_data_w ),         
     .rd_en_i  ( rx_fifo_rd_en_cmb ),         
     .full_o   ( rx_fifo_full_w ),         
-    .empty_o  ( rx_fifp_empty )         
+    .empty_o  ( rx_fifo_empty )         
 );
 
 fifo #(
@@ -206,7 +209,7 @@ fifo #(
     .data_i   ( tx_fifoya_yazilacak_data_cmb ),         
     .wr_en_i  ( tx_fifo_wr_en_cmb),         
     .data_o   ( tx_fifodan_okunan_data_w ),         
-    .rd_en_i  ( consume_o ),         
+    .rd_en_i  ( consume_w ),         
     .full_o   ( tx_fifo_full_w ),         
     .empty_o  ( tx_fifo_empty )         
 );
@@ -216,7 +219,7 @@ uart_alici alici (
 .rstn_i                    ( rstn_i ),
 .alinan_veri_o             ( alici_alinan_veri_w ),
 .baud_div_i                ( alici_baud_div_cmb ),   
-.rx_i                      ( alici_rx_cmb ),
+.rx_i                      ( rx_i ),
 .hazir_o                   ( alici_hazir_w ),
 .alinan_veri_gecerli_o     ( alici_alinan_veri_gecerli_w )
 );
@@ -224,11 +227,12 @@ uart_alici alici (
 uart_verici verici (
 .clk_i                     ( clk_i),
 .rstn_i                    ( rstn_i),
-.basla_i                   ( tx_en_w ),
-.gelen_veri_gecerli_i      ( !tx_fifo_empty ),
+.tx_en_i                   ( tx_en_w ),
+.veri_gecerli_i            ( !tx_fifo_empty ),
+.consume_o                 ( consume_w ),
 .gelen_veri_i              ( verici_gelen_veri_cmb ),
 .baud_div_i                ( verici_baud_div_cmb ),
-.tx_o                      ( verici_tx_w ),
+.tx_o                      ( tx_o ),
 .hazir_o                   ( verici_hazir_w ) 
 );
 
@@ -238,5 +242,11 @@ assign baud_div = uart_ctrl_r [31:16];
 
 assign uart_veri_o = uart_veri_r;
 assign uart_gecerli_o = uart_gecerli_r;
+assign uart_status_w [0] = tx_fifo_full_w;
+assign uart_status_w [1] = tx_fifo_empty;
+assign uart_status_w [2] = rx_fifo_full_w;
+assign uart_status_w [3] = rx_fifo_empty;
+
+
 
 endmodule

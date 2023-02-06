@@ -35,6 +35,7 @@ reg tx_cmb;
 reg hazir_cmb;
 reg saat_aktif_cmb;
 
+reg consume_cmb;
 
 always @* begin
     tx_cmb = `HIGH;
@@ -43,7 +44,7 @@ always @* begin
     durum_ns = durum_r;
     sayac_ns = sayac_r;
     gonderilecek_veri_biti_ns =gonderilecek_veri_biti_r;
-    consume_o = `LOW;
+    consume_cmb = `LOW;
 
     saat_aktif_cmb = sayac_r == baud_div_i - 1;
     if (sayac_r == baud_div_i - 1) begin
@@ -53,7 +54,7 @@ always @* begin
     case (durum_r) 
         BOSTA: begin
             if (tx_en_i && veri_gecerli_i) begin
-                consume_o = `HIGH;
+                consume_cmb = `HIGH;
                 tx_cmb = `LOW;
                 durum_ns = VERI_GONDER;
                 sayac_ns = 16'd0;
@@ -105,5 +106,6 @@ end
 
 assign tx_o = tx_cmb;
 assign hazir_o = hazir_cmb;
+assign consume_o = consume_cmb;
 
 endmodule
