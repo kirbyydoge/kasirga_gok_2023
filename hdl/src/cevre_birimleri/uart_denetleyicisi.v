@@ -68,7 +68,6 @@ wire       rx_fifo_full_w;
 wire       rx_fifo_empty;
 // ------------ UART ALICI I/O --------------------//
 wire [7:0]            alici_alinan_veri_w;
-reg [15:0]            alici_baud_div_cmb;
 reg                   alici_rx_cmb;
 wire                  alici_hazir_w;
 wire                  alici_alinan_veri_gecerli_w;
@@ -76,7 +75,6 @@ wire                  alici_alinan_veri_gecerli_w;
 reg                   verici_basla_cmb;
 reg                   verici_gelen_veri_gecerli_cmb;  
 reg [7:0]             verici_gelen_veri_cmb;
-reg [15:0]            verici_baud_div_cmb;
 wire                  verici_tx_w;
 wire                  verici_hazir_w;
 
@@ -97,12 +95,12 @@ always @* begin
     rx_fifo_wr_en_cmb = `LOW;
     rx_fifo_rd_en_cmb = `LOW;
     
-    alici_baud_div_cmb = 16'd0;
+
     alici_rx_cmb = `HIGH; // baslarken low'a çek
     verici_basla_cmb = `LOW;
     verici_gelen_veri_gecerli_cmb = `LOW;
     verici_gelen_veri_cmb = 8'd0;
-    verici_baud_div_cmb = 16'd0;
+
 
 
     case (durum_r)
@@ -120,7 +118,6 @@ always @* begin
 
                     end
                     `UART_RDATA_REG: begin
-                        verici_baud_div_cmb = baud_div;
                         if (!cek_yaz_i) begin
                             if (tx_fifo_empty) begin
                                 durum_ns = VERI_BEKLE;
@@ -133,7 +130,7 @@ always @* begin
 
                     end
                     `UART_WDATA_REG: begin
-                        alici_baud_div_cmb = baud_div;
+                      
                          if (cek_yaz_i) begin
                             if (rx_fifo_full_w) begin
                                 fifo_buf_veri_ns = cek_veri_i;
@@ -218,7 +215,7 @@ uart_alici alici (
 .clk_i                     ( clk_i ),
 .rstn_i                    ( rstn_i ),
 .alinan_veri_o             ( alici_alinan_veri_w ),
-.baud_div_i                ( alici_baud_div_cmb ),   
+.baud_div_i                ( baud_div ),   
 .rx_i                      ( rx_i ),
 .hazir_o                   ( alici_hazir_w ),
 .alinan_veri_gecerli_o     ( alici_alinan_veri_gecerli_w )
@@ -231,7 +228,7 @@ uart_verici verici (
 .veri_gecerli_i            ( !tx_fifo_empty ),
 .consume_o                 ( consume_w ),
 .gelen_veri_i              ( verici_gelen_veri_cmb ),
-.baud_div_i                ( verici_baud_div_cmb ),
+.baud_div_i                ( baud_div ),
 .tx_o                      ( tx_o ),
 .hazir_o                   ( verici_hazir_w ) 
 );

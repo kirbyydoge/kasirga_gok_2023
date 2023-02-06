@@ -43,11 +43,10 @@ end
 
 initial begin
     resetn = `LOW;
-    #5;
+    #200;
     resetn = `HIGH;
     #5;
-    resetn = `LOW;
-    #5;
+
     cek_adres_r = 32'h2000_0000;
     cek_veri_r = 32'b0000_0000_1111_1111_0000_0000_0000_0011; //rx etkinleştir
     cek_yaz_r = `HIGH;
