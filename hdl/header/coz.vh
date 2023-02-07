@@ -111,6 +111,51 @@
 `define CNN_LDW     'd66
 `define CNN_CLRW    'd67
 `define CNN_RUN     'd68
+`define C_ADDI4SPN  'd69
+`define C_FLD       'd70
+`define C_LW        'd71
+`define C_FLW       'd72
+`define C_FSD       'd73
+`define C_SW        'd74
+`define C_FSW       'd75
+`define C_ADDI      'd76
+`define C_JAL       'd77
+`define C_LI        'd78
+`define C_LUI       'd79
+`define C_SRLI      'd80
+`define C_SRLI64    'd81
+`define C_SRAI      'd82
+`define C_SRAI64    'd83
+`define C_ANDI      'd84
+`define C_SUB       'd85
+`define C_XOR       'd86
+`define C_OR        'd87
+`define C_AND       'd88
+`define C_SUBW      'd89
+`define C_ADDW      'd90
+`define C_J         'd91
+`define C_BEQZ      'd92
+`define C_BNEZ      'd93
+`define C_SLLI      'd94
+`define C_SLLI64    'd95
+`define C_FLDSP     'd96
+`define C_LWSP      'd97
+`define C_FLWSP     'd98
+`define C_MV        'd99
+`define C_ADD       'd100
+`define C_FSDSP     'd101
+`define C_SWSP      'd102
+`define C_FSWSP     'd103
+`define C_NOP       'd104
+`define C_ADDI16SP  'd105
+`define C_JR        'd106
+`define C_JALR      'd107
+`define C_EBREAK    'd108
+`define C_LD        'd109
+`define C_SD        'd110
+`define C_LDSP      'd111
+`define C_SDSP      'd112
+//`define C_ADDIW     'd113
 
 
-`define N_BUYRUK    'd69    // Kac buyruk var?
+`define N_BUYRUK    'd113    // Kac buyruk var?

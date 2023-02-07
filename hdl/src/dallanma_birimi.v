@@ -6,6 +6,7 @@
 module dallanma_birimi (
     input   [`UOP_DAL_BIT-1:0]  islem_kod_i,
     input   [`PS_BIT-1:0]       islem_ps_i,
+    input   [`PS_BIT-1:0]       islem_islec_i,
     input   [`VERI_BIT-1:0]     islem_anlik_i,
     input                       islem_atladi_i,
 
@@ -42,7 +43,7 @@ always @* begin
     g2_atladi_cmb = `LOW;
     g2_hatali_tahmin_cmb = `LOW;
 
-    ps_atladi_cmb = islem_ps_i + islem_anlik_i;
+    ps_atladi_cmb = islem_islec_i + islem_anlik_i;
     ps_atlamadi_cmb = islem_ps_i + {{`VERI_BIT-4{1'b0}}, 4'd4};
 
     case(islem_kod_i)
@@ -117,6 +118,28 @@ always @* begin
 
         g1_ps_cmb = (ps_atladi_cmb) & ~1;
         g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
+    end
+    `UOP_DAL_CJALR: begin
+        g2_ps_cmb = islem_ps_i;
+        g2_guncelle_cmb = `HIGH;
+        g2_atladi_cmb = `HIGH;
+        g2_hatali_tahmin_cmb = !islem_atladi_i;
+
+        g1_ps_cmb = (ps_atladi_cmb) & ~1;
+        g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
+
+        ps_atlamadi_cmb = islem_ps_i + {{`VERI_BIT-4{1'b0}}, 4'd2};
+    end
+    `UOP_DAL_CJAL: begin
+        g2_ps_cmb = islem_ps_i;
+        g2_guncelle_cmb = `HIGH;
+        g2_atladi_cmb = `HIGH;
+        g2_hatali_tahmin_cmb = !islem_atladi_i;
+
+        g1_ps_cmb = ps_atladi_cmb;
+        g1_ps_gecerli_cmb = g2_hatali_tahmin_cmb;
+
+        ps_atlamadi_cmb = islem_ps_i + {{`VERI_BIT-4{1'b0}}, 4'd2};
     end
     endcase
 end

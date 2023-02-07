@@ -103,23 +103,7 @@ initial begin
     resetn = 1'b0;
     spi_miso_i = 1'b0;
     uart_rx_i = 1'b0;
-    // $readmemh(PATH_TO_TEST, mem.mem_r);
-    mem.mem_r[0][0] = 'hb7;
-    mem.mem_r[0][1] = 'h11;
-    mem.mem_r[0][2] = 'h00;
-    mem.mem_r[0][3] = 'h00;
-    mem.mem_r[1][0] = 'h93;
-    mem.mem_r[1][1] = 'h81;
-    mem.mem_r[1][2] = 'h31;
-    mem.mem_r[1][3] = 'h00;
-    mem.mem_r[2][0] = 'h37;
-    mem.mem_r[2][1] = 'h02;
-    mem.mem_r[2][2] = 'h00;
-    mem.mem_r[2][3] = 'h20;
-    mem.mem_r[3][0] = 'h23;
-    mem.mem_r[3][1] = 'h20;
-    mem.mem_r[3][2] = 'h32;
-    mem.mem_r[3][3] = 'h00;
+    $readmemh(PATH_TO_TEST, mem.mem_r);
     repeat(20) @(posedge clk);
     resetn = 1'b1;
 end

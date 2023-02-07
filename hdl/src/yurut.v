@@ -64,6 +64,8 @@ wire [`VERI_BIT-1:0]            yzb_islec2_w;
 wire [`VERI_BIT-1:0]            yzb_sonuc_w;
 wire                            yzb_gecerli_w;
 
+wire [`VERI_BIT-1:0]            dal_islem_islec_w;
+
 wire [`PS_BIT-1:0]              db_g1_ps_w;
 wire                            db_g1_ps_gecerli_w;
 wire [`PS_BIT-1:0]              db_g2_ps_w;
@@ -97,6 +99,21 @@ begin
     `UOP_AMB_OP_IMM: islec_sec = uop_imm_w;
     `UOP_AMB_OP_CSR: islec_sec = uop_csr_w;
     `UOP_AMB_OP_PC : islec_sec = uop_ps_w;
+    endcase
+end
+endfunction
+
+function [`VERI_BIT-1:0] dal_islec_sec (
+    input [`UOP_DAL_BIT-1:0]    uop_secici,
+    input [`PS_BIT-1:0]         uop_ps_w,
+    input [`VERI_BIT-1:0]       uop_rs1_w
+);
+begin
+    dal_islec_sec = {`VERI_BIT{1'b0}};
+    case(uop_secici)
+    `UOP_DAL_JALR : dal_islec_sec = uop_rs1_w;
+    `UOP_DAL_CJALR: dal_islec_sec = uop_rs1_w;
+    default       : dal_islec_sec = uop_ps_w;
     endcase
 end
 endfunction
@@ -166,6 +183,7 @@ amb amb (
 dallanma_birimi db (
     .islem_kod_i                    ( uop_dal_islem_sec_w ),
     .islem_ps_i                     ( uop_ps_w ),
+    .islem_islec_i                  ( dal_islem_islec_w ),
     .islem_atladi_i                 ( uop_taken_w ),
     .islem_anlik_i                  ( uop_imm_w ),
     .amb_esittir_i                  ( amb_esittir_w ),
@@ -209,6 +227,7 @@ assign uop_yzb_islem_sec_w = yurut_uop_i[`UOP_YZB];
 
 assign amb_islec1_w = islec_sec(uop_amb_islec1_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w, uop_csr_w, uop_ps_w);
 assign amb_islec2_w = islec_sec(uop_amb_islec2_sec_w, uop_rs1_w, uop_rs2_w, uop_imm_w, uop_csr_w, uop_ps_w);
+assign dal_islem_islec_w = dal_islec_sec(uop_dal_islem_sec_w, uop_ps_w, uop_rs1_w);
 
 assign yzb_islec1_w = uop_rs1_w;
 assign yzb_islec2_w = uop_rs2_w;

@@ -136,6 +136,8 @@
 `define UOP_DAL_BGE             6
 `define UOP_DAL_BLTU            7
 `define UOP_DAL_BGEU            8
+`define UOP_DAL_CJAL            9
+`define UOP_DAL_CJALR           10
 
 `define UOP_DAL_BIT             4
 `define UOP_DAL_PTR             (`UOP_YAZ_PTR + `UOP_YAZ_BIT)

@@ -68,6 +68,8 @@ always @* begin
     `UOP_AMB_OR     : islem_sonuc_cmb = islem_islec1_i | islem_islec2_i;
     `UOP_AMB_XOR    : islem_sonuc_cmb = islem_islec1_i ^ islem_islec2_i;
     `UOP_AMB_SLL    : islem_sonuc_cmb = islem_islec1_i << islem_islec2_i;
+    `UOP_AMB_SRA    : islem_sonuc_cmb = $signed(islem_islec1_i) >>> islem_islec2_i;
+    `UOP_AMB_SRL    : islem_sonuc_cmb = islem_islec1_i >> islem_islec2_i;
     `UOP_AMB_SLT    : islem_sonuc_cmb = islem_kucuktur_o ? {{`VERI_BIT-1{1'b0}}, 1'b1} : {`VERI_BIT{1'b0}};
     `UOP_AMB_SLTU   : islem_sonuc_cmb = islem_kucuktur_isaretsiz_o ? {{`VERI_BIT-1{1'b0}}, 1'b1}: {`VERI_BIT{1'b0}};
     `UOP_AMB_MUL    : begin

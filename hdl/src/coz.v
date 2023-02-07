@@ -96,8 +96,58 @@ localparam CASE_CNN_CLRX   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_CLRX;
 localparam CASE_CNN_LDW    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_LDW; 
 localparam CASE_CNN_CLRW   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_CLRW;     
 localparam CASE_CNN_RUN    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `CNN_RUN; 
+localparam CASE_C_ADDI4SPN = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_ADDI4SPN;
+localparam CASE_C_FLD      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FLD;     
+localparam CASE_C_LW       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_LW;      
+localparam CASE_C_FLW      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FLW;     
+localparam CASE_C_FSD      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FSD;     
+localparam CASE_C_SW       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SW;      
+localparam CASE_C_FSW      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FSW;     
+localparam CASE_C_ADDI     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_ADDI;   
+localparam CASE_C_JAL      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_JAL;     
+localparam CASE_C_LI       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_LI;      
+localparam CASE_C_LUI      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_LUI;     
+localparam CASE_C_SRLI     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SRLI;    
+localparam CASE_C_SRLI64   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SRLI64;  
+localparam CASE_C_SRAI     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SRAI;    
+localparam CASE_C_SRAI64   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SRAI64;  
+localparam CASE_C_ANDI     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_ANDI;    
+localparam CASE_C_SUB      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SUB;     
+localparam CASE_C_XOR      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_XOR;     
+localparam CASE_C_OR       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_OR;      
+localparam CASE_C_AND      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_AND;     
+localparam CASE_C_SUBW     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SUBW;    
+localparam CASE_C_ADDW     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_ADDW;    
+localparam CASE_C_J        = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_J;       
+localparam CASE_C_BEQZ     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_BEQZ;    
+localparam CASE_C_BNEZ     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_BNEZ;    
+localparam CASE_C_SLLI     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SLLI;    
+localparam CASE_C_SLLI64   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SLLI64;  
+localparam CASE_C_FLDSP    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FLDSP;   
+localparam CASE_C_LWSP     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_LWSP;    
+localparam CASE_C_FLWSP    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FLWSP;   
+localparam CASE_C_MV       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_MV;      
+localparam CASE_C_ADD      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_ADD;     
+localparam CASE_C_FSDSP    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FSDSP;   
+localparam CASE_C_SWSP     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SWSP;    
+localparam CASE_C_FSWSP    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_FSWSP;   
+localparam CASE_C_NOP      = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_NOP;     
+localparam CASE_C_ADDI16SP = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_ADDI16SP;
+localparam CASE_C_JR       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_JR;      
+localparam CASE_C_JALR     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_JALR;    
+localparam CASE_C_EBREAK   = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_EBREAK;  
+localparam CASE_C_LD       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_LD;         
+localparam CASE_C_SD       = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SD;          
+localparam CASE_C_LDSP     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_LDSP;    
+localparam CASE_C_SDSP     = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_SDSP;
+//localparam CASE_C_ADDIW    = {{`N_BUYRUK-1{1'b0}}, 1'b1} << `C_ADDIW;       
 
 wire coz_aktif_w;
+wire [4:0] buyruk_c_lui_rd;
+wire [4:0] buyruk_c_add_rs2;
+wire [4:0] buyruk_c_addi_rd;
+wire [4:0] buyruk_c_mv_rs2;
+//wire [4:0] buyruk_c_addiw_imm;
 
 reg [`VERI_BIT-1:0]         buyruk_imm_cmb;
 reg [`VERI_BIT-1:0]         buyruk_rs1_cmb;
@@ -124,7 +174,13 @@ begin
 end
 endfunction
    
-generate      
+generate
+    assign buyruk_c_lui_rd    = getir_buyruk_i[11:7];
+    assign buyruk_c_add_rs2   = getir_buyruk_i[6:2];
+    assign buyruk_c_addi_rd   = getir_buyruk_i[11:7];
+    assign buyruk_c_mv_rs2    = getir_buyruk_i[6:2];
+    //assign buyruk_c_addiw_imm = {getir_buyruk_i[12],getir_buyruk_i[6:2]};
+
     assign buyruk[`LUI]        = match(getir_buyruk_i, `MASK_LUI, `MATCH_LUI) && coz_aktif_w;
     assign buyruk[`AUIPC]      = match(getir_buyruk_i, `MASK_AUIPC, `MATCH_AUIPC) && coz_aktif_w;
     assign buyruk[`JALR]       = match(getir_buyruk_i, `MASK_JALR, `MATCH_JALR) && coz_aktif_w;
@@ -194,6 +250,51 @@ generate
     assign buyruk[`CNN_LDW]    = match(getir_buyruk_i, `MASK_CNN_LDW, `MATCH_CNN_LDW) && coz_aktif_w;
     assign buyruk[`CNN_CLRW]   = match(getir_buyruk_i, `MASK_CNN_CLRW, `MATCH_CNN_CLRW) && coz_aktif_w;
     assign buyruk[`CNN_RUN]    = match(getir_buyruk_i, `MASK_CNN_RUN, `MATCH_CNN_RUN) && coz_aktif_w;
+    assign buyruk[`C_ADDI4SPN] = match(getir_buyruk_i, `MASK_C_ADDI4SPN, `MATCH_C_ADDI4SPN) && coz_aktif_w;
+    assign buyruk[`C_FLD]      = match(getir_buyruk_i, `MASK_C_FLD, `MATCH_C_FLD) && coz_aktif_w;
+    assign buyruk[`C_LW]       = match(getir_buyruk_i, `MASK_C_LW, `MATCH_C_LW) && coz_aktif_w;
+    assign buyruk[`C_FLW]      = match(getir_buyruk_i, `MASK_C_FLW, `MATCH_C_FLW) && coz_aktif_w;
+    assign buyruk[`C_FSD]      = match(getir_buyruk_i, `MASK_C_FSD, `MATCH_C_FSD) && coz_aktif_w;
+    assign buyruk[`C_SW]       = match(getir_buyruk_i, `MASK_C_SW, `MATCH_C_SW) && coz_aktif_w;
+    assign buyruk[`C_FSW]      = match(getir_buyruk_i, `MASK_C_FSW, `MATCH_C_FSW) && coz_aktif_w;
+    assign buyruk[`C_ADDI]     = match(getir_buyruk_i, `MASK_C_ADDI, `MATCH_C_ADDI) && coz_aktif_w && buyruk_c_addi_rd !=0;
+    assign buyruk[`C_JAL]      = match(getir_buyruk_i, `MASK_C_JAL, `MATCH_C_JAL) && coz_aktif_w;
+    assign buyruk[`C_LI]       = match(getir_buyruk_i, `MASK_C_LI, `MATCH_C_LI) && coz_aktif_w;
+    assign buyruk[`C_LUI]      = match(getir_buyruk_i, `MASK_C_LUI, `MATCH_C_LUI) && buyruk_c_lui_rd != 5'b00010 && coz_aktif_w;
+    assign buyruk[`C_SRLI]     = match(getir_buyruk_i, `MASK_C_SRLI, `MATCH_C_SRLI) && coz_aktif_w;
+    assign buyruk[`C_SRLI64]   = match(getir_buyruk_i, `MASK_C_SRLI64, `MATCH_C_SRLI64) && coz_aktif_w;
+    assign buyruk[`C_SRAI]     = match(getir_buyruk_i, `MASK_C_SRAI, `MATCH_C_SRAI) && coz_aktif_w;
+    assign buyruk[`C_SRAI64]   = match(getir_buyruk_i, `MASK_C_SRAI64, `MATCH_C_SRAI64) && coz_aktif_w;
+    assign buyruk[`C_ANDI]     = match(getir_buyruk_i, `MASK_C_ANDI, `MATCH_C_ANDI) && coz_aktif_w;
+    assign buyruk[`C_SUB]      = match(getir_buyruk_i, `MASK_C_SUB, `MATCH_C_SUB) && coz_aktif_w;
+    assign buyruk[`C_XOR]      = match(getir_buyruk_i, `MASK_C_XOR, `MATCH_C_XOR) && coz_aktif_w;
+    assign buyruk[`C_OR]       = match(getir_buyruk_i, `MASK_C_OR, `MATCH_C_OR) && coz_aktif_w;
+    assign buyruk[`C_AND]      = match(getir_buyruk_i, `MASK_C_AND, `MATCH_C_AND) && coz_aktif_w;
+    assign buyruk[`C_SUBW]     = match(getir_buyruk_i, `MASK_C_SUBW, `MATCH_C_SUBW) && coz_aktif_w;
+    assign buyruk[`C_ADDW]     = match(getir_buyruk_i, `MASK_C_ADDW, `MATCH_C_ADDW) && coz_aktif_w;
+    assign buyruk[`C_J]        = match(getir_buyruk_i, `MASK_C_J, `MATCH_C_J) && coz_aktif_w;
+    assign buyruk[`C_BEQZ]     = match(getir_buyruk_i, `MASK_C_BEQZ, `MATCH_C_BEQZ) && coz_aktif_w;
+    assign buyruk[`C_BNEZ]     = match(getir_buyruk_i, `MASK_C_BNEZ, `MATCH_C_BNEZ) && coz_aktif_w;
+    assign buyruk[`C_SLLI]     = match(getir_buyruk_i, `MASK_C_SLLI, `MATCH_C_SLLI) && coz_aktif_w;
+    assign buyruk[`C_SLLI64]   = match(getir_buyruk_i, `MASK_C_SLLI64, `MATCH_C_SLLI64) && coz_aktif_w;
+    assign buyruk[`C_FLDSP]    = match(getir_buyruk_i, `MASK_C_FLDSP, `MATCH_C_FLDSP) && coz_aktif_w;
+    assign buyruk[`C_LWSP]     = match(getir_buyruk_i, `MASK_C_LWSP, `MATCH_C_LWSP) && coz_aktif_w;
+    assign buyruk[`C_FLWSP]    = match(getir_buyruk_i, `MASK_C_FLWSP, `MATCH_C_FLWSP) && coz_aktif_w;
+    assign buyruk[`C_MV]       = match(getir_buyruk_i, `MASK_C_MV, `MATCH_C_MV) && coz_aktif_w && buyruk_c_mv_rs2!=0;
+    assign buyruk[`C_ADD]      = match(getir_buyruk_i, `MASK_C_ADD, `MATCH_C_ADD) && coz_aktif_w && buyruk_c_add_rs2 != 0;
+    assign buyruk[`C_FSDSP]    = match(getir_buyruk_i, `MASK_C_FSDSP, `MATCH_C_FSDSP) && coz_aktif_w;
+    assign buyruk[`C_SWSP]     = match(getir_buyruk_i, `MASK_C_SWSP, `MATCH_C_SWSP) && coz_aktif_w;
+    assign buyruk[`C_FSWSP]    = match(getir_buyruk_i, `MASK_C_FSWSP, `MATCH_C_FSWSP) && coz_aktif_w;
+    assign buyruk[`C_NOP]      = match(getir_buyruk_i, `MASK_C_NOP, `MATCH_C_NOP) && coz_aktif_w;
+    assign buyruk[`C_ADDI16SP] = match(getir_buyruk_i, `MASK_C_ADDI16SP, `MATCH_C_ADDI16SP) && coz_aktif_w;
+    assign buyruk[`C_JR]       = match(getir_buyruk_i, `MASK_C_JR, `MATCH_C_JR) && coz_aktif_w;
+    assign buyruk[`C_JALR]     = match(getir_buyruk_i, `MASK_C_JALR, `MATCH_C_JALR) && coz_aktif_w;
+    assign buyruk[`C_EBREAK]   = match(getir_buyruk_i, `MASK_C_EBREAK, `MATCH_C_EBREAK) && coz_aktif_w;
+    assign buyruk[`C_LD]       = match(getir_buyruk_i, `MASK_C_LD, `MATCH_C_LD) && coz_aktif_w;
+    assign buyruk[`C_SD]       = match(getir_buyruk_i, `MASK_C_SD, `MATCH_C_SD) && coz_aktif_w;
+    //assign buyruk[`C_ADDIW]    = match(getir_buyruk_i, `MASK_C_ADDIW, `MATCH_C_ADDIW) && coz_aktif_w && buyruk_c_addiw_imm != 0;
+    assign buyruk[`C_LDSP]     = match(getir_buyruk_i, `MASK_C_LDSP, `MATCH_C_LDSP) && coz_aktif_w;
+    assign buyruk[`C_SDSP]     = match(getir_buyruk_i, `MASK_C_SDSP, `MATCH_C_SDSP) && coz_aktif_w;
 
     assign gecersiz_buyruk_o = !(|buyruk) && coz_aktif_w;
 endgenerate
@@ -516,6 +617,7 @@ endtask
 
 task uop_rv32jalr();
 begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`R_RS1]};
     buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RD]};
     buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
 
@@ -523,6 +625,8 @@ begin
 
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
     uop_ns[`UOP_IMM] = buyruk_imm_cmb;
     uop_ns[`UOP_DAL] = `UOP_DAL_JALR;
     uop_ns[`UOP_YAZ] = `UOP_YAZ_DAL;
@@ -1417,6 +1521,730 @@ begin
 end
 endtask
 
+task uop_rv32caddi4spn();
+begin
+    buyruk_rs1_cmb = 32'd2;
+    buyruk_rd_cmb = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = { {22{`LOW}} , getir_buyruk_i[10:7], getir_buyruk_i[12:11], getir_buyruk_i[5], getir_buyruk_i[6], 2'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB; 
+end
+endtask
+
+task uop_rv32cfld();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rd_cmb = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {24'd0,getir_buyruk_i[6:5],getir_buyruk_i[12:10],3'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;    
+    uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32clw();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rd_cmb = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {25'd0,getir_buyruk_i[5],getir_buyruk_i[12:10],getir_buyruk_i[6],2'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;    
+    uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32cflw();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rd_cmb = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {25'd0,getir_buyruk_i[5],getir_buyruk_i[12:10],getir_buyruk_i[6],2'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;    
+    uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32cld();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rd_cmb = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {24'd0,getir_buyruk_i[6:5],getir_buyruk_i[12:10],3'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;    
+    uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32cfsd();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rs2_cmb  = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {24'd0,getir_buyruk_i[6:5],getir_buyruk_i[12:10],3'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW;
+end
+endtask
+
+task uop_rv32csw();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rs2_cmb = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {25'd0,getir_buyruk_i[5],getir_buyruk_i[12:10],getir_buyruk_i[6],2'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW;
+end
+endtask
+
+task uop_rv32cfsw();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rs2_cmb = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {25'd0,getir_buyruk_i[5],getir_buyruk_i[12:10],getir_buyruk_i[6],2'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW;
+end
+endtask
+
+task uop_rv32csd();
+begin
+    buyruk_rs1_cmb = {29'd0,getir_buyruk_i[9:7]}+5'd8;
+    buyruk_rs2_cmb  = {2'd0,getir_buyruk_i[4:2]}+5'd8;
+    buyruk_imm_cmb = {24'd0,getir_buyruk_i[6:5],getir_buyruk_i[12:10],3'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW;
+end
+endtask
+
+task uop_rv32cnop();
+begin
+    uop_ns = {`UOP_BIT{1'b0}};
+end
+endtask
+
+task uop_rv32caddi();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[11:7]};
+    buyruk_rd_cmb = getir_buyruk_i[11:7];
+    buyruk_imm_cmb = {{26{getir_buyruk_i[12]}}, getir_buyruk_i[12], getir_buyruk_i[6:2]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cjal(); //TO DO
+begin
+    buyruk_rd_cmb = {{31{`LOW}}, 1'd1};
+    buyruk_imm_cmb = {20'd0,getir_buyruk_i[12],getir_buyruk_i[8],getir_buyruk_i[10:9],getir_buyruk_i[6],getir_buyruk_i[7],getir_buyruk_i[2],getir_buyruk_i[11],getir_buyruk_i[5:3],1'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_DAL] = `UOP_DAL_CJAL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_DAL;
+end
+endtask
+
+task uop_rv32caddiw();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[11:7]};
+    buyruk_rd_cmb = getir_buyruk_i[11:7];
+    buyruk_imm_cmb = {{26{getir_buyruk_i[12]}}, getir_buyruk_i[12], getir_buyruk_i[6:2]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cli();
+begin
+    buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[11:7]};
+    buyruk_imm_cmb = {{26{getir_buyruk_i[12]}}, getir_buyruk_i[12], getir_buyruk_i[6:2]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_IS1;
+end
+endtask
+
+task uop_rv32caddi16sp();
+begin
+    buyruk_rs1_cmb = 32'd2;
+    buyruk_rd_cmb = 5'd2;
+    buyruk_imm_cmb = {{22{getir_buyruk_i[12]}}, getir_buyruk_i[12], getir_buyruk_i[4:3], getir_buyruk_i[5], getir_buyruk_i[2], getir_buyruk_i[6], 4'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32clui();
+begin
+    buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[11:7]};
+    buyruk_imm_cmb = {{14{getir_buyruk_i[12]}},getir_buyruk_i[12],getir_buyruk_i[6:2],12'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_IS1;
+end
+endtask
+
+task uop_rv32csrli();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+    buyruk_imm_cmb = {{27{1'b0}}, getir_buyruk_i[12], getir_buyruk_i[6:2]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SRL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32csrai();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+    buyruk_imm_cmb = {{27{1'b0}}, getir_buyruk_i[12], getir_buyruk_i[6:2]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SRA;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32candi();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+    buyruk_imm_cmb = {{26{getir_buyruk_i[12]}}, getir_buyruk_i[12], getir_buyruk_i[6:2]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_AND;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32csub();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = {29'd0, getir_buyruk_i[4:2]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SUB;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cxor();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = {29'd0, getir_buyruk_i[4:2]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_XOR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cor();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = {29'd0, getir_buyruk_i[4:2]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_OR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cand();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = {29'd0, getir_buyruk_i[4:2]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_AND;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32csubw();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = {29'd0, getir_buyruk_i[4:2]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SUB;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32caddw();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = {29'd0, getir_buyruk_i[4:2]} + 32'd8;
+    buyruk_rd_cmb = {2'd0, getir_buyruk_i[9:7]} + 5'd8;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cj(); //TO DO
+begin
+    buyruk_rd_cmb = 32'd0;
+    buyruk_imm_cmb = {{20{getir_buyruk_i[12]}},getir_buyruk_i[12],getir_buyruk_i[8],getir_buyruk_i[10:9],getir_buyruk_i[6],getir_buyruk_i[7],getir_buyruk_i[2],getir_buyruk_i[11],getir_buyruk_i[5:3],1'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `LOW;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_DAL] = `UOP_DAL_CJAL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_DAL;
+end
+endtask
+
+task uop_rv32cbeqz();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = 32'd0;
+    buyruk_imm_cmb = {{23{getir_buyruk_i[12]}}, getir_buyruk_i[12], getir_buyruk_i[6:5], getir_buyruk_i[2], getir_buyruk_i[11:10], getir_buyruk_i[4:3],1'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_DAL] = `UOP_DAL_BEQ;
+end
+endtask
+
+task uop_rv32cbnez();
+begin
+    buyruk_rs1_cmb = {29'd0, getir_buyruk_i[9:7]} + 32'd8;
+    buyruk_rs2_cmb = 32'd0;
+    buyruk_imm_cmb = {{23{getir_buyruk_i[12]}}, getir_buyruk_i[12], getir_buyruk_i[6:5], getir_buyruk_i[2], getir_buyruk_i[11:10], getir_buyruk_i[4:3],1'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_NOP;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_DAL] = `UOP_DAL_BNE;
+end
+endtask
+
+task uop_rv32cslli();
+begin
+    buyruk_rs1_cmb = {{27{`LOW}},getir_buyruk_i[11:7]};
+    buyruk_rd_cmb = getir_buyruk_i[11:7];
+    buyruk_imm_cmb = {26'd0, getir_buyruk_i[12], getir_buyruk_i[6:2]};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_SLL;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32clwsp(); //
+begin
+    buyruk_rs1_cmb = 32'd2;
+    buyruk_rd_cmb = getir_buyruk_i[11:7];
+    buyruk_imm_cmb = {24'd0,getir_buyruk_i[3:2],getir_buyruk_i[12],getir_buyruk_i[6:4],2'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;    
+    uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32cldsp();
+begin
+    buyruk_rs1_cmb = 32'd2;
+    buyruk_rd_cmb = getir_buyruk_i[11:7];
+    buyruk_imm_cmb = {23'd0,getir_buyruk_i[4:2],getir_buyruk_i[12],getir_buyruk_i[6:5],3'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;    
+    uop_ns[`UOP_BEL] = `UOP_BEL_LW; 
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_BEL;
+end
+endtask
+
+task uop_rv32cjr(); //TO DO
+begin
+    buyruk_rd_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RD]};
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[11:7]};
+    buyruk_imm_cmb = 32'd0;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `LOW;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_DAL] = `UOP_DAL_CJALR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_DAL;
+end
+endtask
+
+task uop_rv32cmv();
+begin
+    buyruk_rs1_cmb = 32'd0;
+    buyruk_rs2_cmb = {27'd0, getir_buyruk_i[6:2]};
+    buyruk_rd_cmb =  getir_buyruk_i[11:7];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cadd();
+begin
+    buyruk_rs1_cmb = {27'd0, getir_buyruk_i[11:7]};
+    buyruk_rs2_cmb = {27'd0, getir_buyruk_i[6:2]};
+    buyruk_rd_cmb =  getir_buyruk_i[11:7];
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+end
+endtask
+
+task uop_rv32cswsp();
+begin
+    buyruk_rs1_cmb = 32'd2;
+    buyruk_rs2_cmb = getir_buyruk_i[6:2];
+    buyruk_imm_cmb = {24'd0, getir_buyruk_i[8:7], getir_buyruk_i[12:9], 2'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW;
+end
+endtask
+
+task uop_rv32csdsp();
+begin
+    buyruk_rs1_cmb = 32'd2;
+    buyruk_rs2_cmb  = {2'd0,getir_buyruk_i[4:2]};
+    buyruk_imm_cmb = {23'd0,getir_buyruk_i[9:7],getir_buyruk_i[12:10],3'd0};
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
+    uop_ns[`UOP_RS2_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
+    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_IMM;
+    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_NOP;
+    uop_ns[`UOP_BEL] = `UOP_BEL_SW;
+end
+endtask
+
+task uop_rv32cjalr();
+begin
+    buyruk_rd_cmb = 32'd1;
+    buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[11:7]};
+    buyruk_imm_cmb = 32'd0;
+
+    buyruk_etiket_gecerli_cmb = `HIGH;
+
+    uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
+    uop_ns[`UOP_RD_ALLOC] = `HIGH;
+    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
+    uop_ns[`UOP_IMM] = buyruk_imm_cmb;
+    uop_ns[`UOP_DAL] = `UOP_DAL_CJALR;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_DAL;
+end
+endtask
+
 task uop_nop();
 begin
     uop_ns = {`UOP_BIT{1'b0}};
@@ -1509,7 +2337,52 @@ always @* begin
     CASE_CNN_CLRX    : uop_cnnclrx();   
     CASE_CNN_LDW     : uop_cnnldw();   
     CASE_CNN_CLRW    : uop_cnnclrw();   
-    CASE_CNN_RUN     : uop_cnnrun();      
+    CASE_CNN_RUN     : uop_cnnrun();
+    CASE_C_ADDI4SPN  : uop_rv32caddi4spn();
+    CASE_C_FLD       : uop_rv32cfld();  
+    CASE_C_LW        : uop_rv32clw();
+    CASE_C_FLW       : uop_rv32cflw();
+    CASE_C_FSD       : uop_rv32cfsd();
+    CASE_C_SW        : uop_rv32csw();
+    CASE_C_FSW       : uop_rv32cfsw();
+    CASE_C_ADDI      : uop_rv32caddi();
+    CASE_C_JAL       : uop_rv32cjal();
+    CASE_C_LI        : uop_rv32cli();
+    CASE_C_LUI       : uop_rv32clui();
+    CASE_C_SRLI      : uop_rv32csrli();
+    CASE_C_SRLI64    : uop_nop();
+    CASE_C_SRAI      : uop_rv32csrai();
+    CASE_C_SRAI64    : uop_nop();
+    CASE_C_ANDI      : uop_rv32candi();
+    CASE_C_SUB       : uop_rv32csub();
+    CASE_C_XOR       : uop_rv32cxor();
+    CASE_C_OR        : uop_rv32cor();
+    CASE_C_AND       : uop_rv32cand();
+    CASE_C_SUBW      : uop_rv32csubw();
+    CASE_C_ADDW      : uop_rv32caddw();
+    CASE_C_J         : uop_rv32cj();
+    CASE_C_BEQZ      : uop_rv32cbeqz();
+    CASE_C_BNEZ      : uop_rv32cbnez();
+    CASE_C_SLLI      : uop_rv32cslli();
+    CASE_C_SLLI64    : uop_nop();
+    CASE_C_FLDSP     : uop_nop();
+    CASE_C_LWSP      : uop_rv32clwsp();
+    CASE_C_FLWSP     : uop_nop();
+    CASE_C_MV        : uop_rv32cmv();    
+    CASE_C_ADD       : uop_rv32cadd();
+    CASE_C_FSDSP     : uop_nop();
+    CASE_C_SWSP      : uop_rv32cswsp();
+    CASE_C_FSWSP     : uop_nop();
+    CASE_C_NOP       : uop_nop();
+    CASE_C_ADDI16SP  : uop_rv32caddi16sp();
+    CASE_C_JR        : uop_rv32cjr();
+    CASE_C_JALR      : uop_rv32cjalr();
+    CASE_C_EBREAK    : uop_nop();
+    CASE_C_LD        : uop_rv32cld();
+    CASE_C_SD        : uop_rv32csd();
+    //CASE_C_ADDIW     : uop_rv32caddiw();
+    CASE_C_LDSP      : uop_rv32cldsp();
+    CASE_C_SDSP      : uop_rv32csdsp();       
     default          : uop_nop();
     endcase
 
