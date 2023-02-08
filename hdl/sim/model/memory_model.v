@@ -23,7 +23,7 @@ module memory_model #(
 reg [7:0] mem_r [0:MEM_DEPTH-1][0:DATA_BYTES-1];
 
 wire valid_addr;
-assign valid_addr = (cmd_addr_i & BASE_ADDR) == BASE_ADDR;
+assign valid_addr = (cmd_addr_i & ~(MEM_DEPTH-1)) == BASE_ADDR;
 
 wire [ADDR_WIDTH-1:0] data_offset;
 assign data_offset = (cmd_addr_i & ~BASE_ADDR);

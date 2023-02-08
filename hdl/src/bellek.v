@@ -61,6 +61,8 @@ wire [`VERI_BYTE-1:0] bib_istek_maske_w;
 wire [`VERI_BIT-1:0] bellek_veri_w;
 wire bellek_gecerli_w;
 
+wire [1:0] uop_bayt_indis_w;
+
 reg bib_istek_gecerli_cmb;
 reg [`VERI_BIT-1:0] bib_veri_cmb;
 
@@ -110,10 +112,10 @@ always @* begin
                         uop_ns[`UOP_RD] = {16'b0, bellek_veri_w[15:0]};       
                     end
                     `UOP_BEL_LB: begin // 8 Bit Okur, sign-extend edip rd'ye yazar
-                        uop_ns[`UOP_RD] = $signed(bellek_veri_w[7:0]);         
+                        uop_ns[`UOP_RD] = $signed(bellek_veri_w[uop_bayt_indis_w * 8 +: 8]);         
                     end
                     `UOP_BEL_LBU: begin // 8 Bit Okur, zero-extend edip rd'ye yazar
-                        uop_ns[`UOP_RD] = {24'b0, bellek_veri_w[7:0]};      
+                        uop_ns[`UOP_RD] = {24'b0, bellek_veri_w[uop_bayt_indis_w * 8 +: 8]};      
                     end
                 endcase
                 duraklat_cmb = `LOW;
@@ -196,6 +198,7 @@ assign uop_rd_w = bellek_uop_i[`UOP_RD];
 assign uop_imm_w = bellek_uop_i[`UOP_IMM];
 assign uop_taken_w = bellek_uop_i[`UOP_TAKEN];
 assign uop_buyruk_secim_w = bellek_uop_i[`UOP_BEL];
+assign uop_bayt_indis_w = bellek_uop_i[`UOP_RS1_PTR +: 2];
 
 assign bib_istek_maske_w = maske_w;
 assign bib_istek_yaz_w = yaz_w;

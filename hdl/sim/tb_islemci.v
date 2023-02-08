@@ -43,10 +43,11 @@ wire    [31:0]    rd_data_w;
 wire    [31:0]    wr_data_w;
 wire              wr_enable_w;
 wire              cmd_valid_w;
+wire              mem_req_w;
 
 memory_model #(
     .BASE_ADDR   ('h4000_0000), 
-    .MEM_DEPTH   ('h0001_0000),
+    .MEM_DEPTH   ('h0004_0000),
     .DATA_WIDTH  ('d32),
     .ADDR_WIDTH  ('d32)
 )
@@ -64,6 +65,7 @@ assign wr_enable_w = |iomem_wstrb;
 assign wr_data_w = iomem_wdata;
 assign iomem_rdata = rd_data_w;
 assign cmd_addr_w = iomem_addr;
+assign mem_req_w = (iomem_addr & 32'hfff8_0000) == 32'h4000_0000;
 
 always begin
     clk = 1'b0;
@@ -72,7 +74,7 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32test/rv32imc-hex/rv32uc-p-rvc.hex"; 
+localparam PATH_TO_TEST = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/uart_test/kasirga.hex"; 
 localparam RAM_DELAY = 1;
 reg [RAM_DELAY-1:0] delay_q;
 
@@ -83,10 +85,10 @@ always @(posedge clk) begin
     else begin
         if (!(|delay_q)) begin
             if (RAM_DELAY > 1) begin
-                delay_q <= {delay_q[RAM_DELAY-2:0], iomem_valid};
+                delay_q <= {delay_q[RAM_DELAY-2:0], iomem_valid && mem_req_w};
             end
             else begin
-                delay_q <= iomem_valid;
+                delay_q <= iomem_valid && mem_req_w;
             end
         end
         else begin

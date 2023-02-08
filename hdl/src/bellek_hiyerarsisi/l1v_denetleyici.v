@@ -132,7 +132,8 @@ reg [$clog2(`L1V_YOL)-1:0] vy_hedef_yol_ns;
 
 reg [`ADRES_BIT-1:0] vy_istek_adres_r;
 reg [`ADRES_BIT-1:0] vy_istek_adres_ns;
-assign vy_istek_adres_o = vy_istek_adres_r;
+assign vy_istek_adres_o = vy_istek_onbellekleme_r ? vy_istek_adres_r
+                            : vy_istek_adres_r & ((~{`ADRES_BIT{1'b0}}) << `ADRES_BYTE_BIT);
 
 reg [`L1_BLOK_BIT-1:0] vy_istek_veri_r;
 reg [`L1_BLOK_BIT-1:0] vy_istek_veri_ns;
@@ -374,6 +375,12 @@ always @* begin
             port_istek_maske_ns = port_istek_maske_i;
             port_yazma_istegi_ns = port_istek_yaz_i;
             if (port_istek_onbellekleme_i) begin
+                if (l1_yol_guncellendi_r != {`L1V_YOL{`LOW}}) begin // Arabelleklerde SRAM'e yazilmamis veri var
+                    l1_istek_gecerli_ns = `HIGH;
+                    l1_istek_satir_ns = get_satir(son_adres_r);
+                    l1_istek_yaz_ns = l1_yol_guncellendi_r;
+                    l1_yol_guncellendi_ns = {`L1V_YOL{`LOW}};
+                end
                 l1_durum_ns = port_istek_yaz_i ? L1_ONBELLEKSIZ_YAZ_ISTEK : L1_ONBELLEKSIZ_OKU_ISTEK;
             end
             else if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
@@ -496,7 +503,7 @@ always @* begin
         vy_istek_adres_ns = port_istek_adres_r;
         if (vy_veri_hazir_o && vy_veri_gecerli_i) begin
             port_veri_ns = vy_veri_i[0 +: `VERI_BIT];
-            l1_durum_ns = L1_BOSTA;
+            l1_durum_ns = L1_YANIT;
         end
     end
     L1_ONBELLEKSIZ_YAZ_ISTEK: begin
@@ -509,7 +516,7 @@ always @* begin
             vy_istek_onbellekleme_ns = `LOW;
             vy_istek_gecerli_ns = `LOW;
             vy_istek_yaz_ns = `LOW;
-            l1_durum_ns = L1_BOSTA;
+            l1_durum_ns = L1_SATIR_ACIK;
         end
     end
     endcase

@@ -566,7 +566,7 @@ always @(posedge clk) begin
             bellek_istek_bosta <= 1'b0;
             bellek_oku_istek <= !io_vyd_mem_istek_yaz_w;
         end
-        if (iomem_ready) begin
+        if (io_vyd_mem_istek_hazir_w) begin
             bellek_istek_bosta <= 1'b1;
         end
     end
@@ -581,6 +581,10 @@ always @* begin
     end
     else if (io_spid_spi_gecerli_w) begin
         bellek_veri = io_spid_spi_veri_w;
+        bellek_veri_gecerli = `HIGH;
+    end
+    else if (io_uartd_uart_gecerli_w) begin
+        bellek_veri = io_uartd_uart_veri_w;
         bellek_veri_gecerli = `HIGH;
     end
 end
