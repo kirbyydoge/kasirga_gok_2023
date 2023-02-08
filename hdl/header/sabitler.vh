@@ -1,5 +1,5 @@
 //------Sentez Parametreleri------
-// `define VCU108
+`define VCU108
 // `define OPENLANE
 
 //-----------Diger----------------

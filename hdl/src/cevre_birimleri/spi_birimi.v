@@ -124,7 +124,7 @@ always @* begin
     sck_posedge_ns = sck_sayac_r == (cmd_sck_div_r - 2) && !sck_clk_r;
     sck_negedge_ns = sck_sayac_r == (cmd_sck_div_r - 2) && sck_clk_r;
 
-    sck_clk_r = sck_sayac_r == (cmd_sck_div_r - 1) ? !sck_clk_r : sck_clk_r;
+    sck_clk_ns = sck_sayac_r == (cmd_sck_div_r - 1) ? !sck_clk_r : sck_clk_r;
 
     sck_sayac_ns = sck_enable_r ? sck_sayac_r + 16'b1 : 16'b0;
 
