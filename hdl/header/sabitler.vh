@@ -92,11 +92,11 @@
 //----Dallanma Öngörücü Tanimlamalar----
 `define BTB_SATIR_SAYISI         32
 `define BTB_PS_BIT               5
-`define BTB_SATIR_BOYUT          (PS_BIT - BTB_PS_BIT) + 1 + PS_BIT
+`define BTB_SATIR_BOYUT          (`PS_BIT - `BTB_PS_BIT) + 1 + `PS_BIT
 `define BHT_SATIR_SAYISI         32
 `define BHT_PS_BIT               5
 `define DALLANMA_TAHMIN_BIT      1 // ilerde çift kutuplu yapılabilir
-`define BHT_SATIR_BOYUT          (PS_BIT - BHT_PS_BIT) + DALLANMA_TAHMIN_BIT
+`define BHT_SATIR_BOYUT          (`PS_BIT - `BHT_PS_BIT) + `DALLANMA_TAHMIN_BIT
 `define GENEL_GECMIS_YAZMACI_BIT 5   
-`define BTB_VALID_BITI           BTB_SATIR_BOYUT-1 // en anlamlı biti   
+`define BTB_VALID_BITI           `BTB_SATIR_BOYUT-1 // en anlamlı biti   
 `define GGY_SAYAC_BIT            3     
