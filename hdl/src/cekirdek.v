@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module cekirdek(
+module cekirdek (
     input                           clk_i,
     input                           rstn_i,
     

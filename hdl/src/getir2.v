@@ -3,7 +3,7 @@
 `include "sabitler.vh"
 `include "mikroislem.vh"
 
-module getir2(
+module getir2 (
     input                       clk_i,
     input                       rstn_i,
 

@@ -7,7 +7,7 @@
 `include "opcode_x.vh"
 `include "opcode_cnn.vh"
 
-module coz(
+module coz (
     input                           clk_i,
     input                           rstn_i,
 

@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 
 `include "sabitler.vh"
+`include "mikroislem.vh"
 
 module islemci (
   input                 clk,

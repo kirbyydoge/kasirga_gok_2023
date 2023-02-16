@@ -1,26 +1,6 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 02/09/2023 08:30:52 PM
-// Design Name: 
-// Module Name: bolucu
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-
-module bolucu(
+module bolucu (
     input                 clk_i                                                         ,
     input                 rst_i                                                         ,
     input        [3:0]    islev_kodu_i                                                  ,
