@@ -37,6 +37,11 @@ always begin
     #5;
 end
 
+<<<<<<< HEAD
+=======
+localparam PATH_TO_TEST_FILE = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex/rv32ui-p-lw.hex";
+
+>>>>>>> f91ae6a (OpenRAM SRAMlerini ekler ve Onbellek boyutlarini duzenler.)
 initial begin
    rst_ni = 0;
    #200;

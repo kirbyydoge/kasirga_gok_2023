@@ -136,28 +136,22 @@ wire [`L1_BLOK_BIT-1:0]         io_l1bv_oku_blok_bw         [0:`L1B_YOL-1];
 genvar i;
 generate
     for (i = 0; i < `L1B_YOL; i = i + 1) begin
-        bram_model #(
-            .DATA_WIDTH(`ADRES_ETIKET_BIT),
-            .BRAM_DEPTH(`L1B_SATIR)
-        ) l1b_etiket (
-            .clk_i          ( io_l1bv_clk_w ), 
-            .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
-            .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
-            .addr_i         ( io_l1bv_komut_adres_w ), 
-            .data_i         ( io_l1bv_yaz_etiket_bw[i] ), 
-            .data_o         ( io_l1bv_oku_etiket_bw[i] )
+        sram_l1etiket l1b_etiket (
+            .clk0           ( io_l1bv_clk_w ), 
+            .csb0           ( !io_l1bv_komut_gecerli_w ),
+            .web0           ( !io_l1bv_komut_yaz_w[i] ), 
+            .addr0          ( io_l1bv_komut_adres_w ), 
+            .din0           ( io_l1bv_yaz_etiket_bw[i] ),
+            .dout0          ( io_l1bv_oku_etiket_bw[i] )
         );
         
-        bram_model #(
-            .DATA_WIDTH(`L1_BLOK_BIT),
-            .BRAM_DEPTH(`L1B_SATIR)
-        ) l1b_veri (
-            .clk_i          ( io_l1bv_clk_w ),
-            .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
-            .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
-            .addr_i         ( io_l1bv_komut_adres_w ), 
-            .data_i         ( io_l1bv_yaz_blok_bw[i] ), 
-            .data_o         ( io_l1bv_oku_blok_bw[i] )
+        sram_l1veri l1b_veri (
+            .clk0           ( io_l1bv_clk_w ),
+            .csb0           ( !io_l1bv_komut_gecerli_w ),
+            .web0           ( !io_l1bv_komut_yaz_w[i] ), 
+            .addr0          ( io_l1bv_komut_adres_w ), 
+            .din0           ( io_l1bv_yaz_blok_bw[i] ), 
+            .dout0          ( io_l1bv_oku_blok_bw[i] )
         );
     end
 endgenerate
@@ -239,28 +233,22 @@ wire [`L1_BLOK_BIT-1:0]         io_l1vv_oku_blok_bw         [0:`L1V_YOL-1];
 
 generate
     for (i = 0; i < `L1V_YOL; i = i + 1) begin
-        bram_model #(
-            .DATA_WIDTH(`ADRES_ETIKET_BIT),
-            .BRAM_DEPTH(`L1B_SATIR)
-        ) l1v_etiket (
-            .clk_i          ( io_l1vv_clk_w ), 
-            .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
-            .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
-            .addr_i         ( io_l1vv_komut_adres_w ), 
-            .data_i         ( io_l1vv_yaz_etiket_bw[i] ), 
-            .data_o         ( io_l1vv_oku_etiket_bw[i] )
+        sram_l1etiket l1v_etiket (
+            .clk0           ( io_l1vv_clk_w ), 
+            .csb0           ( !io_l1vv_komut_gecerli_w ),
+            .web0           ( !io_l1vv_komut_yaz_w[i] ), 
+            .addr0          ( io_l1vv_komut_adres_w ), 
+            .din0           ( io_l1vv_yaz_etiket_bw[i] ), 
+            .dout0          ( io_l1vv_oku_etiket_bw[i] )
         );
         
-        bram_model #(
-            .DATA_WIDTH(`L1_BLOK_BIT),
-            .BRAM_DEPTH(`L1V_SATIR)
-        ) l1v_veri (
-            .clk_i          ( io_l1vv_clk_w ),
-            .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
-            .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
-            .addr_i         ( io_l1vv_komut_adres_w ), 
-            .data_i         ( io_l1vv_yaz_blok_bw[i] ), 
-            .data_o         ( io_l1vv_oku_blok_bw[i] )
+        sram_l1veri l1v_veri (
+            .clk0           ( io_l1vv_clk_w ),
+            .csb0           ( !io_l1vv_komut_gecerli_w ),
+            .web0           ( !io_l1vv_komut_yaz_w[i] ), 
+            .addr0          ( io_l1vv_komut_adres_w ), 
+            .din0           ( io_l1vv_yaz_blok_bw[i] ), 
+            .dout0          ( io_l1vv_oku_blok_bw[i] )
         );
     end
 endgenerate
