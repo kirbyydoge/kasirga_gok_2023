@@ -324,7 +324,7 @@ always @* begin
     end
     son_adres_ns = son_adres_r;
     port_istek_adres_ns = port_istek_adres_r;
-    cikarma_sayaci_ns = cikarma_sayaci_r + 1;
+    cikarma_sayaci_ns = (cikarma_sayaci_r + 1)  % `L1V_YOL;
     l1_istek_satir_ns = l1_istek_satir_r;
     port_veri_gecerli_ns = port_veri_gecerli_r;
     port_istek_maske_ns = port_istek_maske_r;

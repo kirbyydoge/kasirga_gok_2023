@@ -3,7 +3,7 @@
 `include "sabitler.vh"
 `include "mikroislem.vh"
 
-module getir2 (
+module getir2(
     input                       clk_i,
     input                       rstn_i,
 
@@ -19,7 +19,6 @@ module getir2 (
     input   [`PS_BIT-1:0]       yurut_ps_i,
     input                       yurut_guncelle_i,
     input                       yurut_atladi_i,
-    input   [`PS_BIT-1:0]       yurut_atlanan_adres_i,
     input                       yurut_hatali_tahmin_i,
 
     input   [`VERI_BIT-1:0]     l1b_buyruk_i,
@@ -34,6 +33,18 @@ module getir2 (
     input                       cek_bosalt_i,
     input                       cek_duraklat_i
 );
+
+/*-ila_getir2 debug_getir2 (
+    .clk (clk_i),
+    .probe0 (rstn_i),
+    .probe1 (coz_buyruk_o),
+    .probe2 (coz_buyruk_ps_o),
+    .probe3 (coz_buyruk_gecerli_o),
+    .probe4 (g1_ps_i),
+    .probe5 (g1_ps_gecerli_i),
+    .probe6 (l1b_buyruk_i),
+    .probe7 (l1b_buyruk_gecerli_i)
+);-*/
 
 localparam                  G2_YAZMAC_BOS   = 2'd0;
 localparam                  G2_YAZMAC_YARIM = 2'd1;
@@ -91,6 +102,9 @@ always @* begin
     g1_ps_hazir_cmb = `LOW;
     g2_durum_ns = g2_durum_r;
     g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r;
+    buf_ps_ns = buf_ps_r;
+    buf_buyruk_ns = buf_buyruk_r;
+    ilk_buyruk_ns = ilk_buyruk_r;
 
     if (g2_durum_r != G2_CEK_BOSALT) begin
         // Istek yapildiysa ve su an kabul etmiyorsak cevap beklenen istek sayisi 1 artar.
@@ -180,7 +194,7 @@ always @* begin
     endcase
 
     ilk_buyruk_ns = ilk_buyruk_r && !coz_buyruk_gecerli_ns;
-    if (cek_bosalt_i) begin
+    if (cek_bosalt_i && !cek_duraklat_i) begin
         ilk_buyruk_ns = `HIGH;
         g2_durum_ns = G2_YAZMAC_BOS;
         l1b_beklenen_sayisi_ns = g1_istek_yapildi_i ? 3'd1 : 3'd0;
@@ -224,23 +238,6 @@ always @(posedge clk_i) begin
         ilk_buyruk_r <= ilk_buyruk_ns;
     end
 end
-
-wire                do_atladi_w;
-wire [`PS_BIT-1:0]  do_atladi_ps_w;
-
-dallanma_ongorucu gshare (
-    .clk_i                 ( clk_i ),
-    .rstn_i                ( rstn_i ),
-    .ps_i                  ( g1_ps_i ),
-    .ps_gecerli_i          ( g1_ps_gecerli_i ),
-    .atladi_o              ( do_atladi_w ), 
-    .ongoru_o              ( do_atladi_ps_w ), 
-    .yurut_ps_i            ( yurut_ps_i ), 
-    .yurut_guncelle_i      ( yurut_guncelle_i ), 
-    .yurut_atladi_i        ( yurut_atladi_i ), 
-    .yurut_atlanan_adres_i ( yurut_atlanan_adres_i ), 
-    .yurut_hatali_tahmin_i ( yurut_hatali_tahmin_i ) 
-);
 
 assign g1_dallanma_ps_o = 32'h0; //TODO: Oguzhan
 assign g1_dallanma_gecerli_o = `LOW; //TODO: Oguzhan

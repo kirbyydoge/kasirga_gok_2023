@@ -20,7 +20,6 @@ module dallanma_birimi (
     output  [`PS_BIT-1:0]       g2_ps_o,
     output                      g2_guncelle_o,
     output                      g2_atladi_o,
-    output  [`PS_BIT-1:0]       g2_atlanan_adres_o,
     output                      g2_hatali_tahmin_o,
 
     output  [`PS_BIT-1:0]       ps_atlamadi_o
@@ -31,7 +30,6 @@ reg                 g1_ps_gecerli_cmb;
 reg [`PS_BIT-1:0]   g2_ps_cmb;
 reg                 g2_guncelle_cmb;
 reg                 g2_atladi_cmb;
-reg [`PS_BIT-1:0]   g2_atlanan_adres_cmb;
 reg                 g2_hatali_tahmin_cmb;
 
 reg [`PS_BIT-1:0]   ps_atladi_cmb;
@@ -43,7 +41,6 @@ always @* begin
     g2_ps_cmb = {`PS_BIT{1'b0}};
     g2_guncelle_cmb = `LOW;
     g2_atladi_cmb = `LOW;
-    g2_atlanan_adres_cmb = {`PS_BIT{1'b0}};
     g2_hatali_tahmin_cmb = `LOW;
 
     ps_atladi_cmb = islem_islec_i + islem_anlik_i;
@@ -145,8 +142,6 @@ always @* begin
         ps_atlamadi_cmb = islem_ps_i + {{`VERI_BIT-4{1'b0}}, 4'd2};
     end
     endcase
-
-    g2_atlanan_adres_cmb = g1_ps_cmb;
 end
 
 assign g1_ps_o = g1_ps_cmb;
@@ -154,7 +149,6 @@ assign g1_ps_gecerli_o = g1_ps_gecerli_cmb;
 assign g2_ps_o = g2_ps_cmb;
 assign g2_guncelle_o = g2_guncelle_cmb;
 assign g2_atladi_o = g2_atladi_cmb;
-assign g2_atlanan_adres_o = g2_atlanan_adres_cmb;
 assign g2_hatali_tahmin_o = g2_hatali_tahmin_cmb;
 assign ps_atlamadi_o = ps_atlamadi_cmb;
 

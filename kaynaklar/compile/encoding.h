@@ -1466,4 +1466,3 @@ DECLARE_CAUSE("fetch page fault", CAUSE_FETCH_PAGE_FAULT)
 DECLARE_CAUSE("load page fault", CAUSE_LOAD_PAGE_FAULT)
 DECLARE_CAUSE("store page fault", CAUSE_STORE_PAGE_FAULT)
 #endif
-

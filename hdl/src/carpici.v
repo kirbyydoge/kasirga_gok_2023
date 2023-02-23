@@ -101,20 +101,13 @@ toplayici bk_msg (
     .carry_o(c_l8[1])
 ); 
 
-reg [63:0]  res_sign_corrected;
-reg [63:0]  res_r;
-reg         res_valid_r;
+reg [63:0] reg_sign_corrected;
 
 always @* begin
     res_sign_corrected = (islec0_is_negated ^ islec1_is_negated) ? (~res_l8 + 64'b1) : res_l8;
 end
 
-always @(posedge clk_i) begin
-    res_r <= res_sign_corrected;
-    res_valid_r <= islem_gecerli_i;
-end
-
-assign carpim_o = res_r;
-assign carpim_gecerli_o = res_valid_r;
+assign carpim_o = res_sign_corrected;
+assign carpim_gecerli_o = islem_gecerli_i;
 
 endmodule

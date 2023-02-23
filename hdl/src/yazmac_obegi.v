@@ -1,8 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "sabitler.vh"
-`include "mikroislem.vh"
-
 module yazmac_obegi (
     input                           clk_i,
     input                           rstn_i,

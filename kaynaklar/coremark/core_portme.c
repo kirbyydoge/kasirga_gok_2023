@@ -18,7 +18,7 @@ Original Author: Shay Gal-on
 #include "coremark.h"
 #include "core_portme.h"
 
-#define TIME_ADDR   0x30000000
+#define TIME_ADDR 0x30000000
 
 #if VALIDATION_RUN
 volatile ee_s32 seed1_volatile = 0x3415;
@@ -46,7 +46,7 @@ volatile ee_s32 seed5_volatile = 0;
 CORETIMETYPE
 barebones_clock()
 {
-    return *(unsigned int*) TIME_ADDR;
+    return *(uint64_t*) TIME_ADDR;
 }
 /* Define : TIMER_RES_DIVIDER
         Divider to trade off timer resolution and total time that can be

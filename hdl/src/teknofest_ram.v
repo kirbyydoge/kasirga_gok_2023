@@ -43,7 +43,7 @@ module teknofest_ram #(
     );
 
 localparam CPU_CLK   = 100_000_000;   //Default CPU frequency on FPGA
-localparam BAUD_RATE = 115200;        //Default Baud rate for programming on the run via UART
+localparam BAUD_RATE = 9600;          //Default Baud rate for programming on the run via UART
 
 reg [(NB_COL*COL_WIDTH)-1:0] ram [RAM_DEPTH-1:0];
 reg [(NB_COL*COL_WIDTH)-1:0] ram_data;
@@ -277,6 +277,12 @@ always @(posedge clk_i) begin
     endcase
   end
 end
+
+/*ila_program debug_progran (
+    .clk (clk_i),
+    .probe0 (prog_instruction),
+    .probe1 (prog_inst_valid)
+);*/
 
 simpleuart #(
     .DEFAULT_DIV(CPU_CLK/BAUD_RATE)

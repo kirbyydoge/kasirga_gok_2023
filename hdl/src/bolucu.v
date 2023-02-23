@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module bolucu (
+module bolucu(
     input                 clk_i                                                         ,
     input                 rst_i                                                         ,
     input        [3:0]    islev_kodu_i                                                  ,
@@ -90,6 +90,7 @@ always @* begin
     rem_sign_ns=rem_sign;
     SS1_ns=SS1;
     SS2_ns=SS2;
+    k = 0;
 
     case(durum)
         BEKLE: begin

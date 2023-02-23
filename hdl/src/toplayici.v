@@ -31,12 +31,12 @@ reg [31:0]  sum_cmb;
 
 integer i;
 always @* begin
-    p_l0[0] = islec0_i[0] | islec1_i[0] | carry_i;
-    g_l0[0] = (islec0_i[0] & islec1_i[0]) | (islec0_i[0] & carry_i) | (islec1_i[0] & carry_i);
     for (i = 1; i < 32; i = i + 1) begin
         p_l0[i] = islec0_i[i] | islec1_i[i];
         g_l0[i] = islec0_i[i] & islec1_i[i];
     end
+    p_l0[0] = islec0_i[0] | islec1_i[0] | carry_i;
+    g_l0[0] = (islec0_i[0] & islec1_i[0]) | (islec0_i[0] & carry_i) | (islec1_i[0] & carry_i);
     for (i = 0; i < 16; i = i + 1) begin
         p_l1[i] = p_l0[2*i + 1] & p_l0[2*i];
         g_l1[i] = g_l0[2*i + 1] | (g_l0[2*i] & p_l0[2*i + 1]);

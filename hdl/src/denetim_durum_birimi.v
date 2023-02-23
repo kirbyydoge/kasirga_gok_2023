@@ -4,7 +4,7 @@
 `include "sabitler.vh"
 `include "csr.vh"
 
-module denetim_durum_birimi (
+module denetim_durum_birimi(
     input                           clk_i,
     input                           rstn_i,
 

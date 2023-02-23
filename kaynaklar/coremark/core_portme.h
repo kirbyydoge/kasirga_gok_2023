@@ -22,11 +22,12 @@ Original Author: Shay Gal-on
 #ifndef CORE_PORTME_H
 #define CORE_PORTME_H
 #include "kasirga.h"
+#include <stdint.h>
 
-#define CORE_DEBUG (1!=1)
+#define CORE_DEBUG (1==1)
 
 #ifndef ITERATIONS
-#define ITERATIONS 1000
+#define ITERATIONS 0
 #endif
 
 /************************/
@@ -78,7 +79,7 @@ Original Author: Shay Gal-on
 #endif
 #ifndef COMPILER_FLAGS
 #define COMPILER_FLAGS \
-    "-O2" /* "Please put compiler flags here (e.g. -o3)" */
+    "" /* "Please put compiler flags here (e.g. -o3)" */
 #endif
 #ifndef MEM_LOCATION
 #define MEM_LOCATION "STACK"
