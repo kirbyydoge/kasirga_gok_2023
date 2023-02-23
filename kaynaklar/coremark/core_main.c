@@ -120,12 +120,12 @@ main(int argc, char *argv[])
     ee_u16       seedcrc = 0;
     CORE_TICKS   total_time;
     core_results results[MULTITHREAD];
+    ee_printf("KASIRGAAAAAAAAAAAAAAAAAAAA\n");
 #if (MEM_METHOD == MEM_STACK)
     ee_u8 stack_memblock[TOTAL_DATA_SIZE * MULTITHREAD];
 #endif
     /* first call any initializations needed */
     portable_init(&(results[0].port), &argc, argv);
-    ee_printf("KASIRGAAAAAAAAAAAAAAAAAAAA\n");
     /* First some checks to make sure benchmark will run ok */
     if (sizeof(struct list_head_s) > 128)
     {

@@ -46,7 +46,7 @@ volatile ee_s32 seed5_volatile = 0;
 CORETIMETYPE
 barebones_clock()
 {
-    return *(uint64_t*) TIME_ADDR;
+    return *(unsigned int*) TIME_ADDR;
 }
 /* Define : TIMER_RES_DIVIDER
         Divider to trade off timer resolution and total time that can be
