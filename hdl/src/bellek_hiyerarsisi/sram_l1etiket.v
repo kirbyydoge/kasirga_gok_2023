@@ -12,7 +12,7 @@ module sram_l1etiket(
   );
 
   parameter DATA_WIDTH = 23 ;
-  parameter ADDR_WIDTH = 8 ;
+  parameter ADDR_WIDTH = 7 ;
   parameter RAM_DEPTH = 1 << ADDR_WIDTH;
   // FIXME: This delay is arbitrary.
   parameter DELAY = 0 ;

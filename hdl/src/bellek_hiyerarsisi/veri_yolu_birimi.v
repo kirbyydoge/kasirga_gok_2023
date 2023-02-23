@@ -100,7 +100,7 @@ always @* begin
                 bib_oku_istek_ns = `LOW;
             end
             if (bib_istek_oku_i) begin
-                port_istek_adres_ns = bib_istek_adres_i; 
+                port_istek_adres_ns = bib_istek_adres_i & 32'hFFFF_FFFC; 
                 port_istek_gecerli_ns = `HIGH;
                 bib_oku_istek_ns = `HIGH;
                 port_istek_yaz_ns = `LOW;
@@ -157,7 +157,7 @@ always @(posedge clk_i) begin
     end
 end
 
-assign port_istek_adres_o = port_istek_adres_r & 32'hFFFF_FFFC;
+assign port_istek_adres_o = port_istek_adres_r;
 assign port_istek_gecerli_o = port_istek_gecerli_r;
 assign port_istek_onbellekleme_o = port_istek_onbellekleme_r;
 assign port_istek_maske_o = port_istek_maske_r;

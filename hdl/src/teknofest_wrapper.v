@@ -36,10 +36,10 @@ parameter [31:0] UART_MASK_ADDR = 32'h0000_000f;
 parameter [31:0] SPI_BASE_ADDR = 32'h2001_0000;
 parameter [31:0] SPI_MASK_ADDR = 32'h0000_00ff;
 parameter [31:0] RAM_BASE_ADDR = 32'h4000_0000;
-parameter [31:0] RAM_MASK_ADDR = 32'h000f_ffff;
+parameter [31:0] RAM_MASK_ADDR = 32'h00ff_ffff;
 parameter [31:0] CHIP_IO_BASE_ADDR = SPI_BASE_ADDR + SPI_MASK_ADDR;
 parameter [31:0] CHIP_IO_MASK_ADDR = RAM_BASE_ADDR + RAM_MASK_ADDR;
-parameter RAM_DEPTH = 131072;
+parameter RAM_DEPTH = 32'h40000;
 
 wire   clk_wiz_locked;
 `ifdef VCU108

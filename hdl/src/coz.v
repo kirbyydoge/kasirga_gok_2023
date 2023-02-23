@@ -7,7 +7,7 @@
 `include "opcode_x.vh"
 `include "opcode_cnn.vh"
 
-module coz (
+module coz(
     input                           clk_i,
     input                           rstn_i,
 
@@ -707,7 +707,7 @@ task uop_rv32sltiu();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`I_RS1]};
     buyruk_rd_cmb = getir_buyruk_i[`I_RD];
-    buyruk_imm_cmb = {{20{getir_buyruk_i[`LOW]}}, getir_buyruk_i[`I_IMM]};
+    buyruk_imm_cmb = {{20{getir_buyruk_i[`I_SIGN]}}, getir_buyruk_i[`I_IMM]};
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 

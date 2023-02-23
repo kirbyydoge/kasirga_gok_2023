@@ -62,7 +62,7 @@ assign yurut_ps_bht_etiket_w = yurut_ps_i [`PS_BIT-1:`BHT_PS_BIT];
 assign btb_valid_w = btb_satir_w [`BTB_VALID_BITI];
 assign btb_etiket_w = btb_satir_w [`BTB_VALID_BITI-1:`PS_BIT];
 assign btb_target_w = btb_satir_w [`PS_BIT-1:0];
-assign bht_etiket_w = bht_satir_w [`PS_BIT-1:`DALLANMA_TAHMIN_BIT];
+assign bht_etiket_w = bht_satir_w [27 +:`DALLANMA_TAHMIN_BIT];
 assign bht_dallanma_tahmini_w = bht_satir_w [`DALLANMA_TAHMIN_BIT-1:0];
 assign btb_etiketler_esit_mi_w = ps_btb_etiket_w == btb_etiket_w;
 assign bht_etiketler_esit_mi_w = ps_bht_etiket_w == bht_etiket_w;

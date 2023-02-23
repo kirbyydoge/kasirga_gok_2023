@@ -11,8 +11,8 @@ module sram_l1veri(
     clk0,csb0,web0,addr0,din0,dout0
   );
 
-  parameter DATA_WIDTH = 33 ;
-  parameter ADDR_WIDTH = 8 ;
+  parameter DATA_WIDTH = 32 ;
+  parameter ADDR_WIDTH = 7 ;
   parameter RAM_DEPTH = 1 << ADDR_WIDTH;
   // FIXME: This delay is arbitrary.
   parameter DELAY = 0 ;
@@ -45,7 +45,7 @@ module sram_l1veri(
     web0_reg = web0;
     addr0_reg = addr0;
     din0_reg = din0;
-    #(T_HOLD) dout0 = 33'bx;
+    #(T_HOLD) dout0 = 32'bx;
     if ( !csb0_reg && web0_reg && VERBOSE )
       $display($time," Reading %m addr0=%b dout0=%b",addr0_reg,mem[addr0_reg]);
     if ( !csb0_reg && !web0_reg && VERBOSE )
@@ -58,7 +58,7 @@ module sram_l1veri(
   always @ (negedge clk0)
   begin : MEM_WRITE0
     if ( !csb0_reg && !web0_reg ) begin
-        mem[addr0_reg][32:0] = din0_reg[32:0];
+        mem[addr0_reg][31:0] = din0_reg[31:0];
     end
   end
 

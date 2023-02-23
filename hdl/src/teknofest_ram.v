@@ -24,7 +24,7 @@ module teknofest_ram #(
   parameter NB_COL = 4,
   parameter COL_WIDTH = 8,
   parameter RAM_DEPTH = 131072,
-  parameter INIT_FILE = "C:/Users/TUTEL/Desktop/TEKNOFEST/tekno_sw/outputs/hex/uart_test.hex"
+  parameter INIT_FILE = ""
 )
 (
   input clk_i,
@@ -43,7 +43,7 @@ module teknofest_ram #(
     );
 
 localparam CPU_CLK   = 100_000_000;   //Default CPU frequency on FPGA
-localparam BAUD_RATE = 9600;          //Default Baud rate for programming on the run via UART
+localparam BAUD_RATE = 115200;        //Default Baud rate for programming on the run via UART
 
 reg [(NB_COL*COL_WIDTH)-1:0] ram [RAM_DEPTH-1:0];
 reg [(NB_COL*COL_WIDTH)-1:0] ram_data;

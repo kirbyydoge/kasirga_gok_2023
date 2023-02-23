@@ -16,7 +16,8 @@ wire pwm1_o;
 
 
 teknofest_wrapper tw (
-.clk_i (clk_i),
+.clk_p (clk_i),
+.clk_n (~clk_i),
 .rst_ni (rst_ni),
 .program_rx_i (program_rx_i),
 .prog_mode_led_o (prog_mode_led_o),
@@ -37,13 +38,12 @@ always begin
     #5;
 end
 
-<<<<<<< HEAD
-=======
-localparam PATH_TO_TEST_FILE = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex/rv32ui-p-lw.hex";
+localparam PATH_TO_TEST_FILE = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/kasirga.hex";
 
->>>>>>> f91ae6a (OpenRAM SRAMlerini ekler ve Onbellek boyutlarini duzenler.)
 initial begin
    rst_ni = 0;
+   #10;
+   $readmemh(PATH_TO_TEST_FILE, tw.main_memory.ram);
    #200;
    rst_ni = 1;
    #5;

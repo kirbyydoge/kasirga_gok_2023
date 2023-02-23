@@ -19,6 +19,7 @@ module getir2 (
     input   [`PS_BIT-1:0]       yurut_ps_i,
     input                       yurut_guncelle_i,
     input                       yurut_atladi_i,
+    input   [`PS_BIT-1:0]       yurut_atlanan_adres_i,
     input                       yurut_hatali_tahmin_i,
 
     input   [`VERI_BIT-1:0]     l1b_buyruk_i,
@@ -223,6 +224,23 @@ always @(posedge clk_i) begin
         ilk_buyruk_r <= ilk_buyruk_ns;
     end
 end
+
+wire                do_atladi_w;
+wire [`PS_BIT-1:0]  do_atladi_ps_w;
+
+dallanma_ongorucu gshare (
+    .clk_i                 ( clk_i ),
+    .rstn_i                ( rstn_i ),
+    .ps_i                  ( g1_ps_i ),
+    .ps_gecerli_i          ( g1_ps_gecerli_i ),
+    .atladi_o              ( do_atladi_w ), 
+    .ongoru_o              ( do_atladi_ps_w ), 
+    .yurut_ps_i            ( yurut_ps_i ), 
+    .yurut_guncelle_i      ( yurut_guncelle_i ), 
+    .yurut_atladi_i        ( yurut_atladi_i ), 
+    .yurut_atlanan_adres_i ( yurut_atlanan_adres_i ), 
+    .yurut_hatali_tahmin_i ( yurut_hatali_tahmin_i ) 
+);
 
 assign g1_dallanma_ps_o = 32'h0; //TODO: Oguzhan
 assign g1_dallanma_gecerli_o = `LOW; //TODO: Oguzhan

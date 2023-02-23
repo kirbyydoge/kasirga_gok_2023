@@ -1,5 +1,8 @@
 `timescale 1ns/1ps
 
+`include "sabitler.vh"
+`include "mikroislem.vh"
+
 module cekirdek (
     input                           clk_i,
     input                           rstn_i,
@@ -69,6 +72,7 @@ wire                            io_g2_g1_dallanma_gecerli_w;
 wire    [`PS_BIT-1:0]           io_g2_yurut_ps_w;
 wire                            io_g2_yurut_guncelle_w;
 wire                            io_g2_yurut_atladi_w;
+wire    [`PS_BIT-1:0]           io_g2_yurut_atlanan_adres_w;
 wire                            io_g2_yurut_hatali_tahmin_w;
 wire    [`VERI_BIT-1:0]         io_g2_l1b_buyruk_w;
 wire                            io_g2_l1b_buyruk_gecerli_w;
@@ -92,6 +96,7 @@ getir2 getir2 (
     .yurut_ps_i                 ( io_g2_yurut_ps_w ),
     .yurut_guncelle_i           ( io_g2_yurut_guncelle_w ),
     .yurut_atladi_i             ( io_g2_yurut_atladi_w ),
+    .yurut_atlanan_adres_i      ( io_g2_yurut_atlanan_adres_w ),
     .yurut_hatali_tahmin_i      ( io_g2_yurut_hatali_tahmin_w ),
     .l1b_buyruk_i               ( io_g2_l1b_buyruk_w ),
     .l1b_buyruk_gecerli_i       ( io_g2_l1b_buyruk_gecerli_w ),
@@ -184,6 +189,7 @@ wire                            io_yurut_g1_ps_gecerli_w;
 wire    [`PS_BIT-1:0]           io_yurut_g2_ps_w;
 wire                            io_yurut_g2_guncelle_w;
 wire                            io_yurut_g2_atladi_w;
+wire    [`PS_BIT-1:0]           io_yurut_g2_atlanan_adres_w;
 wire                            io_yurut_g2_hatali_tahmin_w;
 wire    [`UOP_BIT-1:0]          io_yurut_yurut_uop_w;
 wire    [`UOP_BIT-1:0]          io_yurut_bellek_uop_w;
@@ -204,6 +210,7 @@ yurut yurut(
     .g2_ps_o                    ( io_yurut_g2_ps_w ),
     .g2_guncelle_o              ( io_yurut_g2_guncelle_w ),
     .g2_atladi_o                ( io_yurut_g2_atladi_w ),
+    .g2_atlanan_adres_o         ( io_yurut_g2_atlanan_adres_w ),
     .g2_hatali_tahmin_o         ( io_yurut_g2_hatali_tahmin_w ),
     .yurut_uop_i                ( io_yurut_yurut_uop_w ),
     .bellek_uop_o               ( io_yurut_bellek_uop_w )
@@ -433,6 +440,7 @@ assign buyruk_istek_gecerli_o = io_g1_l1b_istek_gecerli_w;
 assign io_g2_yurut_ps_w = io_yurut_g2_ps_w;
 assign io_g2_yurut_guncelle_w = io_yurut_g2_guncelle_w;
 assign io_g2_yurut_atladi_w = io_yurut_g2_atladi_w;
+assign io_g2_yurut_atlanan_adres_w = io_yurut_g2_atlanan_adres_w;
 assign io_g2_yurut_hatali_tahmin_w = io_yurut_g2_hatali_tahmin_w;
 
 // Getir2 < L1B

@@ -25,6 +25,7 @@ module yurut (
     output  [`PS_BIT-1:0]           g2_ps_o,
     output                          g2_guncelle_o,
     output                          g2_atladi_o,
+    output  [`PS_BIT-1:0]           g2_atlanan_adres_o,
     output                          g2_hatali_tahmin_o,
 
     input   [`UOP_BIT-1:0]          yurut_uop_i,
@@ -71,6 +72,7 @@ wire                            db_g1_ps_gecerli_w;
 wire [`PS_BIT-1:0]              db_g2_ps_w;
 wire                            db_g2_guncelle_w;
 wire                            db_g2_atladi_w;
+wire [`PS_BIT-1:0]              db_g2_atlanan_adres_w;
 wire                            db_g2_hatali_tahmin_w;
 wire [`PS_BIT-1:0]              db_ps_atlamadi_w;
 
@@ -194,6 +196,7 @@ dallanma_birimi db (
     .g2_ps_o                        ( db_g2_ps_w ),
     .g2_guncelle_o                  ( db_g2_guncelle_w ),
     .g2_atladi_o                    ( db_g2_atladi_w ),
+    .g2_atlanan_adres_o             ( db_g2_atlanan_adres_w ),
     .g2_hatali_tahmin_o             ( db_g2_hatali_tahmin_w ),
     .ps_atlamadi_o                  ( db_ps_atlamadi_w )
 );
@@ -240,6 +243,7 @@ assign g1_ps_gecerli_o = db_g1_ps_gecerli_w && uop_gecerli_w;
 assign g2_ps_o = db_g2_ps_w;
 assign g2_guncelle_o = db_g2_guncelle_w && uop_gecerli_w;
 assign g2_atladi_o = db_g2_atladi_w;
+assign g2_atlanan_adres_o = db_g2_atlanan_adres_w;
 assign g2_hatali_tahmin_o = db_g2_hatali_tahmin_w;
 
 assign ddb_odd_ps_o = ddb_odd_ps_cmb;

@@ -226,7 +226,7 @@ uart_verici verici (
     .tx_en_i                   ( tx_en_w ),
     .veri_gecerli_i            ( !tx_fifo_empty ),
     .consume_o                 ( consume_w ),
-    .gelen_veri_i              ( verici_gelen_veri_cmb ),
+    .gelen_veri_i              ( tx_fifo_rd_data_w ),
     .baud_div_i                ( baud_div ),
     .tx_o                      ( tx_o ),
     .hazir_o                   ( verici_hazir_w ) 
