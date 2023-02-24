@@ -303,7 +303,6 @@ core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
         }
         finder = finder->next;
     }
-    list = core_list_mergesort(list, cmp_idx, NULL);
 #if CORE_DEBUG
     ee_printf("Initialized list:\n");
     finder = list;
@@ -315,6 +314,7 @@ core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
     }
     ee_printf("\n");
 #endif
+    list = core_list_mergesort(list, cmp_idx, NULL);
     return list;
 }
 

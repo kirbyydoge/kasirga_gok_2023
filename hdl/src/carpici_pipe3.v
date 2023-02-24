@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module carpici (
+module carpici_pipe3 (
     input           clk_i,
     input   [31:0]  islec0_i,
     input   [31:0]  islec1_i,

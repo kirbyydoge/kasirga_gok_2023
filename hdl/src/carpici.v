@@ -101,7 +101,7 @@ toplayici bk_msg (
     .carry_o(c_l8[1])
 ); 
 
-reg [63:0] reg_sign_corrected;
+reg [63:0]  res_sign_corrected;
 
 always @* begin
     res_sign_corrected = (islec0_is_negated ^ islec1_is_negated) ? (~res_l8 + 64'b1) : res_l8;

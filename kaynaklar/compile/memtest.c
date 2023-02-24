@@ -1,5 +1,5 @@
 #include "kasirga.h"
-#define TEST_LEN    0x500
+#define TEST_LEN    0x5000
 
 int stack[TEST_LEN + 2];
 int indexes[TEST_LEN];
@@ -10,8 +10,37 @@ unsigned int pcg_hash(unsigned int input) {
     return (word >> 22u) ^ word;
 }
 
+void send_int(unsigned int val) {
+    int digits = 0;
+    do {
+        stack[TEST_LEN + digits++] = (char) (val % 10) + '0';
+        val /= 10;
+    } while (val > 0);
+    while (digits > 0) {
+        ee_printf("%c", stack[TEST_LEN + (--digits)]);
+    }
+}
+
+
 int main() {
     uart_set_ctrl(CPU_HZ / BAUD_RATE, 1, 1);
-    uart_print("KASIRGA\n");
+    for (int i = 0; i < TEST_LEN; i++) {
+        indexes[i] = i;
+    }
+    for (int i = 0; i < TEST_LEN; i++) {
+        int rand = pcg_hash(i) % TEST_LEN;
+        int temp = indexes[i];
+        indexes[i] = indexes[rand];
+        indexes[rand] = temp;
+    }
+    for (int i = 0; i < TEST_LEN; i++) {
+        stack[indexes[i]] = i;
+    }
+    for (int i = 0; i < TEST_LEN; i++) {
+        if (stack[indexes[i]] != i) {
+            ee_printf("@%d %d != %d\n", indexes[i], i, stack[indexes[i]]);
+        }
+    } 
+    ee_printf("Bitti\n");
     return 0;
 }

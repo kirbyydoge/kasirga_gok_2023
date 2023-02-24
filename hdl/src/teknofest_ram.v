@@ -278,11 +278,11 @@ always @(posedge clk_i) begin
   end
 end
 
-/*ila_program debug_progran (
+ila_program debug_progran (
     .clk (clk_i),
     .probe0 (prog_instruction),
     .probe1 (prog_inst_valid)
-);*/
+);
 
 simpleuart #(
     .DEFAULT_DIV(CPU_CLK/BAUD_RATE)

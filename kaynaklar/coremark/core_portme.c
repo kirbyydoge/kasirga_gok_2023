@@ -18,7 +18,7 @@ Original Author: Shay Gal-on
 #include "coremark.h"
 #include "core_portme.h"
 
-#define TIME_ADDR 0x30000000
+#define TIME_ADDR   0x30000000
 
 #if VALIDATION_RUN
 volatile ee_s32 seed1_volatile = 0x3415;

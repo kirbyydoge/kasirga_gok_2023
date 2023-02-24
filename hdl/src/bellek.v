@@ -81,7 +81,6 @@ always @* begin
     uop_ns = bellek_uop_i;
 
     bib_istek_gecerli_cmb = `LOW;
-    bib_veri_cmb = `LOW;
     duraklat_cmb = `LOW;
     durum_ns = durum_r;
     
@@ -89,7 +88,6 @@ always @* begin
         HAZIR: begin
             if (yaz_w && uop_gecerli_w) begin
                 bib_istek_gecerli_cmb = `HIGH;
-                bib_veri_cmb = uop_rs2_w;
                 duraklat_cmb = !vyb_hazir_w;
             end
             if (oku_w && uop_gecerli_w) begin
@@ -157,6 +155,8 @@ bellek_islem_birimi bib (
     .rstn_i                           ( rstn_i              ),  
     .uop_buyruk_secim_i               ( uop_buyruk_secim_w  ),          
     .uop_rd_i                         ( uop_rd_w            ),  
+    .uop_rs2_i                        ( uop_rs2_w           ),  
+    .veri_o                           ( bib_veri_w          ),
     .maske_o                          ( maske_w             ),
     .oku_o                            ( oku_w               ),
     .yaz_o                            ( yaz_w               )    
@@ -205,7 +205,6 @@ assign bib_istek_yaz_w = yaz_w;
 assign bib_istek_oku_w = oku_w;
 assign bib_istek_adres_w = uop_rd_w;
 assign bib_istek_gecerli_w = bib_istek_gecerli_cmb;
-assign bib_veri_w = bib_veri_cmb;
 
 assign duraklat_o = duraklat_cmb;
 

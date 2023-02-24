@@ -23,10 +23,10 @@ Original Author: Shay Gal-on
 #define CORE_PORTME_H
 #include "kasirga.h"
 
-#define CORE_DEBUG (1==1)
+#define CORE_DEBUG (1!=1)
 
 #ifndef ITERATIONS
-#define ITERATIONS 0
+#define ITERATIONS 1000
 #endif
 
 /************************/
@@ -78,7 +78,7 @@ Original Author: Shay Gal-on
 #endif
 #ifndef COMPILER_FLAGS
 #define COMPILER_FLAGS \
-    "" /* "Please put compiler flags here (e.g. -o3)" */
+    "-O2" /* "Please put compiler flags here (e.g. -o3)" */
 #endif
 #ifndef MEM_LOCATION
 #define MEM_LOCATION "STACK"
@@ -110,8 +110,8 @@ typedef unsigned int   ee_size_t;
 /* Configuration : CORE_TICKS
         Define type of return from the timing functions.
  */
-#define CORETIMETYPE ee_u32
-typedef ee_u32 CORE_TICKS;
+#define CORETIMETYPE uint64_t
+typedef uint64_t CORE_TICKS;
 
 /* Configuration : SEED_METHOD
         Defines method to get seed values that cannot be computed at compile

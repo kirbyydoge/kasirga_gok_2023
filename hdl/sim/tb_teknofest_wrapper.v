@@ -41,12 +41,11 @@ end
 localparam PATH_TO_TEST_FILE = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex/rv32um-p-mul.hex";
 
 initial begin
-   rst_ni = 0;
-   #10;
-   $readmemh(PATH_TO_TEST_FILE, tw.main_memory.ram);
-   #200;
-   rst_ni = 1;
-   #5;
+    $readmemh(PATH_TO_TEST_FILE, tw.main_memory.ram);
+    rst_ni = 0;
+    #200;
+    rst_ni = 1;
+    #5;
 end
 
 endmodule

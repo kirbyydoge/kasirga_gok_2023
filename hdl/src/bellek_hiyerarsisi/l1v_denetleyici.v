@@ -216,7 +216,7 @@ task set_veri;
     begin
         for (i = 0; i < `VERI_BYTE; i = i + 1) begin
             if (maske[i]) begin
-                l1_buffer_bloklar_ns[yol_idx][get_bytes(adres) * 8 +: `VERI_BIT] = veri;
+                l1_buffer_bloklar_ns[yol_idx][(get_bytes(adres) + i) * 8 +: 8] = veri[i * 8 +: 8];
             end
         end
         l1_buffer_etiketler_ns[yol_idx] = get_etiket(adres);

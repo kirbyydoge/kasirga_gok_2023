@@ -90,7 +90,6 @@ always @* begin
     rem_sign_ns=rem_sign;
     SS1_ns=SS1;
     SS2_ns=SS2;
-    k = 0;
 
     case(durum)
         BEKLE: begin

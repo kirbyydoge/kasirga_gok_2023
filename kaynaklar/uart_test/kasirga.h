@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define CPU_HZ      100000000
-#define BAUD_RATE   9600
+#define BAUD_RATE   115200
 
 #ifndef TRUE
 #define TRUE (1==1)
@@ -29,11 +29,11 @@ int uart_tx_empty();
 int uart_rx_empty();
 void uart_write(uint8_t data);
 uint8_t uart_read();
-void uart_print(char* str, int size);
+void uart_print(const char* str);
 
 void handle_trap() {
     static char error_msg[7] = "Hata!\n";
-    uart_print(error_msg, 6);
+    uart_print(error_msg);
 }
 
 void uart_set_ctrl(uint16_t baud_div, uint8_t rx_en, uint8_t tx_en) {
@@ -71,9 +71,11 @@ uint8_t uart_read() {
     return *UART_READ;
 }
 
-void uart_print(char* str, int size) {
-    for (int i = 0; i < size; i++) {
-        uart_write(str[i]);
+void uart_print(const char* str) {
+    int idx = 0;
+    while (str[idx] != '\0') {
+        uart_write(str[idx]);
+        idx++;
     }
 }
 

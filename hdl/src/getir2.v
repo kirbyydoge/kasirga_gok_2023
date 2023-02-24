@@ -34,7 +34,7 @@ module getir2(
     input                       cek_duraklat_i
 );
 
-/*-ila_getir2 debug_getir2 (
+ila_getir2 debug_getir2 (
     .clk (clk_i),
     .probe0 (rstn_i),
     .probe1 (coz_buyruk_o),
@@ -44,7 +44,7 @@ module getir2(
     .probe5 (g1_ps_gecerli_i),
     .probe6 (l1b_buyruk_i),
     .probe7 (l1b_buyruk_gecerli_i)
-);-*/
+);
 
 localparam                  G2_YAZMAC_BOS   = 2'd0;
 localparam                  G2_YAZMAC_YARIM = 2'd1;
