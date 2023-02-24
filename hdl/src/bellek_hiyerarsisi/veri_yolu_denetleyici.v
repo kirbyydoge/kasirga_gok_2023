@@ -263,6 +263,9 @@ always @* begin
     VY_IKI_ISTEK: begin
         l1b_sec_ns = `LOW;
         mem_istek_adres_ns = iki_istek_adres_r;
+        vy_buffer_indis_ns = 0;
+        vy_istek_indis_ns = 0;
+        
         if (iki_istek_yaz_r) begin
             vy_dur_indis_ns = iki_istek_onbellekleme_r ? 0 : BLOK_VERI_SAYISI - 1;
             vy_buffer_blok_ns = iki_istek_veri_r;

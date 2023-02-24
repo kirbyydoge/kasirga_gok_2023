@@ -1,12 +1,9 @@
 `timescale 1ns/1ps
 
 module carpici (
-    input           clk_i,
     input   [31:0]  islec0_i,
     input   [31:0]  islec1_i,
-    input           islem_gecerli_i,
-    output  [63:0]  carpim_o,
-    output          carpim_gecerli_o
+    output  [63:0]  carpim_o
 );
 
 reg  [63:0] partial [0:31];
@@ -108,6 +105,5 @@ always @* begin
 end
 
 assign carpim_o = res_sign_corrected;
-assign carpim_gecerli_o = islem_gecerli_i;
 
 endmodule

@@ -1,5 +1,8 @@
 `timescale 1ns/1ps
 
+`include "sabitler.vh"
+`include "mikroislem.vh"
+
 module cekirdek(
     input                           clk_i,
     input                           rstn_i,

@@ -69,7 +69,6 @@ reg[32:0] S2 [3:0];
 
 wire[32:0] cikarma_s [3:0];
 
-
 toplayici_33 a1(.islec0_i(S1[0]),.islec1_i(-S2[0]),.toplam_o(cikarma_s[0]));
 toplayici_33 a2(.islec0_i(S1[1]),.islec1_i(-S2[1]),.toplam_o(cikarma_s[1]));
 toplayici_33 a3(.islec0_i(S1[2]),.islec1_i(-S2[2]),.toplam_o(cikarma_s[2]));
