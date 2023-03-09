@@ -74,6 +74,7 @@ always @* begin
     carpici_is0_cmb = bellek_x_r[sayac_istek_r];
     carpici_is1_cmb = bellek_w_r[sayac_istek_r];
     carpici_gecerli_cmb = `LOW;
+    spekulatif_durum_ns = spekulatif_durum_r;
 
     case(islem_kod_i)
     `UOP_YZB_LDX_OP1: begin
@@ -114,17 +115,21 @@ always @* begin
     case(spekulatif_durum_r)
     DURUM_BOSTA: begin
         if (sayac_sonuc_r < sayac_min_w) begin
+            carpici_gecerli_cmb = `HIGH;
             spekulatif_durum_ns = DURUM_ISTEK;
         end
     end
     DURUM_ISTEK: begin
-        islem_sonuc_ns = toplayici_sonuc_w;
-        sayac_sonuc_ns = sayac_sonuc_r + 1;
-        if (sayac_sonuc_r < sayac_min_w) begin
-            spekulatif_durum_ns = DURUM_ISTEK;
-        end
-        else begin
-            spekulatif_durum_ns = DURUM_BOSTA;
+        if (carpici_sonuc_gecerli_w) begin
+            islem_sonuc_ns = toplayici_sonuc_w;
+            sayac_sonuc_ns = sayac_sonuc_r + 1;
+            if (sayac_sonuc_r < sayac_min_w) begin
+                carpici_gecerli_cmb = `HIGH;
+                spekulatif_durum_ns = DURUM_ISTEK;
+            end
+            else begin
+                spekulatif_durum_ns = DURUM_BOSTA;
+            end
         end
     end
     endcase
@@ -157,10 +162,13 @@ always @(posedge clk_i) begin
     end
 end
 
-carpici carp (
+carpici_pipe3 carp (
+    .clk_i            ( clk_i ),
     .islec0_i         ( carpici_is0_cmb ),
     .islec1_i         ( carpici_is1_cmb ),
-    .carpim_o         ( carpici_sonuc_w )
+    .islem_gecerli_i  ( carpici_gecerli_cmb ),
+    .carpim_o         ( carpici_sonuc_w ),
+    .carpim_gecerli_o ( carpici_sonuc_gecerli_w )
 );
 
 toplayici topla (

@@ -34,6 +34,7 @@ module denetim_durum_birimi(
     output                          csr_gecerli_o,
 
     output                          bosalt_o,
+    output                          duraklat_o,
     output  [`PS_BIT-1:0]           getir_ps_o,
     output                          getir_ps_gecerli_o
 );
@@ -60,6 +61,7 @@ reg     [`EXC_CODE_BIT-1:0]     odd_kod_cmb;
 reg     [`MXLEN-1:0]            odd_bilgi_cmb; 
 
 reg                             bosalt_cmb;
+reg                             duraklat_cmb;
 reg     [`PS_BIT-1:0]           getir_ps_cmb;
 reg     [`PS_BIT-1:0]           getir_ps_gecerli_cmb;
 
@@ -171,6 +173,7 @@ always @* begin
     getir_ps_cmb = {`PS_BIT{1'b0}};
     getir_ps_gecerli_cmb = `LOW;
     bosalt_cmb = `LOW;
+    duraklat_cmb = `LOW;
 
     odd_gecerli_cmb = bellek_odd_gecerli_i || yurut_odd_gecerli_i || coz_odd_gecerli_i;
     odd_sec();
@@ -187,22 +190,29 @@ always @* begin
     end
     
     if (odd_gecerli_cmb) begin
-        bosalt_cmb = `HIGH;
-        csr_ns[`CSR_MEPC] = odd_ps_cmb;
-        csr_ns[`CSR_MSTATUS][`MSTATUS_MIE] = csr_r[`CSR_MSTATUS][`MSTATUS_MPIE];
-        csr_ns[`CSR_MSTATUS][`MSTATUS_MPIE] = `HIGH;
-        csr_ns[`CSR_MSTATUS][`MSTATUS_MPP] = `PRIV_MACHINE;
-        csr_ns[`CSR_MCAUSE] = odd_kod_cmb;
-        csr_ns[`CSR_MTVAL] = odd_bilgi_cmb;
+        duraklat_cmb = `HIGH;
 
         getir_ps_cmb = csr_r[`CSR_MTVEC];
         getir_ps_gecerli_cmb = `HIGH;
+        duraklat_cmb = !csr_gecerli_r[`CSR_MTVEC];
 
         case(odd_kod_cmb)
         `EXC_CODE_MRET: begin
             getir_ps_cmb = csr_r[`CSR_MEPC];
+            duraklat_cmb = !csr_gecerli_r[`CSR_MEPC];
         end
         endcase
+
+        bosalt_cmb = !duraklat_cmb;
+
+        if (bosalt_cmb) begin
+            csr_ns[`CSR_MEPC] = odd_ps_cmb;
+            csr_ns[`CSR_MSTATUS][`MSTATUS_MIE] = csr_r[`CSR_MSTATUS][`MSTATUS_MPIE];
+            csr_ns[`CSR_MSTATUS][`MSTATUS_MPIE] = `HIGH;
+            csr_ns[`CSR_MSTATUS][`MSTATUS_MPP] = `PRIV_MACHINE;
+            csr_ns[`CSR_MCAUSE] = odd_kod_cmb;
+            csr_ns[`CSR_MTVAL] = odd_bilgi_cmb;
+        end
     end
 end
 
@@ -226,6 +236,7 @@ assign oku_mimari_adres_w = csr_adres_donustur(oku_istek_adres_i);
 assign yaz_mimari_adres_w = csr_adres_donustur(yaz_istek_adres_i);
 
 assign bosalt_o = bosalt_cmb;
+assign duraklat_o = duraklat_cmb;
 assign getir_ps_o = getir_ps_cmb;
 assign getir_ps_gecerli_o = getir_ps_gecerli_cmb;
 

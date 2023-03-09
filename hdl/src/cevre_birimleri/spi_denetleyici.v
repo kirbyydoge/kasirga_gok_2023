@@ -134,6 +134,9 @@ always @* begin
     fifo_mosi_rd_en_cmb = `LOW;
     fifo_cmd_wr_en_cmb = `LOW;
     fifo_cmd_rd_en_cmb = `LOW;
+    fifo_buf_veri_ns = fifo_buf_veri_r;
+    fifo_buf_miso_ns = fifo_buf_miso_r;
+    spi_ctrl_ns = spi_ctrl_r;
 
     if (spi_gecerli_o && spi_hazir_i) begin
         spi_gecerli_ns = `LOW;

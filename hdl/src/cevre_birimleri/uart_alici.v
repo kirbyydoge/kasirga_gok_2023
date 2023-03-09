@@ -19,7 +19,8 @@ localparam BOSTA = 0;
 localparam VERI_AL = 1;
 localparam BITTI = 2;
 
-reg [7:0] alinan_veri;
+reg [7:0] alinan_veri_ns;
+reg [7:0] alinan_veri_r;
 
 
 reg [1:0] durum_r;
@@ -42,6 +43,7 @@ always @* begin
     durum_ns = durum_r;
     sayac_ns = sayac_r;
     alinan_veri_biti_ns = alinan_veri_biti_r;
+    alinan_veri_ns = alinan_veri_r;
 
     saat_aktif_cmb = sayac_r == baud_div_i - 1;
     if (sayac_r == baud_div_i - 1) begin
@@ -57,7 +59,7 @@ always @* begin
         end
         VERI_AL: begin
             if (saat_aktif_cmb) begin
-                alinan_veri [alinan_veri_biti_r] = rx_i;
+                alinan_veri_ns [alinan_veri_biti_r] = rx_i;
                 alinan_veri_biti_ns = alinan_veri_biti_r + 1;
                 if (alinan_veri_biti_r == 3'd7) begin
                     durum_ns = BITTI;
@@ -97,10 +99,11 @@ always @ (posedge clk_i) begin
         durum_r <= durum_ns; 
         sayac_r <= sayac_ns;
         alinan_veri_biti_r <= alinan_veri_biti_ns;
+        alinan_veri_r <= alinan_veri_ns;
     end
 end
 
-assign alinan_veri_o = alinan_veri;
+assign alinan_veri_o = alinan_veri_r;
 assign alinan_gecerli_o = alinan_veri_gecerli_cmb;
 
 

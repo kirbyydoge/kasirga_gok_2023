@@ -52,6 +52,7 @@ end
 endfunction
 
 always @* begin
+    veri_cmb = uop_rs2_i;
     // 16 VE 8 BİT lOAD YAPARKEN REGISTERIN EN ANLAMLI BYTELARINA YAZILMIŞTIR, BELLEĞE STORE YAPARKEN VERİ ÖBEĞİNİN EN ANLAMLI BYTLEARINA YAZILDI 
     case(uop_buyruk_secim_i)
         // Load Buyrukları

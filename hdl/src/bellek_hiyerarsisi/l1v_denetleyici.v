@@ -132,8 +132,6 @@ reg [$clog2(`L1V_YOL)-1:0] vy_hedef_yol_ns;
 
 reg [`ADRES_BIT-1:0] vy_istek_adres_r;
 reg [`ADRES_BIT-1:0] vy_istek_adres_ns;
-assign vy_istek_adres_o = vy_istek_onbellekleme_r ? vy_istek_adres_r
-                            : vy_istek_adres_r & ((~{`ADRES_BIT{1'b0}}) << `ADRES_BYTE_BIT);
 
 reg [`L1_BLOK_BIT-1:0] vy_istek_veri_r;
 reg [`L1_BLOK_BIT-1:0] vy_istek_veri_ns;
@@ -182,14 +180,37 @@ endgenerate
 function [`ADRES_ETIKET_BIT-1:0] get_etiket;
     input [`ADRES_BIT-1:0] adres;
     begin
-        get_etiket = adres[`ADRES_ETIKET_OFFSET +: `ADRES_ETIKET_BIT];
+         if (`ADRES_VERI_OZEL_BIT > 0) begin
+            get_etiket = {adres[`ADRES_ETIKET_OFFSET + `ADRES_VERI_OZEL_BIT +: `ADRES_ETIKET_BIT - `ADRES_VERI_OZEL_BIT], adres[`ADRES_SATIR_OFFSET +: `ADRES_VERI_OZEL_BIT]};
+         end
+         else begin
+            get_etiket = adres[`ADRES_ETIKET_OFFSET +: `ADRES_ETIKET_BIT];
+         end
     end
 endfunction
 
 function [`ADRES_SATIR_BIT-1:0] get_satir;
     input [`ADRES_BIT-1:0] adres;
     begin
-        get_satir = adres[`ADRES_SATIR_OFFSET +: `ADRES_SATIR_BIT];
+         if (`ADRES_VERI_OZEL_BIT > 0) begin
+            get_satir = adres[`ADRES_SATIR_OFFSET + `ADRES_VERI_OZEL_BIT +: `ADRES_SATIR_BIT];
+         end
+         else begin
+            get_satir = adres[`ADRES_SATIR_OFFSET +: `ADRES_SATIR_BIT];
+         end
+    end
+endfunction
+
+function [`ADRES_BIT-1:0] adres_birlestir;
+    input [`ADRES_ETIKET_BIT-1:0] etiket;
+    input [`ADRES_SATIR_BIT-1:0] satir;
+    begin
+         if (`ADRES_VERI_OZEL_BIT > 0) begin
+            adres_birlestir = {etiket[`ADRES_VERI_OZEL_BIT +: `ADRES_ETIKET_BIT - `ADRES_VERI_OZEL_BIT], satir, etiket[0 +: `ADRES_VERI_OZEL_BIT]} << `ADRES_BYTE_BIT;
+         end
+         else begin
+            adres_birlestir = {etiket, satir} << `ADRES_BYTE_BIT;
+         end
     end
 endfunction
 
@@ -283,7 +304,7 @@ task l1_cikar (input [`ADRES_BIT-1:0] istek_adres);
         else if (satir_kirli_r[get_satir(istek_adres)][cikarma_sayaci_r]) begin
             vy_hedef_yol_ns = cikarma_sayaci_r;
             vy_istek_veri_ns = l1_buffer_bloklar_r[cikarma_sayaci_r];
-            vy_istek_adres_ns = {l1_buffer_etiketler_r[cikarma_sayaci_r], get_satir(istek_adres)} << `ADRES_BYTE_BIT;
+            vy_istek_adres_ns = adres_birlestir(l1_buffer_etiketler_r[cikarma_sayaci_r], get_satir(istek_adres));
             vy_istek_gecerli_ns = `HIGH;
             vy_istek_yaz_ns = `HIGH; 
             vy_veri_hazir_ns = `LOW;
@@ -324,7 +345,7 @@ always @* begin
     end
     son_adres_ns = son_adres_r;
     port_istek_adres_ns = port_istek_adres_r;
-    cikarma_sayaci_ns = (cikarma_sayaci_r + 1)  % `L1V_YOL;
+    cikarma_sayaci_ns = (cikarma_sayaci_r + 1) % `L1V_YOL;
     l1_istek_satir_ns = l1_istek_satir_r;
     port_veri_gecerli_ns = port_veri_gecerli_r;
     port_istek_maske_ns = port_istek_maske_r;
@@ -588,5 +609,8 @@ always @(posedge clk_i) begin
         l1_durum_r <= l1_durum_ns;
     end
 end
+
+assign vy_istek_adres_o = vy_istek_onbellekleme_r ? vy_istek_adres_r
+                            : vy_istek_adres_r & ((~{`ADRES_BIT{1'b0}}) << `ADRES_BYTE_BIT);
 
 endmodule

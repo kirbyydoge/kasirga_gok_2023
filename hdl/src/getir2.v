@@ -34,28 +34,16 @@ module getir2(
     input                       cek_duraklat_i
 );
 
-ila_getir2 debug_getir2 (
-    .clk (clk_i),
-    .probe0 (rstn_i),
-    .probe1 (coz_buyruk_o),
-    .probe2 (coz_buyruk_ps_o),
-    .probe3 (coz_buyruk_gecerli_o),
-    .probe4 (g1_ps_i),
-    .probe5 (g1_ps_gecerli_i),
-    .probe6 (l1b_buyruk_i),
-    .probe7 (l1b_buyruk_gecerli_i)
-);
-
 localparam                  G2_YAZMAC_BOS   = 2'd0;
 localparam                  G2_YAZMAC_YARIM = 2'd1;
 localparam                  G2_YAZMAC_DOLU  = 2'd2;
 localparam                  G2_CEK_BOSALT   = 2'd3;
 
-reg     [1:0]               l1b_beklenen_sayisi_r;
-reg     [1:0]               l1b_beklenen_sayisi_ns;
+reg     [8:0]               l1b_beklenen_sayisi_r;
+reg     [8:0]               l1b_beklenen_sayisi_ns;
 
-reg     [1:0]               g2_bos_istek_sayaci_r;
-reg     [1:0]               g2_bos_istek_sayaci_ns;
+reg     [8:0]               g2_bos_istek_sayaci_r;
+reg     [8:0]               g2_bos_istek_sayaci_ns;
 
 reg     [`BUYRUK_BIT-1:0]   coz_buyruk_r;
 reg     [`BUYRUK_BIT-1:0]   coz_buyruk_ns;
@@ -203,11 +191,11 @@ always @* begin
         if (l1b_beklenen_sayisi_r != 0) begin
             l1b_buyruk_hazir_cmb = `HIGH;
             if (l1b_buyruk_gecerli_i) begin
-                g2_bos_istek_sayaci_ns = l1b_beklenen_sayisi_r - 1;
+                g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r - 1;
                 g2_durum_ns = l1b_beklenen_sayisi_r != 1 ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
             end
             else begin
-                g2_bos_istek_sayaci_ns = l1b_beklenen_sayisi_r;
+                g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r;
                 g2_durum_ns = G2_CEK_BOSALT;
             end
         end

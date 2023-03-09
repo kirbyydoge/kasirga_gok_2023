@@ -17,6 +17,7 @@ reg                             l1v_yanit_gecerli_i;
 wire                            l1v_yanit_hazir_o;
 wire    [`VERI_BIT-1:0]         l1v_istek_veri_o;
 wire    [`ADRES_BIT-1:0]        l1v_istek_adres_o;
+wire    [7:0]                   l1v_istek_maske_o;
 wire                            l1v_istek_yaz_o;
 wire                            l1v_istek_gecerli_o;
 reg                             l1v_istek_hazir_i;
@@ -37,6 +38,7 @@ cekirdek cekirdek (
     .l1v_yanit_hazir_o       ( l1v_yanit_hazir_o ),
     .l1v_istek_veri_o        ( l1v_istek_veri_o ),
     .l1v_istek_adres_o       ( l1v_istek_adres_o ),
+    .l1v_istek_maske_o       ( l1v_istek_maske_o ),
     .l1v_istek_yaz_o         ( l1v_istek_yaz_o ),
     .l1v_istek_gecerli_o     ( l1v_istek_gecerli_o ),
     .l1v_istek_hazir_i       ( l1v_istek_hazir_i )
@@ -49,51 +51,90 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST = "/home/kirbyydoge/teknofest_2023_test/rv32ui-p-add.hex";
-localparam BUYRUK_BELLEK_LEN = 1024;
-reg [31:0] buyruklar [0:BUYRUK_BELLEK_LEN-1];
-
-localparam BELLEK_GECIKMESI = 5;
-reg [BELLEK_GECIKMESI:0] istek_counter;
-reg [BELLEK_GECIKMESI:0] buyruk_counter;
+localparam PATH_TO_TEST = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+localparam BUYRUK_BELLEK_LEN = 'h40000;
+reg [31:0] bellek [0:BUYRUK_BELLEK_LEN-1];
+reg l1b_yanitla_r;
 
 always @* begin
-    buyruk_yanit_gecerli_i = buyruk_counter[BELLEK_GECIKMESI];
-    buyruk_istek_hazir_i = !(|istek_counter);
+    buyruk_istek_hazir_i = !buyruk_full_o;
+    buyruk_data_i = bellek[(buyruk_istek_adres_o & 32'h000f_ffff) >> 2];
+    buyruk_wr_en_i = buyruk_istek_gecerli_o;
+    buyruk_yanit_veri_i = buyruk_data_o;
+    buyruk_yanit_gecerli_i = !buyruk_empty_o;
+    buyruk_rd_en_i = buyruk_yanit_hazir_o;
+end
+
+reg  [31:0]     buyruk_data_i;
+reg             buyruk_wr_en_i;
+wire [31:0]     buyruk_data_o;
+reg             buyruk_rd_en_i;
+wire            buyruk_full_o;
+wire            buyruk_empty_o;
+
+fifo #(
+    .DATA_WIDTH (32),
+    .DATA_DEPTH (3)
+) buyruk_resp (
+    .clk_i   ( clk_i    ),
+    .rstn_i  ( rstn_i   ),
+    .data_i  ( buyruk_data_i   ),
+    .wr_en_i ( buyruk_wr_en_i  ),
+    .data_o  ( buyruk_data_o   ),
+    .rd_en_i ( buyruk_rd_en_i  ),
+    .full_o  ( buyruk_full_o   ),
+    .empty_o ( buyruk_empty_o  )
+);
+
+always @* begin
+    l1v_istek_hazir_i = !l1v_full_o;
+    l1v_data_i = bellek[(l1v_istek_adres_o & 32'h000f_ffff) >> 2];
+    l1v_wr_en_i = l1v_istek_gecerli_o && !l1v_istek_yaz_o;
+    l1v_yanit_veri_i = l1v_data_o;
+    l1v_yanit_gecerli_i = !l1v_empty_o;
+    l1v_rd_en_i = l1v_yanit_hazir_o;
 end
 
 always @(posedge clk_i) begin
-    if (!rstn_i) begin
-        istek_counter <= 0;
-        buyruk_counter <= 0;
-    end
-    else begin
-        if (!buyruk_yanit_gecerli_i || buyruk_yanit_hazir_o && buyruk_yanit_gecerli_i) begin
-            buyruk_counter <= buyruk_counter << 1;
-        end
-        if (buyruk_istek_hazir_i && buyruk_istek_gecerli_o) begin
-            buyruk_yanit_veri_i <= (('h0000_ffff & buyruk_istek_adres_o) >> 2) < BUYRUK_BELLEK_LEN ? buyruklar[('h0000_ffff & buyruk_istek_adres_o) >> 2] : 0;
-            istek_counter <= 1;
-            buyruk_counter <= 1;
-        end
-        else begin
-            istek_counter <= istek_counter << 1;
+    if (l1v_istek_gecerli_o && l1v_istek_yaz_o) begin
+        for (i = 0; i < 8; i = i + 1) begin
+            if (l1v_istek_maske_o[i]) begin
+                bellek[(l1v_istek_adres_o & 32'h000f_ffff) >> 2][8 * i +: 8] <= l1v_istek_veri_o[8 * i +: 8];
+            end
         end
     end
 end
+
+reg  [31:0]     l1v_data_i;
+reg             l1v_wr_en_i;
+wire [31:0]     l1v_data_o;
+reg             l1v_rd_en_i;
+wire            l1v_full_o;
+wire            l1v_empty_o;
+
+fifo #(
+    .DATA_WIDTH (32),
+    .DATA_DEPTH (3)
+) veri_resp (
+    .clk_i   ( clk_i    ),
+    .rstn_i  ( rstn_i   ),
+    .data_i  ( l1v_data_i   ),
+    .wr_en_i ( l1v_wr_en_i  ),
+    .data_o  ( l1v_data_o   ),
+    .rd_en_i ( l1v_rd_en_i  ),
+    .full_o  ( l1v_full_o   ),
+    .empty_o ( l1v_empty_o  )
+);
 
 integer i;
 initial begin
     for (i = 0; i < BUYRUK_BELLEK_LEN; i = i+1) begin
-        buyruklar[i] = 0;
+        bellek[i] = 0;
     end
-    $readmemh(PATH_TO_TEST, buyruklar);
+    $readmemh(PATH_TO_TEST, bellek);
     rstn_i = 0;
     repeat(20) @(posedge clk_i) #COMB_DELAY;
     rstn_i = 1;
-    l1v_yanit_veri_i = 0;
-    l1v_yanit_gecerli_i = 0;
-    l1v_istek_hazir_i = 0;
 
     // buyruklar['h000] = 'h00500113; // addi x2, x0, 5
     // buyruklar['h001] = 'h00108093; // addi x1, x1, 1

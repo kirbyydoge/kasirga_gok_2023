@@ -1,8 +1,9 @@
 #include "kasirga.h"
-#define TEST_LEN    0x5000
+#define TEST_LEN    0x8000
 
-int stack[TEST_LEN + 2];
-int indexes[TEST_LEN];
+static int stack[TEST_LEN + 2];
+static int indexes[TEST_LEN];
+#define TIMER_ADDR 0x30000000
 
 unsigned int pcg_hash(unsigned int input) {
     unsigned int state = input * 747796405u + 2891336453u;
@@ -41,6 +42,8 @@ int main() {
             ee_printf("@%d %d != %d\n", indexes[i], i, stack[indexes[i]]);
         }
     } 
+    uint64_t time = *(uint64_t*) TIMER_ADDR;
+    ee_printf("Time: %lu\n", time);
     ee_printf("Bitti\n");
     return 0;
 }

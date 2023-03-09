@@ -31,17 +31,22 @@
 `define RAM_BASE_ADDR       32'h4000_0000
 `define RAM_BASE            32'h4000_0000
 `define RAM_MASK_ADDR       32'h0007_ffff
+`define TIMER_BASE_ADDR     32'h3000_0000
+`define TIMER_MASK_ADDR     32'h0000_000f
 
 //-------Önbellek Denetleyiciler----------
-`define L1_BLOK_BIT 32    
+`define L1_BLOK_BIT 128    
 `define L1B_SATIR   128
-`define L1B_YOL     6   
+`define L1B_YOL     2   
 `define L1V_SATIR   128
 `define L1V_YOL     2
 `define L1_BOYUT    (`L1_BLOK_BIT * `L1B_SATIR * `L1B_YOL) + (`L1_BLOK_BIT * `L1V_SATIR * `L1V_YOL) // Teknofest 2022-2023 icin 4KB olmali
 `define L1_ONBELLEK_GECIKME 1 // Denetleyici gecikmesi degil, SRAM/BRAM gecikmesi
 
-`define ADRES_BYTE_BIT      2 // Veriyi byte adreslemek icin gereken bit
+`define ADRES_OZEL_DAGITIM
+`define ADRES_BUYRUK_OZEL_BIT 0
+`define ADRES_VERI_OZEL_BIT   0
+`define ADRES_BYTE_BIT      5 // Veriyi byte adreslemek icin gereken bit
 `define ADRES_BYTE_OFFSET   0 // ADRES_BYTE ilk bitine erismek icin gereken kaydirma
 `define ADRES_SATIR_BIT     7 // Satirlari indexlemek icin gereken bit
 `define ADRES_SATIR_OFFSET  (`ADRES_BYTE_OFFSET + `ADRES_BYTE_BIT) // ADRES_SATIR ilk bitine erismek icin gereken kaydirma

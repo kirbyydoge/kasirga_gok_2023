@@ -92,12 +92,20 @@ always @* begin
     `UOP_AMB_MUL    : begin
         carpici_is0_cmb = islem_islec1_i;
         carpici_is1_cmb = islem_islec2_i;
+        carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
         islem_sonuc_cmb = carpici_sonuc_w[0 +: `VERI_BIT];
+        islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+
+        islem_sayac_ns = islem_sayac_r + 5'b1;
     end
     `UOP_AMB_MULH   : begin
         carpici_is0_cmb = islem_islec1_i;
         carpici_is1_cmb = islem_islec2_i;
+        carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
         islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
+        islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+
+        islem_sayac_ns = islem_sayac_r + 5'b1;
     end
     `UOP_AMB_DIV    : begin
         if (islem_islec2_i == 0) begin
@@ -235,10 +243,13 @@ toplayici topla (
     .toplam_o ( toplayici_sonuc_w )
 );
 
-carpici carp (
+carpici_pipe3 carp (
+    .clk_i            ( clk_i ),
     .islec0_i         ( carpici_is0_cmb ),
     .islec1_i         ( carpici_is1_cmb ),
-    .carpim_o         ( carpici_sonuc_w )
+    .islem_gecerli_i  ( carpici_gecerli_cmb ),
+    .carpim_o         ( carpici_sonuc_w ),
+    .carpim_gecerli_o ( carpici_sonuc_gecerli_w )
 );
 
 bolucu bol (

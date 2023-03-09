@@ -303,6 +303,7 @@ wire                            io_ddb_yaz_istek_gecerli_w;
 wire    [`MXLEN-1:0]            io_ddb_csr_veri_w;
 wire                            io_ddb_csr_gecerli_w;
 wire                            io_ddb_bosalt_w;
+wire                            io_ddb_duraklat_w;
 wire    [`PS_BIT-1:0]           io_ddb_getir_ps_w;
 wire                            io_ddb_getir_ps_gecerli_w;
 
@@ -329,6 +330,7 @@ denetim_durum_birimi ddb (
     .csr_veri_o                 ( io_ddb_csr_veri_w ),
     .csr_gecerli_o              ( io_ddb_csr_gecerli_w ),
     .bosalt_o                   ( io_ddb_bosalt_w ),
+    .duraklat_o                 ( io_ddb_duraklat_w ),
     .getir_ps_o                 ( io_ddb_getir_ps_w ),
     .getir_ps_gecerli_o         ( io_ddb_getir_ps_gecerli_w )
 );
@@ -347,7 +349,7 @@ reg    [`PS_BIT-1:0]   cekirdek_ps_cmb;
 reg                    cekirdek_ps_gecerli_cmb;
 
 assign cekirdek_bellek_duraklat_w = `LOW;
-assign cekirdek_yurut_duraklat_w = io_bellek_duraklat_w;
+assign cekirdek_yurut_duraklat_w = io_bellek_duraklat_w || io_ddb_duraklat_w;
 assign cekirdek_yo_duraklat_w = cekirdek_yurut_duraklat_w || io_yurut_duraklat_w;
 assign cekirdek_coz_duraklat_w = cekirdek_yo_duraklat_w || io_yo_duraklat_w;
 assign cekirdek_getir2_duraklat_w = cekirdek_coz_duraklat_w || io_coz_duraklat_w;

@@ -42,14 +42,14 @@ always @* begin
         yazmac_gecerli_ns[i] = yazmac_gecerli_r[i];
     end
 
-    if (etiket_gecerli_i) begin
-        yazmac_etiket_ns[etiket_adres_i] = etiket_i;
-        yazmac_gecerli_ns[etiket_adres_i] = 1'b0;
-    end
-
     if (yaz_gecerli_i) begin
         yazmac_ns[yaz_adres_i] = yaz_veri_i;
         yazmac_gecerli_ns[yaz_adres_i] = yazmac_etiket_r[yaz_adres_i] == yaz_etiket_i;
+    end
+
+    if (etiket_gecerli_i) begin
+        yazmac_etiket_ns[etiket_adres_i] = etiket_i;
+        yazmac_gecerli_ns[etiket_adres_i] = 1'b0;
     end
 end
 

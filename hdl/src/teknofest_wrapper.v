@@ -47,7 +47,7 @@ wire clk_i;
 clk_wiz_0 clk_wiz
 (
     .CLK_100MHZ(clk_i),
-    .reset(0), 
+    .reset(1'b0), 
     .locked(clk_wiz_locked),
     .clk_in1_p(clk_p),
     .clk_in1_n(clk_n)
@@ -117,7 +117,7 @@ always @(posedge clk_i) begin
   end
 end
 
-assign iomem_ready = ram_shift_q[RAM_DELAY-1] | (iomem_valid & (iomem_addr == 32'h3000_0000));
+assign iomem_ready = ram_shift_q[RAM_DELAY-1] | (iomem_valid & (iomem_addr == 32'h3000_0000 || iomem_addr == 32'h3000_0004));
 
 assign iomem_rdata = (iomem_valid & (iomem_addr == 32'h3000_0000)) ? timer[31:0]  :
                      (iomem_valid & (iomem_addr == 32'h3000_0004)) ? timer[63:32] : main_mem_rdata;
@@ -136,8 +136,8 @@ teknofest_ram #(
 (
   .clk_i           (clk_i ),
   .rst_ni          (rst_ni && clk_wiz_locked),
-  .wr_addr         (iomem_addr[clogb2(RAM_DEPTH*4)-1:2]),
-  .rd_addr         (iomem_addr[clogb2(RAM_DEPTH*4)-1:2]),
+  .wr_addr         (iomem_addr[clogb2(RAM_DEPTH*4-1)-1:2]),
+  .rd_addr         (iomem_addr[clogb2(RAM_DEPTH*4-1)-1:2]),
   .wr_data         (iomem_wdata),
 
   .wr_strb         (main_mem_wstrb   ),

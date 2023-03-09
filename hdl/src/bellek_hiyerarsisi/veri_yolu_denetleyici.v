@@ -142,6 +142,12 @@ always @* begin
     mem_istek_yaz_ns = mem_istek_yaz_r;
     mem_istek_gecerli_ns = mem_istek_gecerli_r;
     mem_veri_hazir_ns = mem_veri_hazir_r;
+    l1b_sec_ns = l1b_sec_r;
+    iki_istek_ns = iki_istek_r;
+    iki_istek_adres_ns = iki_istek_adres_r;
+    iki_istek_yaz_ns = iki_istek_yaz_r;
+    iki_istek_veri_ns = iki_istek_veri_r;
+    iki_istek_onbellekleme_ns = iki_istek_onbellekleme_r;
  
     case (vy_durum_r)
     VY_BOSTA: begin
@@ -263,18 +269,20 @@ always @* begin
     VY_IKI_ISTEK: begin
         l1b_sec_ns = `LOW;
         mem_istek_adres_ns = iki_istek_adres_r;
+        vy_dur_indis_ns = iki_istek_onbellekleme_r ? 0 : BLOK_VERI_SAYISI - 1;
         vy_buffer_indis_ns = 0;
         vy_istek_indis_ns = 0;
         
         if (iki_istek_yaz_r) begin
-            vy_dur_indis_ns = iki_istek_onbellekleme_r ? 0 : BLOK_VERI_SAYISI - 1;
             vy_buffer_blok_ns = iki_istek_veri_r;
             vy_durum_ns = VY_BLOK_YAZ;
         end
         else begin
             vy_durum_ns = VY_BLOK_OKU_ISTEK;
         end
+
         iki_istek_ns = `LOW;
+        iki_istek_onbellekleme_ns = `LOW;
     end
     endcase
 end

@@ -13,7 +13,7 @@ $(demo-targets):
 	$(RISCVTYPE)-objdump -D $*.riscv > $*_assembly.txt
 	$(RISCVTYPE)-objcopy -O binary $*.riscv $*.bin
 	elf2hex 4 8192 $*.riscv 1073741824 > $*.hex
-	rm *.bin *.o *.riscv *.s
+	rm *.bin *.o *.s
 	
 .PHONY: clean
 clean:
