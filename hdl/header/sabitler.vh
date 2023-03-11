@@ -1,6 +1,6 @@
 //------Sentez Parametreleri------
 `define VCU108
-`define LOG_COMMITS
+// `define LOG_COMMITS
 // `define OPENLANE
 
 //-----------Diger----------------

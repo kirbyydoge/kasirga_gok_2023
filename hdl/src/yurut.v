@@ -28,6 +28,12 @@ module yurut (
     output                          g2_atladi_o,
     output                          g2_hatali_tahmin_o,
 
+    // Yazmc oku sonuna veri yonlendirmesi
+    output  [`VERI_BIT-1:0]         yo_veri_o,
+    output  [`YAZMAC_BIT-1:0]       yo_adres_o,
+    output  [`UOP_TAG_BIT-1:0]      yo_etiket_o,
+    output                          yo_gecerli_o,
+
     input   [`UOP_BIT-1:0]          yurut_uop_i,
     output  [`UOP_BIT-1:0]          bellek_uop_o
 );
@@ -44,6 +50,7 @@ wire [`UOP_AMB_OP2_BIT-1:0]     uop_amb_islec2_sec_w;
 wire [`UOP_RS1_BIT-1:0]         uop_rs1_w;
 wire [`UOP_RS2_BIT-1:0]         uop_rs2_w;
 wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
+wire [`UOP_RD_BIT-1:0]          uop_rd_w;
 wire [`UOP_CSR_BIT-1:0]         uop_csr_w;
 wire                            uop_rvc_w;
 
@@ -84,6 +91,9 @@ reg  [`PS_BIT-1:0]              ddb_odd_ps_cmb;
 reg  [`EXC_CODE_BIT-1:0]        ddb_odd_kod_cmb;
 reg  [`MXLEN-1:0]               ddb_odd_bilgi_cmb;
 reg                             ddb_odd_gecerli_cmb;
+
+reg  [`VERI_BIT-1:0]            yo_veri_cmb;
+reg                             yo_gecerli_cmb;
 
 function [`VERI_BIT-1:0] islec_sec (
     input [`UOP_AMB_OP_BIT-1:0] uop_secici,
@@ -129,17 +139,40 @@ always @* begin
     ddb_odd_kod_cmb = yurut_uop_i[`UOP_CSR_OP];
     ddb_odd_bilgi_cmb = {`MXLEN{1'b0}}; // mcause
     ddb_odd_gecerli_cmb = `LOW;
+    yo_gecerli_cmb = `LOW;
     uop_ns[`UOP_RD] = amb_sonuc_w;
 
     case(uop_yaz_sec_w) 
-    `UOP_YAZ_AMB: uop_ns[`UOP_RD] = amb_sonuc_w;
-    `UOP_YAZ_IS1: uop_ns[`UOP_RD] = amb_islec1_w;
-    `UOP_YAZ_DAL: uop_ns[`UOP_RD] = db_ps_atlamadi_w;
-    `UOP_YAZ_CSR: uop_ns[`UOP_RD] = uop_csr_w;
-    `UOP_YAZ_BEL: uop_ns[`UOP_RD] = amb_sonuc_w;
-    `UOP_YAZ_YZB: uop_ns[`UOP_RD] = yzb_sonuc_w;
-    default     : uop_ns[`UOP_RD] = amb_sonuc_w;
+    `UOP_YAZ_AMB: begin
+        uop_ns[`UOP_RD] = amb_sonuc_w;
+        yo_gecerli_cmb = `HIGH;
+    end
+    `UOP_YAZ_IS1: begin
+        uop_ns[`UOP_RD] = amb_islec1_w;
+        yo_gecerli_cmb = `HIGH;
+    end
+    `UOP_YAZ_DAL: begin
+        uop_ns[`UOP_RD] = db_ps_atlamadi_w;
+        yo_gecerli_cmb = `HIGH;
+    end
+    `UOP_YAZ_CSR: begin
+        uop_ns[`UOP_RD] = uop_csr_w;
+        yo_gecerli_cmb = `HIGH;
+    end
+    `UOP_YAZ_BEL: begin
+        uop_ns[`UOP_RD] = amb_sonuc_w;
+        yo_gecerli_cmb = `LOW;
+    end
+    `UOP_YAZ_YZB: begin
+        uop_ns[`UOP_RD] = yzb_sonuc_w;
+        yo_gecerli_cmb = `HIGH;
+    end
+    default     : begin
+        uop_ns[`UOP_RD] = amb_sonuc_w;
+        yo_gecerli_cmb = `LOW;
+    end
     endcase
+    yo_veri_cmb = uop_ns[`UOP_RD];
 
     case(uop_csr_islem_sec_w)
     `UOP_CSR_NOP: uop_ns[`UOP_CSR] = {`VERI_BIT{1'b0}};
@@ -221,6 +254,7 @@ assign uop_amb_islec1_sec_w = yurut_uop_i[`UOP_AMB_OP1];
 assign uop_amb_islec2_sec_w = yurut_uop_i[`UOP_AMB_OP2];
 assign uop_rs1_w = yurut_uop_i[`UOP_RS1];
 assign uop_rs2_w = yurut_uop_i[`UOP_RS2];
+assign uop_rd_w = yurut_uop_i[`UOP_RD_ADDR];
 assign uop_imm_w = yurut_uop_i[`UOP_IMM];
 assign uop_csr_w = yurut_uop_i[`UOP_CSR];
 assign uop_rvc_w = yurut_uop_i[`UOP_RVC];
@@ -253,6 +287,11 @@ assign ddb_odd_ps_o = ddb_odd_ps_cmb;
 assign ddb_odd_kod_o = ddb_odd_kod_cmb;
 assign ddb_odd_bilgi_o = ddb_odd_bilgi_cmb;
 assign ddb_odd_gecerli_o = ddb_odd_gecerli_cmb;
+
+assign yo_veri_o = yo_veri_cmb;
+assign yo_adres_o = uop_rd_w;
+assign yo_gecerli_o = yo_gecerli_cmb && uop_gecerli_w;
+assign yo_etiket_o = uop_tag_w;
 
 assign bellek_uop_o = uop_r;
 

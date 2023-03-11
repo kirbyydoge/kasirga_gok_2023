@@ -38,7 +38,7 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST_LIST = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex";
+localparam PATH_TO_TEST_LIST = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex";
 localparam GP = 'd3;
 localparam A7 = 'd17;
 localparam MAX_TEST_COUNT = 64;
@@ -59,8 +59,8 @@ integer stall_ctr;
 integer cur_test;
 
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
-localparam RISCV_TEST = 0;
-localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+localparam RISCV_TEST = 1;
+localparam STANDALONE_PATH = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
 initial begin
     if (RISCV_TEST) begin
         test_passed = 0;

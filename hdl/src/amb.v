@@ -243,14 +243,21 @@ toplayici topla (
     .toplam_o ( toplayici_sonuc_w )
 );
 
-carpici_pipe3 carp (
-    .clk_i            ( clk_i ),
+// carpici_pipe3 carp (
+//     .clk_i            ( clk_i ),
+//     .islec0_i         ( carpici_is0_cmb ),
+//     .islec1_i         ( carpici_is1_cmb ),
+//     .islem_gecerli_i  ( carpici_gecerli_cmb ),
+//     .carpim_o         ( carpici_sonuc_w ),
+//     .carpim_gecerli_o ( carpici_sonuc_gecerli_w )
+// );
+
+carpici carp (
     .islec0_i         ( carpici_is0_cmb ),
     .islec1_i         ( carpici_is1_cmb ),
-    .islem_gecerli_i  ( carpici_gecerli_cmb ),
-    .carpim_o         ( carpici_sonuc_w ),
-    .carpim_gecerli_o ( carpici_sonuc_gecerli_w )
+    .carpim_o         ( carpici_sonuc_w )
 );
+assign carpici_sonuc_gecerli_w = carpici_gecerli_cmb;
 
 bolucu bol (
     .clk_i             ( clk_i ),

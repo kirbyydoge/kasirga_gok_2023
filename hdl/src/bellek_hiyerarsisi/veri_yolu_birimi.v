@@ -89,40 +89,44 @@ always @* begin
 
     case(vyb_durum_r)
     HAZIR: begin
+        port_istek_gecerli_ns = `LOW;
+        port_istek_onbellekleme_ns = `LOW;
+        port_istek_yaz_ns = `LOW;
+        port_veri_hazir_ns = `LOW;
         if (bib_istek_gecerli_i) begin
             port_istek_onbellekleme_ns = (bib_istek_adres_i & ~`RAM_MASK_ADDR) != `RAM_BASE_ADDR;
             if (bib_istek_yaz_i) begin
-                port_istek_adres_ns = bib_istek_adres_i;
-                port_istek_maske_ns = bib_istek_maske_i;
                 port_istek_gecerli_ns = `HIGH;
                 port_istek_yaz_ns = `HIGH;
+                port_istek_adres_ns = bib_istek_adres_i;
+                port_istek_maske_ns = bib_istek_maske_i;
                 port_istek_veri_ns = bib_veri_i;
                 bib_oku_istek_ns = `LOW;
+                vyb_durum_ns = port_istek_hazir_i ? HAZIR : ISTEK;
             end
             if (bib_istek_oku_i) begin
-                port_istek_adres_ns = bib_istek_adres_i; 
                 port_istek_gecerli_ns = `HIGH;
-                bib_oku_istek_ns = `HIGH;
                 port_istek_yaz_ns = `LOW;
+                port_istek_adres_ns = bib_istek_adres_i; 
+                bib_oku_istek_ns = `HIGH;
+                vyb_durum_ns = port_istek_hazir_i ? BEKLE : ISTEK;
             end
-            vyb_durum_ns = ISTEK;
         end
     end
     ISTEK: begin
         port_istek_gecerli_ns = `HIGH;
         if (port_istek_gecerli_o && port_istek_hazir_i) begin
-            port_istek_onbellekleme_ns = `LOW;
-            port_istek_gecerli_ns = `LOW;
-            port_istek_yaz_ns = `LOW;
             vyb_durum_ns = bib_oku_istek_r ? BEKLE : HAZIR;
             bellek_gecerli_cmb = !bib_oku_istek_r;
             port_veri_hazir_ns = bib_oku_istek_r;
         end
     end
     BEKLE: begin
+        port_istek_gecerli_ns = `LOW;
+        port_istek_onbellekleme_ns = `LOW;
+        port_istek_yaz_ns = `LOW;
         port_veri_hazir_ns = `HIGH;
         if (port_veri_gecerli_i && port_veri_hazir_o) begin
-            port_veri_hazir_ns = `LOW;
             bellek_veri_cmb = port_veri_i;
             bellek_gecerli_cmb = `HIGH;
             vyb_durum_ns = HAZIR;
@@ -157,15 +161,15 @@ always @(posedge clk_i) begin
     end
 end
 
-assign port_istek_adres_o = port_istek_adres_r & 32'hFFFF_FFFC;
-assign port_istek_gecerli_o = port_istek_gecerli_r;
-assign port_istek_onbellekleme_o = port_istek_onbellekleme_r;
-assign port_istek_maske_o = port_istek_maske_r;
-assign port_veri_hazir_o = port_veri_hazir_r;
+assign port_istek_adres_o = port_istek_adres_ns & 32'hFFFF_FFFC;
+assign port_istek_gecerli_o = port_istek_gecerli_ns;
+assign port_istek_onbellekleme_o = port_istek_onbellekleme_ns;
+assign port_istek_maske_o = port_istek_maske_ns;
+assign port_istek_yaz_o = port_istek_yaz_ns;
+assign port_istek_veri_o = port_istek_veri_ns;
+assign port_veri_hazir_o = port_veri_hazir_ns;
 assign bellek_gecerli_o = bellek_gecerli_cmb;
 assign bellek_veri_o = bellek_veri_cmb;
-assign port_istek_yaz_o = port_istek_yaz_r;
-assign port_istek_veri_o = port_istek_veri_r;
 assign bellek_hazir_o = vyb_durum_r == HAZIR;
 
 endmodule

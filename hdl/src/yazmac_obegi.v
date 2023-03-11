@@ -12,8 +12,10 @@ module yazmac_obegi (
 
     output  [`VERI_BIT-1:0]         oku_veri1_o,
     output                          oku_veri1_gecerli_o,
+    output  [`UOP_TAG_BIT-1:0]      oku_veri1_etiket_o,
     output  [`VERI_BIT-1:0]         oku_veri2_o,
     output                          oku_veri2_gecerli_o,
+    output  [`UOP_TAG_BIT-1:0]      oku_veri2_etiket_o,
 
     input   [`VERI_BIT-1:0]         yaz_veri_i,
     input   [`YAZMAC_BIT-1:0]       yaz_adres_i,
@@ -75,7 +77,9 @@ end
 
 assign oku_veri1_o = yazmac_r[oku_adres1_i];
 assign oku_veri1_gecerli_o = yazmac_gecerli_r[oku_adres1_i];
+assign oku_veri1_etiket_o = yazmac_etiket_r[oku_adres1_i];
 assign oku_veri2_o = yazmac_r[oku_adres2_i];
 assign oku_veri2_gecerli_o = yazmac_gecerli_r[oku_adres2_i];
+assign oku_veri2_etiket_o = yazmac_etiket_r[oku_adres1_i];
 
 endmodule

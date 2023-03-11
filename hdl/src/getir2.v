@@ -246,25 +246,25 @@ always @* begin
         end
     end
 
-    // if (g1_dallanma_gecerli_o && !cek_duraklat_i) begin
-    //     ilk_buyruk_ns = `HIGH;
-    //     g2_durum_ns = g2_bos_istek_sayaci_r != 3'd0 && !l1b_buyruk_gecerli_i ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
-    //     l1b_beklenen_sayisi_ns = g1_istek_yapildi_i ? 3'd1 : 3'd0;
-    //     g1_bosalt_aktif_ns = `HIGH;
-    //     g1_bosalt_hedef_ps_ns = g1_dallanma_ps_o;
-    //     if (l1b_beklenen_sayisi_r != 0) begin
-    //         g1_ps_hazir_cmb = g1_dallanma_ps_o != g1_ps_i;
-    //         l1b_buyruk_hazir_cmb = `HIGH;
-    //         if (l1b_buyruk_gecerli_i) begin
-    //             g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r - 1;
-    //             g2_durum_ns = l1b_beklenen_sayisi_r != 1 ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
-    //         end
-    //         else begin
-    //             g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r;
-    //             g2_durum_ns = G2_CEK_BOSALT;
-    //         end
-    //     end
-    // end
+    if (g1_dallanma_gecerli_o && !cek_duraklat_i) begin
+        ilk_buyruk_ns = `HIGH;
+        g2_durum_ns = g2_bos_istek_sayaci_r != 3'd0 && !l1b_buyruk_gecerli_i ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
+        l1b_beklenen_sayisi_ns = g1_istek_yapildi_i ? 3'd1 : 3'd0;
+        g1_bosalt_aktif_ns = `HIGH;
+        g1_bosalt_hedef_ps_ns = g1_dallanma_ps_o;
+        if (l1b_beklenen_sayisi_r != 0) begin
+            g1_ps_hazir_cmb = g1_dallanma_ps_o != g1_ps_i;
+            l1b_buyruk_hazir_cmb = `HIGH;
+            if (l1b_buyruk_gecerli_i) begin
+                g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r - 1;
+                g2_durum_ns = l1b_beklenen_sayisi_r != 1 ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
+            end
+            else begin
+                g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r;
+                g2_durum_ns = G2_CEK_BOSALT;
+            end
+        end
+    end
 
     // if (coz_buyruk_atladi_o && !cek_duraklat_i) begin
     //     ilk_buyruk_ns = `HIGH;
@@ -313,14 +313,14 @@ always @(posedge clk_i) begin
     end
 end
 
-assign g1_dallanma_ps_o = 0; // do_ongoru_w;
-assign g1_dallanma_gecerli_o = `LOW; // do_atladi_w;
+assign g1_dallanma_ps_o = do_ongoru_w;
+assign g1_dallanma_gecerli_o = do_atladi_w;
 assign g1_ps_hazir_o = g1_ps_hazir_cmb;
 assign l1b_buyruk_hazir_o = l1b_buyruk_hazir_cmb;
 assign coz_buyruk_o = coz_buyruk_r;
 assign coz_buyruk_ps_o = coz_buyruk_ps_r;
 assign coz_buyruk_gecerli_o = coz_buyruk_gecerli_r;
-assign coz_buyruk_atladi_o = `LOW; // coz_buyruk_atladi_r;
+assign coz_buyruk_atladi_o = coz_buyruk_atladi_r;
 assign coz_buyruk_rvc_o = coz_buyruk_rvc_r;
 
 assign l1b_alt_buyruk_w = l1b_buyruk_i[0 +: `BUYRUK_BIT/2];
@@ -335,26 +335,26 @@ assign buf_alt_compressed_w = buf_buyruk_r[1:0] != 2'b11;
 assign buf_ust_buyruk_w = buf_buyruk_r[`BUYRUK_BIT/2 +: `BUYRUK_BIT/2];
 assign buf_ust_compressed_w = buf_buyruk_r[1:0] != 2'b11;
 
-// dallanma_ongorucu do (
-//     .clk_i                    ( clk_i ),
-//     .rstn_i                   ( rstn_i ),
-//     .ps_i                     ( do_ps_w ),
-//     .ps_gecerli_i             ( do_ps_gecerli_w ),
-//     .atladi_o                 ( do_atladi_w ), 
-//     .ongoru_o                 ( do_ongoru_w ), 
-//     .yurut_ps_i               ( do_yurut_ps_w ),
-//     .yurut_guncelle_i         ( do_yurut_guncelle_w ),
-//     .yurut_atladi_i           ( do_yurut_atladi_w ),
-//     .yurut_atlanan_adres_i    ( do_yurut_atlanan_adres_w ),
-//     .yurut_hatali_tahmin_i    ( do_yurut_hatali_tahmin_w )
-// );
+dallanma_ongorucu do (
+    .clk_i                    ( clk_i ),
+    .rstn_i                   ( rstn_i ),
+    .ps_i                     ( do_ps_w ),
+    .ps_gecerli_i             ( do_ps_gecerli_w ),
+    .atladi_o                 ( do_atladi_w ), 
+    .ongoru_o                 ( do_ongoru_w ), 
+    .yurut_ps_i               ( do_yurut_ps_w ),
+    .yurut_guncelle_i         ( do_yurut_guncelle_w ),
+    .yurut_atladi_i           ( do_yurut_atladi_w ),
+    .yurut_atlanan_adres_i    ( do_yurut_atlanan_adres_w ),
+    .yurut_hatali_tahmin_i    ( do_yurut_hatali_tahmin_w )
+);
 
-// assign do_ps_w = coz_buyruk_ps_ns;
-// assign do_ps_gecerli_w = coz_buyruk_gecerli_ns && !cek_duraklat_i;
-// assign do_yurut_ps_w = yurut_ps_i;
-// assign do_yurut_guncelle_w = yurut_guncelle_i;
-// assign do_yurut_atladi_w = yurut_atladi_i;
-// assign do_yurut_atlanan_adres_w = yurut_hedef_ps_i;
-// assign do_yurut_hatali_tahmin_w = yurut_hatali_tahmin_i;
+assign do_ps_w = coz_buyruk_ps_ns;
+assign do_ps_gecerli_w = coz_buyruk_gecerli_ns && !cek_duraklat_i;
+assign do_yurut_ps_w = yurut_ps_i;
+assign do_yurut_guncelle_w = yurut_guncelle_i;
+assign do_yurut_atladi_w = yurut_atladi_i;
+assign do_yurut_atlanan_adres_w = yurut_hedef_ps_i;
+assign do_yurut_hatali_tahmin_w = yurut_hatali_tahmin_i;
 
 endmodule

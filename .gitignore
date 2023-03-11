@@ -1,3 +1,4 @@
 *.idx
 kaynaklar/rv32test/export_tests.py
 hdl/sim/tb_teknofest_wrapper.v
+kaynaklar/rv32test/
