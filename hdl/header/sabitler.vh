@@ -47,7 +47,7 @@
 `define ADRES_OZEL_DAGITIM
 `define ADRES_BUYRUK_OZEL_BIT 0
 `define ADRES_VERI_OZEL_BIT   0
-`define ADRES_BYTE_BIT      4 // Veriyi byte adreslemek icin gereken bit
+`define ADRES_BYTE_BIT      3 // Veriyi byte adreslemek icin gereken bit
 `define ADRES_BYTE_OFFSET   0 // ADRES_BYTE ilk bitine erismek icin gereken kaydirma
 `define ADRES_SATIR_BIT     7 // Satirlari indexlemek icin gereken bit
 `define ADRES_SATIR_OFFSET  (`ADRES_BYTE_OFFSET + `ADRES_BYTE_BIT) // ADRES_SATIR ilk bitine erismek icin gereken kaydirma

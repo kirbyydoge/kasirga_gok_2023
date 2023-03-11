@@ -59,14 +59,15 @@ integer stall_ctr;
 integer cur_test;
 
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
-localparam RISCV_TEST = 1;
-localparam STANDALONE_PATH = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+localparam RISCV_TEST = 0;
+// localparam STANDALONE_PATH = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+localparam STANDALONE_PATH = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex/rv32ui-p-addi.hex";
 initial begin
     if (RISCV_TEST) begin
         test_passed = 0;
         test_list_fd = $fopen({PATH_TO_TEST_LIST, "/test_names.txt"}, "r");
         while (!$feof(test_list_fd)) begin
-            code = $fscanf(test_list_fd, "%s\n", test_name);
+            code = $fscanf(test_list_fd, "%s/n", test_name);
             for (i = 0; i < MAX_TEST_COUNT; i = i+1) begin
                 test_indexes[i] = 1;
                 uut_indexes[i] = 1;
