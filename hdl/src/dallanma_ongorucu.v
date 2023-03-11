@@ -20,6 +20,7 @@ module dallanma_ongorucu (
      input                       yurut_hatali_tahmin_i  // hatalı tahmin
 
 );
+
 // --------------------------------------------------------------- //
 // -------Valid (1) --- Etiket (27) ----Target (32) -------------- //
 reg [`BTB_SATIR_BOYUT-1:0] BTB_r [0:`BTB_SATIR_SAYISI-1]; // default 32x60
@@ -62,7 +63,7 @@ assign yurut_ps_bht_etiket_w = yurut_ps_i [`PS_BIT-1:`BHT_PS_BIT];
 assign btb_valid_w = btb_satir_w [`BTB_VALID_BITI];
 assign btb_etiket_w = btb_satir_w [`BTB_VALID_BITI-1:`PS_BIT];
 assign btb_target_w = btb_satir_w [`PS_BIT-1:0];
-assign bht_etiket_w = bht_satir_w [`PS_BIT-1:`DALLANMA_TAHMIN_BIT];
+assign bht_etiket_w = bht_satir_w [`DALLANMA_TAHMIN_BIT +: 27];
 assign bht_dallanma_tahmini_w = bht_satir_w [`DALLANMA_TAHMIN_BIT-1:0];
 assign btb_etiketler_esit_mi_w = ps_btb_etiket_w == btb_etiket_w;
 assign bht_etiketler_esit_mi_w = ps_bht_etiket_w == bht_etiket_w;
@@ -79,7 +80,7 @@ localparam ZAYIF_ATLAR = 2;
 localparam ZAYIF_ATLAMAZ = 1;
 localparam GUCLU_ATLAMAZ = 0;
 
-assign atladi_o = btb_valid_w && btb_etiketler_esit_mi_w && bht_etiketler_esit_mi_w && 
+assign atladi_o = ps_gecerli_i && btb_valid_w && btb_etiketler_esit_mi_w && bht_etiketler_esit_mi_w && 
                   ((bht_dallanma_tahmini_w == GUCLU_ATLAR) || ((bht_dallanma_tahmini_w == ZAYIF_ATLAR))) && (btb_target_w!=0);
 assign ongoru_o = btb_target_w;
 
@@ -97,12 +98,13 @@ always @* begin
     
     if (yurut_guncelle_i) begin
         GGY_ns = {GGY_r [`GENEL_GECMIS_YAZMACI_BIT-2:0], yurut_atladi_i}; 
-        BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI] = `HIGH; // ;BTB_VALID_BITI GÜNCELLEMESİ
-        BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI-1:`BTB_PS_BIT] = yurut_ps_btb_etiket_w; // BTB_ETIKET GÜNCELLEMESİ
-        if (yurut_atladi_i)
-            BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_PS_BIT-1:0] = yurut_atlanan_adres_i; // SADECE ATLADIYSA TARGET GÜNCELLENMELİ, ATLAMADIYSA 0 YAPMALI MIYIZ???
-        BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`BHT_SATIR_BOYUT-1:`DALLANMA_TAHMIN_BIT] = yurut_ps_bht_etiket_w; // BHT_ETIKET GÜNCELLEMESİ
-        BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`DALLANMA_TAHMIN_BIT-1:0] = atladi_o ? // BHT_DALLANMA_TAHMINI GÜNCELLEMESİ
+        if (yurut_atladi_i) begin
+          BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI] = `HIGH; // ;BTB_VALID_BITI GÜNCELLEMESİ
+          BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI-1:`PS_BIT] = yurut_ps_btb_etiket_w; // BTB_ETIKET GÜNCELLEMESİ
+          BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`PS_BIT-1:0] = yurut_atlanan_adres_i; // SADECE ATLADIYSA TARGET GÜNCELLENMELİ, ATLAMADIYSA 0 YAPMALI MIYIZ???
+        end
+        BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`BHT_SATIR_BOYUT-1:`DALLANMA_TAHMIN_BIT] = yurut_ps_bht_etiket_w; // BHT_ETIKET 
+        BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`DALLANMA_TAHMIN_BIT-1:0] = yurut_atladi_i ? // BHT_DALLANMA_TAHMINI GÜNCELLEMESİ
                                                                             (bht_yurut_ps_dallanma_tahmini == 3 ? 3 : bht_yurut_ps_dallanma_tahmini + 1) :
                                                                             (bht_yurut_ps_dallanma_tahmini == 0 ? 0 : bht_yurut_ps_dallanma_tahmini - 1);  
         dogru_tahmin_sayac_ns = yurut_hatali_tahmin_i ? dogru_tahmin_sayac_r : dogru_tahmin_sayac_r + 1;

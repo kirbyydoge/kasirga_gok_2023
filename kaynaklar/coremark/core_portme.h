@@ -26,7 +26,7 @@ Original Author: Shay Gal-on
 #define CORE_DEBUG (1!=1)
 
 #ifndef ITERATIONS
-#define ITERATIONS 1
+#define ITERATIONS 2000
 #endif
 
 /************************/
@@ -78,7 +78,7 @@ Original Author: Shay Gal-on
 #endif
 #ifndef COMPILER_FLAGS
 #define COMPILER_FLAGS \
-    "-O3" /* "Please put compiler flags here (e.g. -o3)" */
+    "-O2" /* "Please put compiler flags here (e.g. -o3)" */
 #endif
 #ifndef MEM_LOCATION
 #define MEM_LOCATION "STACK"

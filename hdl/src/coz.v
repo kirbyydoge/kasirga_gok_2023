@@ -21,6 +21,7 @@ module coz(
     input   [`PS_BIT-1:0]           getir_ps_i,
     input                           getir_gecerli_i,
     input                           getir_atladi_i,
+    input                           getir_rvc_i,
 
     output  [`UOP_BIT-1:0]          yo_uop_o
 );
@@ -2269,6 +2270,7 @@ always @* begin
     uop_ns[`UOP_TAG] = buyruk_etiket_r;
     uop_ns[`UOP_VALID] = coz_aktif_w;
     uop_ns[`UOP_TAKEN] = getir_atladi_i;
+    uop_ns[`UOP_RVC] = getir_rvc_i;
     
     case (buyruk)    
     CASE_LUI         : uop_rv32lui();

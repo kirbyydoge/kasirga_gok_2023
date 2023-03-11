@@ -23,6 +23,7 @@ module yurut (
 
     // Dallanma geri bildirimi
     output  [`PS_BIT-1:0]           g2_ps_o,
+    output  [`PS_BIT-1:0]           g2_hedef_ps_o,
     output                          g2_guncelle_o,
     output                          g2_atladi_o,
     output                          g2_hatali_tahmin_o,
@@ -44,6 +45,7 @@ wire [`UOP_RS1_BIT-1:0]         uop_rs1_w;
 wire [`UOP_RS2_BIT-1:0]         uop_rs2_w;
 wire [`UOP_IMM_BIT-1:0]         uop_imm_w;
 wire [`UOP_CSR_BIT-1:0]         uop_csr_w;
+wire                            uop_rvc_w;
 
 wire [`UOP_DAL_BIT-1:0]         uop_dal_islem_sec_w;
 wire [`UOP_AMB_BIT-1:0]         uop_amb_islem_sec_w;
@@ -69,6 +71,7 @@ wire [`VERI_BIT-1:0]            dal_islem_islec_w;
 wire [`PS_BIT-1:0]              db_g1_ps_w;
 wire                            db_g1_ps_gecerli_w;
 wire [`PS_BIT-1:0]              db_g2_ps_w;
+wire [`PS_BIT-1:0]              db_g2_hedef_ps_w;
 wire                            db_g2_guncelle_w;
 wire                            db_g2_atladi_w;
 wire                            db_g2_hatali_tahmin_w;
@@ -186,12 +189,14 @@ dallanma_birimi db (
     .islem_islec_i                  ( dal_islem_islec_w ),
     .islem_atladi_i                 ( uop_taken_w ),
     .islem_anlik_i                  ( uop_imm_w ),
+    .islem_rvc_i                    ( uop_rvc_w ),
     .amb_esittir_i                  ( amb_esittir_w ),
     .amb_kucuktur_i                 ( amb_kucuktur_w ),
     .amb_kucuktur_isaretsiz_i       ( amb_kucuktur_isaretsiz_w ),
     .g1_ps_o                        ( db_g1_ps_w ),
     .g1_ps_gecerli_o                ( db_g1_ps_gecerli_w ),
     .g2_ps_o                        ( db_g2_ps_w ),
+    .g2_hedef_ps_o                  ( db_g2_hedef_ps_w ),
     .g2_guncelle_o                  ( db_g2_guncelle_w ),
     .g2_atladi_o                    ( db_g2_atladi_w ),
     .g2_hatali_tahmin_o             ( db_g2_hatali_tahmin_w ),
@@ -218,6 +223,7 @@ assign uop_rs1_w = yurut_uop_i[`UOP_RS1];
 assign uop_rs2_w = yurut_uop_i[`UOP_RS2];
 assign uop_imm_w = yurut_uop_i[`UOP_IMM];
 assign uop_csr_w = yurut_uop_i[`UOP_CSR];
+assign uop_rvc_w = yurut_uop_i[`UOP_RVC];
 
 assign uop_amb_islem_sec_w = yurut_uop_i[`UOP_AMB];
 assign uop_dal_islem_sec_w = yurut_uop_i[`UOP_DAL];
@@ -238,6 +244,7 @@ assign duraklat_o = duraklat_cmb && uop_gecerli_w;
 assign g1_ps_o = db_g1_ps_w;
 assign g1_ps_gecerli_o = db_g1_ps_gecerli_w && uop_gecerli_w;
 assign g2_ps_o = db_g2_ps_w;
+assign g2_hedef_ps_o = db_g2_hedef_ps_w;
 assign g2_guncelle_o = db_g2_guncelle_w && uop_gecerli_w;
 assign g2_atladi_o = db_g2_atladi_w;
 assign g2_hatali_tahmin_o = db_g2_hatali_tahmin_w;

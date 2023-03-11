@@ -3,8 +3,12 @@
 `define UOP_VALID_PTR       0
 `define UOP_VALID           0
 
+`define UOP_RVC_BIT         1
+`define UOP_RVC_PTR         `UOP_VALID_PTR + `UOP_VALID_BIT
+`define UOP_RVC             `UOP_RVC_PTR +: `UOP_RVC_BIT
+
 `define UOP_PC_BIT          32
-`define UOP_PC_PTR          `UOP_VALID_PTR + `UOP_VALID_BIT
+`define UOP_PC_PTR          `UOP_RVC_PTR + `UOP_RVC_BIT
 `define UOP_PC              `UOP_PC_PTR +: `UOP_PC_BIT
 
 `define UOP_TAG_BIT         4

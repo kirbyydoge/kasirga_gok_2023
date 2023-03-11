@@ -70,6 +70,7 @@ wire                            io_g2_g1_ps_hazir_w;
 wire    [`PS_BIT-1:0]           io_g2_g1_dallanma_ps_w;
 wire                            io_g2_g1_dallanma_gecerli_w;
 wire    [`PS_BIT-1:0]           io_g2_yurut_ps_w;
+wire    [`PS_BIT-1:0]           io_g2_yurut_hedef_ps_w;
 wire                            io_g2_yurut_guncelle_w;
 wire                            io_g2_yurut_atladi_w;
 wire                            io_g2_yurut_hatali_tahmin_w;
@@ -80,6 +81,7 @@ wire    [`BUYRUK_BIT-1:0]       io_g2_coz_buyruk_w;
 wire    [`PS_BIT-1:0]           io_g2_coz_buyruk_ps_w;
 wire                            io_g2_coz_buyruk_gecerli_w;
 wire                            io_g2_coz_buyruk_atladi_w;
+wire                            io_g2_coz_buyruk_rvc_w;
 wire                            io_g2_cek_bosalt_w;
 wire                            io_g2_cek_duraklat_w;
 
@@ -93,6 +95,7 @@ getir2 getir2 (
     .g1_dallanma_ps_o           ( io_g2_g1_dallanma_ps_w ),
     .g1_dallanma_gecerli_o      ( io_g2_g1_dallanma_gecerli_w ),
     .yurut_ps_i                 ( io_g2_yurut_ps_w ),
+    .yurut_hedef_ps_i           ( io_g2_yurut_hedef_ps_w ),
     .yurut_guncelle_i           ( io_g2_yurut_guncelle_w ),
     .yurut_atladi_i             ( io_g2_yurut_atladi_w ),
     .yurut_hatali_tahmin_i      ( io_g2_yurut_hatali_tahmin_w ),
@@ -103,6 +106,7 @@ getir2 getir2 (
     .coz_buyruk_ps_o            ( io_g2_coz_buyruk_ps_w ),
     .coz_buyruk_gecerli_o       ( io_g2_coz_buyruk_gecerli_w ),
     .coz_buyruk_atladi_o        ( io_g2_coz_buyruk_atladi_w ),
+    .coz_buyruk_rvc_o           ( io_g2_coz_buyruk_rvc_w ),
     .cek_bosalt_i               ( io_g2_cek_bosalt_w ),
     .cek_duraklat_i             ( io_g2_cek_duraklat_w )
 );
@@ -118,6 +122,7 @@ wire    [`PS_BIT-1:0]           io_coz_getir_buyruk_w;
 wire    [`PS_BIT-1:0]           io_coz_getir_ps_w;
 wire                            io_coz_getir_gecerli_w;
 wire                            io_coz_getir_atladi_w;
+wire                            io_coz_getir_rvc_w;
 wire    [`UOP_BIT-1:0]          io_coz_yo_uop_w;
 
 coz coz (
@@ -131,6 +136,7 @@ coz coz (
     .getir_ps_i                 ( io_coz_getir_ps_w ),
     .getir_gecerli_i            ( io_coz_getir_gecerli_w ),
     .getir_atladi_i             ( io_coz_getir_atladi_w ),
+    .getir_rvc_i                ( io_coz_getir_rvc_w ),
     .yo_uop_o                   ( io_coz_yo_uop_w )
 );
 
@@ -185,6 +191,7 @@ wire                            io_yurut_ddb_odd_gecerli_w;
 wire    [`PS_BIT-1:0]           io_yurut_g1_ps_w;
 wire                            io_yurut_g1_ps_gecerli_w;
 wire    [`PS_BIT-1:0]           io_yurut_g2_ps_w;
+wire    [`PS_BIT-1:0]           io_yurut_g2_hedef_ps_w;
 wire                            io_yurut_g2_guncelle_w;
 wire                            io_yurut_g2_atladi_w;
 wire                            io_yurut_g2_hatali_tahmin_w;
@@ -205,6 +212,7 @@ yurut yurut(
     .g1_ps_o                    ( io_yurut_g1_ps_w ),
     .g1_ps_gecerli_o            ( io_yurut_g1_ps_gecerli_w ),
     .g2_ps_o                    ( io_yurut_g2_ps_w ),
+    .g2_hedef_ps_o              ( io_yurut_g2_hedef_ps_w ),
     .g2_guncelle_o              ( io_yurut_g2_guncelle_w ),
     .g2_atladi_o                ( io_yurut_g2_atladi_w ),
     .g2_hatali_tahmin_o         ( io_yurut_g2_hatali_tahmin_w ),
@@ -436,6 +444,7 @@ assign buyruk_istek_gecerli_o = io_g1_l1b_istek_gecerli_w;
 
 // Getir2 < Yurut
 assign io_g2_yurut_ps_w = io_yurut_g2_ps_w;
+assign io_g2_yurut_hedef_ps_w = io_yurut_g2_hedef_ps_w;
 assign io_g2_yurut_guncelle_w = io_yurut_g2_guncelle_w;
 assign io_g2_yurut_atladi_w = io_yurut_g2_atladi_w;
 assign io_g2_yurut_hatali_tahmin_w = io_yurut_g2_hatali_tahmin_w;
@@ -452,6 +461,7 @@ assign io_coz_getir_buyruk_w = io_g2_coz_buyruk_w;
 assign io_coz_getir_ps_w = io_g2_coz_buyruk_ps_w;
 assign io_coz_getir_gecerli_w = io_g2_coz_buyruk_gecerli_w;
 assign io_coz_getir_atladi_w = io_g2_coz_buyruk_atladi_w;
+assign io_coz_getir_rvc_w = io_g2_coz_buyruk_rvc_w;
 
 // Yazmac Oku < Coz
 assign io_yo_yo_uop_w = io_coz_yo_uop_w;

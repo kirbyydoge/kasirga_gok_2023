@@ -363,7 +363,7 @@ always @* begin
                     port_yazma_istegi_ns = `LOW;
                 end
                 else if (port_veri_gecerli_o && !port_veri_hazir_i) begin
-                    l1_durum_ns = L1_SORGU;
+                    l1_durum_ns = L1_SORGU; 
                 end
                 else begin
                     port_veri_ns = get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], port_istek_adres_i);

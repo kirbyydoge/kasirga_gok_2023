@@ -58,6 +58,24 @@ assign csr_veri_o = uop_gy_csr_veri_w;
 assign csr_adres_o = uop_gy_csr_adres_w;
 assign csr_etiket_o = uop_gy_etiket_w;
 
+`ifdef LOG_COMMITS
+reg [31:0] inst_ctr_r;
+always @(posedge clk_i) begin
+    if (uop_gy_gecerli_w) begin
+        inst_ctr_r <= inst_ctr_r + 1;
+        if (uop_gy_veri_gecerli_w) begin
+            $display("core   0: 3 0x%08x (0x0000) x%2d 0x%08x", uop_ps_w, uop_gy_adres_w, uop_gy_veri_w);
+        end
+        else begin
+            $display("core   0: 3 0x%08x (0x0000)", uop_ps_w);
+        end
+    end
+    if (!rstn_i) begin
+        inst_ctr_r <= 0;
+    end
+end
+`endif
+
 // Simdilik 2 kere registerlamaya gerek yok. Direkt UOP yazmaclarindan combinational gitmeli.
 
 // reg     [`VERI_BIT-1:0]         yo_veri_r;

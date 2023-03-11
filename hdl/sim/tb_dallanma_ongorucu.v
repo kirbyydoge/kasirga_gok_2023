@@ -37,6 +37,8 @@ dallanma_ongorucu do (
 );
 
 integer i;
+reg tahmin;
+localparam ADDR_FOR = 32'h4000_0008;
 initial begin
     rstn_r = 0;
     @(posedge clk); #2;
@@ -45,18 +47,33 @@ initial begin
     @(posedge clk); #2;
     rstn_r = 1;
     @(posedge clk); #2;
-    for (i = 0; i<10000; i = i + 1) begin
-        yurut_ps_r = i;
-        yurut_guncelle_r = 1; 
-        yurut_atladi_r = 1;
-        yurut_atlanan_adres_r = (i+3);
-        yurut_hatali_tahmin_r = 1; 
-        @(posedge clk); #2;  
-    end
+     for (i = 0; i<10000; i = i + 1) begin
+         ps_r = ADDR_FOR;
+         ps_gecerli_r = 1;
+         #2;
+         ps_gecerli_r = 0;
+         tahmin = atladi_w;
+         
+         yurut_ps_r = ADDR_FOR;
+         yurut_guncelle_r = 1; 
+         yurut_atladi_r = (i%5 == 0) ? 1 : 0; 
+         yurut_atlanan_adres_r = ADDR_FOR - 32'h8;
+         yurut_hatali_tahmin_r = (i%5 == 0) != atladi_w;
+         @(posedge clk); #2;  
+     end
 
+    @(posedge clk); #2;
+    yurut_ps_r = 32'hbababa11;
+    yurut_guncelle_r = 1;
+    yurut_atladi_r = 1;
+    yurut_atlanan_adres_r = 32'hcccc_cccc;
+    yurut_hatali_tahmin_r = 0;
 
-
-
+    @(posedge clk); #2;
+    yurut_guncelle_r = 0;
+    ps_r = 32'hbababa10;
+    ps_gecerli_r = 1;
+    @(posedge clk); #2;
 
 
 

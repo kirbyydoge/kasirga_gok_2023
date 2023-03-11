@@ -1,5 +1,6 @@
 //------Sentez Parametreleri------
 `define VCU108
+`define LOG_COMMITS
 // `define OPENLANE
 
 //-----------Diger----------------
@@ -46,7 +47,7 @@
 `define ADRES_OZEL_DAGITIM
 `define ADRES_BUYRUK_OZEL_BIT 0
 `define ADRES_VERI_OZEL_BIT   0
-`define ADRES_BYTE_BIT      5 // Veriyi byte adreslemek icin gereken bit
+`define ADRES_BYTE_BIT      4 // Veriyi byte adreslemek icin gereken bit
 `define ADRES_BYTE_OFFSET   0 // ADRES_BYTE ilk bitine erismek icin gereken kaydirma
 `define ADRES_SATIR_BIT     7 // Satirlari indexlemek icin gereken bit
 `define ADRES_SATIR_OFFSET  (`ADRES_BYTE_OFFSET + `ADRES_BYTE_BIT) // ADRES_SATIR ilk bitine erismek icin gereken kaydirma
@@ -100,8 +101,8 @@
 `define BTB_SATIR_BOYUT          (`PS_BIT - `BTB_PS_BIT) + 1 + `PS_BIT
 `define BHT_SATIR_SAYISI         32
 `define BHT_PS_BIT               5
-`define DALLANMA_TAHMIN_BIT      1 // ilerde çift kutuplu yapılabilir
+`define DALLANMA_TAHMIN_BIT      2 // ilerde çift kutuplu yapılabilir
 `define BHT_SATIR_BOYUT          (`PS_BIT - `BHT_PS_BIT) + `DALLANMA_TAHMIN_BIT
-`define GENEL_GECMIS_YAZMACI_BIT 5   
-`define BTB_VALID_BITI           `BTB_SATIR_BOYUT-1 // en anlamlı biti   
-`define GGY_SAYAC_BIT            3     
+`define GENEL_GECMIS_YAZMACI_BIT 5
+`define BTB_VALID_BITI           `BTB_SATIR_BOYUT-1 // en anlamlı biti
+`define GGY_SAYAC_BIT            3

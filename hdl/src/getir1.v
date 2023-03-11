@@ -66,7 +66,9 @@ always @* begin
         ps_gecerli_cmb = `HIGH;
         ps_ns = cek_ps_i;
         ps_gecerli_ns = `HIGH;
-        g2_ps_gecerli_ns = `LOW;
+        if (cek_bosalt_i) begin
+            g2_ps_gecerli_ns = `LOW;
+        end
     end
 
     if (l1b_istek_hazir_i && l1b_istek_gecerli_o) begin // L1B istegi kabul ediyor
