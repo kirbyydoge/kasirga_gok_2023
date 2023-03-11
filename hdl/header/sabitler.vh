@@ -36,7 +36,7 @@
 `define TIMER_MASK_ADDR     32'h0000_000f
 
 //-------Önbellek Denetleyiciler----------
-`define L1_BLOK_BIT 128    
+`define L1_BLOK_BIT 64    
 `define L1B_SATIR   128
 `define L1B_YOL     2   
 `define L1V_SATIR   128
