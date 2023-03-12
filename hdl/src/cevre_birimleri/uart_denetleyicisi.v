@@ -111,7 +111,11 @@ always @* begin
                     end
                     `UART_STATUS_REG: begin
                         if (!cek_yaz_i) begin
+                        `ifndef SPIKE_DIFF
                             uart_veri_ns = uart_status_w;
+                        `else
+                            uart_veri_ns = 32'd0;
+                        `endif
                             uart_gecerli_ns = `HIGH;
                         end
 
@@ -172,7 +176,6 @@ always @ (posedge clk_i) begin
             uart_veri_r <= 0;
             uart_gecerli_r <= `LOW;
             fifo_buf_veri_r <= 0;
-            
         end
         else begin
             durum_r <= durum_ns; 
@@ -232,9 +235,25 @@ uart_verici verici (
     .hazir_o                   ( verici_hazir_w ) 
 );
 
+reg [31:0] tx_ctr_r;
+
+always @(posedge clk_i) begin
+    if (!rstn_i) begin
+        tx_ctr_r <= 0;
+    end
+    else if (consume_w) begin
+        tx_ctr_r <= tx_ctr_r + 1;
+    end
+end
+
 assign tx_en_w = uart_ctrl_r [0];
 assign rx_en_w = uart_ctrl_r [1];
+
+`ifndef SPIKE_DIFF
 assign baud_div = uart_ctrl_r [31:16];
+`else
+assign baud_div = 16'd2;
+`endif
 
 assign uart_veri_o = uart_veri_r;
 assign uart_gecerli_o = uart_gecerli_r;

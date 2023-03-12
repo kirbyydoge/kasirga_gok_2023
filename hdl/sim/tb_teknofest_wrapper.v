@@ -38,7 +38,7 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST_LIST = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex";
+localparam PATH_TO_TEST_LIST = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex";
 localparam GP = 'd3;
 localparam A7 = 'd17;
 localparam MAX_TEST_COUNT = 64;
@@ -52,16 +52,21 @@ reg [31:0] failed_idx;
 reg test_passed;
 
 integer test_list_fd;
+integer log_fd;
+integer uart_fd;
 integer success_file_fd;
 integer code;
 integer i;
 integer stall_ctr;
 integer cur_test;
+integer last_inst;
+integer last_uart;
 
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
 localparam RISCV_TEST = 0;
-// localparam STANDALONE_PATH = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
-localparam STANDALONE_PATH = "C:/Users/aqwog/Documents/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex/rv32ui-p-addi.hex";
+localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+localparam LOG_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/vivado.txt";
+localparam UART_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/uart.txt";
 initial begin
     if (RISCV_TEST) begin
         test_passed = 0;
@@ -114,6 +119,30 @@ initial begin
         rst_ni = 0;
         repeat(100) @(posedge clk_i);
         rst_ni = 1;
+        log_fd = $fopen(LOG_PATH, "w");
+        uart_fd = $fopen(UART_PATH, "w");
+        stall_ctr = 0;
+        last_inst = -1;
+        last_uart = -1;
+        while(stall_ctr < 1000) begin
+            @(posedge clk_i); #2;
+            stall_ctr = stall_ctr + 1;
+            if (tw.soc.cekirdek.gy.uop_gy_gecerli_w && last_inst != tw.soc.cekirdek.gy.inst_ctr_r) begin
+                last_inst = tw.soc.cekirdek.gy.inst_ctr_r;
+                stall_ctr = 0;
+                if (tw.soc.cekirdek.gy.uop_gy_veri_gecerli_w) begin
+                    $fwrite(log_fd, "core   0: 3 0x%08x (0x0000) x%2d 0x%08x\n", tw.soc.cekirdek.gy.uop_ps_w, tw.soc.cekirdek.gy.uop_gy_adres_w, tw.soc.cekirdek.gy.uop_gy_veri_w);
+                end
+                else begin
+                    $fwrite(log_fd, "core   0: 3 0x%08x (0x0000)\n", tw.soc.cekirdek.gy.uop_ps_w);
+                end
+            end
+            if (tw.soc.uartd.consume_w && last_uart != tw.soc.uartd.tx_ctr_r) begin
+                last_uart = tw.soc.uartd.tx_ctr_r;
+                $fwrite(uart_fd, "%c", tw.soc.uartd.tx_fifo_rd_data_w[7:0]);
+            end
+        end
+        $finish;
     end
 end
 

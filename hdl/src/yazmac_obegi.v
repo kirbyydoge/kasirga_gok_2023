@@ -80,6 +80,6 @@ assign oku_veri1_gecerli_o = yazmac_gecerli_r[oku_adres1_i];
 assign oku_veri1_etiket_o = yazmac_etiket_r[oku_adres1_i];
 assign oku_veri2_o = yazmac_r[oku_adres2_i];
 assign oku_veri2_gecerli_o = yazmac_gecerli_r[oku_adres2_i];
-assign oku_veri2_etiket_o = yazmac_etiket_r[oku_adres1_i];
+assign oku_veri2_etiket_o = yazmac_etiket_r[oku_adres2_i];
 
 endmodule

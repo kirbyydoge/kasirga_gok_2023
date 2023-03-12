@@ -152,7 +152,9 @@ always @(posedge clk_i) begin
   if (!rst_n) begin
     timer <= 64'h0;
   end else begin
+  `ifndef SPIKE_DIFF
     timer <= timer + 64'h1;
+  `endif
   end
 end
 

@@ -306,9 +306,9 @@ always @* begin
                 port_istek_hazir_cmb = `LOW;
             end
             else if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
-                port_veri_cmb = get_veri(l1_okunan_bloklar_w[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]], son_adres_r);
+                port_veri_cmb = get_veri(l1_okunan_bloklar_w[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], son_adres_r);
                 port_veri_gecerli_cmb = `HIGH;
-                port_veri_ns = get_veri(l1_okunan_bloklar_w[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]], son_adres_r);
+                port_veri_ns = get_veri(l1_okunan_bloklar_w[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], son_adres_r);
                 port_veri_gecerli_ns = !port_veri_hazir_i;
             end
             else begin
