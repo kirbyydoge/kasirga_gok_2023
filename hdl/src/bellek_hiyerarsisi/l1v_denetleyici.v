@@ -75,18 +75,18 @@ reg [`VERI_BYTE-1:0] port_istek_maske_ns;
 
 reg port_istek_hazir_r; 
 reg port_istek_hazir_ns;
-assign port_istek_hazir_o = port_istek_hazir_r;
+reg port_istek_hazir_cmb; 
 
 reg port_yazma_istegi_r;
 reg port_yazma_istegi_ns;
 
 reg [`VERI_BIT-1:0] port_veri_r;
 reg [`VERI_BIT-1:0] port_veri_ns;
-assign port_veri_o = port_veri_r;
+reg [`VERI_BIT-1:0] port_veri_cmb;
 
 reg port_veri_gecerli_r;
 reg port_veri_gecerli_ns;
-assign port_veri_gecerli_o = port_veri_gecerli_r;
+reg port_veri_gecerli_cmb;
 
 reg l1_istek_gecerli_r;
 reg l1_istek_gecerli_ns;
@@ -139,22 +139,33 @@ assign vy_istek_veri_o = vy_istek_veri_r;
 
 reg vy_istek_gecerli_r;
 reg vy_istek_gecerli_ns;
-assign vy_istek_gecerli_o = vy_istek_gecerli_r;
 
 reg vy_istek_onbellekleme_r;
 reg vy_istek_onbellekleme_ns;
-assign vy_istek_onbellekleme_o = vy_istek_onbellekleme_r;
 
 reg vy_istek_yaz_r;
 reg vy_istek_yaz_ns;
-assign vy_istek_yaz_o = vy_istek_yaz_r;
 
 reg vy_veri_hazir_r;
 reg vy_veri_hazir_ns;
-assign vy_veri_hazir_o = vy_veri_hazir_r;
 
 integer i;
 integer j;
+
+reg                                          l1_istek_gecerli_cmb;
+reg  [`ADRES_SATIR_BIT-1:0]                  l1_istek_satir_cmb;
+reg  [`L1V_YOL-1:0]                          l1_istek_yaz_cmb;
+reg  [`ADRES_ETIKET_BIT-1:0]                 l1_istek_etiket_cmb [0:`L1V_YOL-1];
+reg  [`L1_BLOK_BIT-1:0]                      l1_istek_blok_cmb [0:`L1V_YOL-1];
+
+reg son_adres_gecerli_r;
+reg son_adres_gecerli_ns;
+
+reg son_adres_yaz_r;
+reg son_adres_yaz_ns;
+
+reg [`VERI_BIT-1:0] son_adres_veri_r;
+reg [`VERI_BIT-1:0] son_adres_veri_ns;
 
 // Duz girisleri yeniden isimlendir ve isimlendirilmis flip floplari cikislar icin geri duzlestir
 // degisken[yol_idx * <veri_bit> +: <veri_bit>] yerine degisken[yol_idx] erisim okunakligi sagliyor
@@ -370,8 +381,69 @@ always @* begin
 
     case(l1_durum_r)
     L1_BOSTA: begin
-        port_istek_hazir_ns = `HIGH;
-        if (port_istek_gecerli_i && port_istek_hazir_o) begin
+        port_istek_hazir_cmb = `HIGH;
+        l1_istek_gecerli_cmb = port_istek_gecerli_i;
+        l1_istek_satir_cmb = get_satir(port_istek_adres_i);
+        son_adres_ns = port_istek_adres_i;
+        son_adres_gecerli_ns = port_istek_gecerli_i;
+        son_adres_yaz_ns = port_istek_yaz_i;
+        son_adres_veri_ns = port_istek_veri_i;
+
+        fn_l1_ara_sonuc_cmb = l1_ara(son_adres_r);
+        if (son_adres_gecerli_r) begin
+            if (port_veri_gecerli_r) begin
+                l1_istek_satir_cmb = get_satir(son_adres_r);
+                son_adres_gecerli_ns = `HIGH;
+                son_adres_ns = son_adres_r;
+                son_adres_yaz_ns = son_adres_yaz_r;
+                son_adres_veri_ns = son_adres_veri_r;
+                port_istek_hazir_cmb = `LOW;
+            end
+            else if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
+                if (son_adres_yaz_r) begin
+                    l1_istek_gecerli_cmb = `HIGH;
+                    l1_istek_yaz_cmb[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = `HIGH;
+                    l1_istek_blok_cmb[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = son_adres_veri_r;
+                    l1_istek_etiket_cmb[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = get_etiket(son_adres_r);
+                    l1_istek_satir_cmb = get_satir(son_adres_r);
+                    satir_kirli_ns[get_satir(son_adres_r)][fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = `HIGH;
+                    l1_durum_ns = port_istek_gecerli_i ? L1_OKU : L1_BOSTA;
+                end
+                else begin
+                    port_veri_cmb = get_veri(l1_okunan_bloklar_w[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], son_adres_r);
+                    port_veri_gecerli_cmb = `HIGH;
+                    port_veri_ns = get_veri(l1_okunan_bloklar_w[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]], son_adres_r);
+                    port_veri_gecerli_ns = !port_veri_hazir_i;
+                end
+            end
+            else begin
+                l1_durum_ns = VY_OKU_ISTEK;
+                port_istek_hazir_cmb = `LOW;
+                son_adres_ns = son_adres_r;
+                son_adres_gecerli_ns = son_adres_gecerli_r;
+                son_adres_yaz_ns = son_adres_yaz_r;
+                son_adres_veri_ns = son_adres_veri_r;
+                vy_istek_adres_ns = son_adres_r;
+                vy_istek_gecerli_ns = `HIGH; 
+                vy_hedef_yol_ns = cikarma_sayaci_r;
+                for (i = 0; i < `L1V_YOL; i = i+1) begin
+                    if (!acik_satir_gecerli_durumu_w[i]) begin
+                        vy_hedef_yol_ns = i;
+                    end
+                end
+                if (satir_kirli_r[get_satir(son_adres_r)][vy_hedef_yol_ns]) begin
+                    vy_istek_veri_ns = l1_okunan_bloklar_w[vy_hedef_yol_ns];
+                    vy_istek_adres_ns = adres_birlestir(l1_okunan_etiketler_w[vy_hedef_yol_ns], get_satir(son_adres_r));
+                    vy_istek_gecerli_ns = `HIGH;
+                    vy_istek_yaz_ns = `HIGH;
+                    vy_veri_hazir_ns = `LOW;
+                    l1_durum_ns = VY_YAZ_ISTEK;
+                end
+            end   
+        end 
+
+        if (port_istek_onbellekleme_i) begin
+            son_adres_gecerli_ns = `LOW;
             port_istek_hazir_ns = `LOW;
             port_istek_adres_ns = port_istek_adres_i;
             port_istek_veri_ns = port_istek_veri_i;
@@ -612,5 +684,15 @@ end
 
 assign vy_istek_adres_o = vy_istek_onbellekleme_r ? vy_istek_adres_r
                             : vy_istek_adres_r & ((~{`ADRES_BIT{1'b0}}) << `ADRES_BYTE_BIT);
+assign port_istek_hazir_o = port_istek_hazir_cmb;
+assign port_veri_o = port_veri_cmb;
+assign port_veri_gecerli_o = port_veri_gecerli_cmb;
+assign vy_istek_gecerli_o = vy_istek_gecerli_r;
+assign vy_istek_onbellekleme_o = vy_istek_onbellekleme_r;
+assign vy_istek_yaz_o = vy_istek_yaz_r;
+assign vy_veri_hazir_o = vy_veri_hazir_r;
+assign l1_istek_gecersiz_o = ~l1_istek_gecerli_cmb;       
+assign l1_istek_satir_o = l1_istek_satir_cmb;
+assign l1_istek_yaz_o = l1_istek_yaz_cmb;
 
 endmodule
