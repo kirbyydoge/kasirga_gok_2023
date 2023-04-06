@@ -1,7 +1,7 @@
 import re
 import itertools
 
-GOLDEN_PATH = "_golden.txt"
+GOLDEN_PATH = "golden.txt"
 
 with open(GOLDEN_PATH, "r", encoding="utf-8") as f_spk:
     for line in f_spk:

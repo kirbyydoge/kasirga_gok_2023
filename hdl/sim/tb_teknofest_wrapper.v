@@ -142,6 +142,8 @@ initial begin
                 $fwrite(uart_fd, "%c", tw.soc.uartd.tx_fifo_rd_data_w[7:0]);
             end
         end
+        $fclose(log_fd);
+        $fclose(uart_fd);
         $finish;
     end
 end

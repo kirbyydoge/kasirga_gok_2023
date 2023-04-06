@@ -167,6 +167,9 @@ reg son_adres_yaz_ns;
 reg [`VERI_BIT-1:0] son_adres_veri_r;
 reg [`VERI_BIT-1:0] son_adres_veri_ns;
 
+reg [`VERI_BYTE-1:0] son_adres_maske_r;
+reg [`VERI_BYTE-1:0] son_adres_maske_ns;
+
 // Duz girisleri yeniden isimlendir ve isimlendirilmis flip floplari cikislar icin geri duzlestir
 // degisken[yol_idx * <veri_bit> +: <veri_bit>] yerine degisken[yol_idx] erisim okunakligi sagliyor
 // Sentez programi zaten bu isimlendirmeleri kaldirarak orijinal tanimlari birakiyor. Maaliyeti yok
@@ -353,6 +356,8 @@ always @* begin
     for (i = 0; i < `L1V_YOL; i = i + 1) begin
         l1_buffer_etiketler_ns[i] = l1_buffer_etiketler_r[i];
         l1_buffer_bloklar_ns[i] = l1_buffer_bloklar_r[i]; 
+        l1_istek_etiket_cmb[i] = l1_okunan_etiketler_w[i];
+        l1_istek_blok_cmb[i] = l1_okunan_bloklar_w[i];
     end
     son_adres_ns = son_adres_r;
     port_istek_adres_ns = port_istek_adres_r;
@@ -374,6 +379,17 @@ always @* begin
     l1_yol_guncellendi_ns = l1_yol_guncellendi_r;
     port_istek_veri_ns = port_istek_veri_r;
     vy_istek_adres_ns = vy_istek_adres_r;
+    l1_istek_gecerli_cmb = `LOW;
+    l1_istek_satir_cmb = 0;
+    l1_istek_yaz_cmb = {`L1V_YOL{`LOW}};
+    port_veri_cmb = port_veri_r;
+    port_veri_gecerli_cmb = port_veri_gecerli_r;
+    port_istek_hazir_cmb = `LOW;
+    son_adres_ns = son_adres_r;
+    son_adres_gecerli_ns = son_adres_gecerli_r;
+    son_adres_yaz_ns = son_adres_yaz_r;
+    son_adres_veri_ns = son_adres_veri_r;
+    son_adres_maske_ns = son_adres_maske_r;
 
     if (port_veri_hazir_i && port_veri_gecerli_o) begin
         port_veri_gecerli_ns = `LOW;
@@ -388,6 +404,7 @@ always @* begin
         son_adres_gecerli_ns = port_istek_gecerli_i;
         son_adres_yaz_ns = port_istek_yaz_i;
         son_adres_veri_ns = port_istek_veri_i;
+        son_adres_maske_ns = port_istek_maske_i;
 
         fn_l1_ara_sonuc_cmb = l1_ara(son_adres_r);
         if (son_adres_gecerli_r) begin
@@ -397,13 +414,18 @@ always @* begin
                 son_adres_ns = son_adres_r;
                 son_adres_yaz_ns = son_adres_yaz_r;
                 son_adres_veri_ns = son_adres_veri_r;
+                son_adres_maske_ns = son_adres_maske_r;
                 port_istek_hazir_cmb = `LOW;
             end
             else if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
                 if (son_adres_yaz_r) begin
                     l1_istek_gecerli_cmb = `HIGH;
                     l1_istek_yaz_cmb[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = `HIGH;
-                    l1_istek_blok_cmb[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = son_adres_veri_r;
+                    for (i = 0; i < `VERI_BYTE; i = i + 1) begin
+                        if (son_adres_maske_r[i]) begin
+                            l1_istek_blok_cmb[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]][i * 8 +: 8] = son_adres_veri_r[i * 8 +: 8];
+                        end
+                    end
                     l1_istek_etiket_cmb[fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = get_etiket(son_adres_r);
                     l1_istek_satir_cmb = get_satir(son_adres_r);
                     satir_kirli_ns[get_satir(son_adres_r)][fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_YOL]] = `HIGH;
@@ -423,6 +445,7 @@ always @* begin
                 son_adres_gecerli_ns = son_adres_gecerli_r;
                 son_adres_yaz_ns = son_adres_yaz_r;
                 son_adres_veri_ns = son_adres_veri_r;
+                son_adres_maske_ns = son_adres_maske_r;
                 vy_istek_adres_ns = son_adres_r;
                 vy_istek_gecerli_ns = `HIGH; 
                 vy_hedef_yol_ns = cikarma_sayaci_r;
@@ -648,6 +671,10 @@ always @(posedge clk_i) begin
         l1_yol_guncellendi_r <= 0;
         port_istek_maske_r <= 0;
         l1_durum_r <= L1_BOSTA;
+        son_adres_gecerli_r <= `LOW;
+        son_adres_yaz_r <= `LOW;
+        son_adres_veri_r <= 0;
+        son_adres_maske_r <= 0;
     end
     else begin
         for (i = 0; i < `L1V_SATIR; i = i + 1) begin
@@ -679,6 +706,10 @@ always @(posedge clk_i) begin
         l1_yol_guncellendi_r <= l1_yol_guncellendi_ns;
         port_istek_maske_r <= port_istek_maske_ns;
         l1_durum_r <= l1_durum_ns;
+        son_adres_gecerli_r <= son_adres_gecerli_ns;
+        son_adres_yaz_r <= son_adres_yaz_ns;
+        son_adres_veri_r <= son_adres_veri_ns;
+        son_adres_maske_r <= son_adres_maske_ns;
     end
 end
 

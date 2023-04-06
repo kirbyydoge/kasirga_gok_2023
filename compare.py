@@ -41,8 +41,9 @@ def compare_line(line0, line1, index):
 with open(VIVADO_PATH, "r", encoding="utf-8") as f_viv, open(GOLDEN_PATH, "r", encoding="utf-8") as f_spk:
     index = 1
     for line0, line1 in itertools.zip_longest(f_viv, f_spk):
-        if not line0 or not line1:
+        try:
+            compare_line(line0.strip(), line1.strip(), index)
+        except:
             print("EOF")
             break
-        compare_line(line0.strip(), line1.strip(), index)
         index += 1
