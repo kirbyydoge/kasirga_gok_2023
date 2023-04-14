@@ -43,16 +43,26 @@ parameter RAM_DEPTH = 32'h20000;
  
 wire   clk_wiz_locked;
 `ifdef VCU108
-wire clk_i;
+wire clk_w;
 clk_wiz_0 clk_wiz
 (
-    .CLK_100MHZ(clk_i),
+    .CLK_100MHZ(clk_w),
     .reset(1'b0), 
     .locked(clk_wiz_locked),
     .clk_in1_p(clk_p),
     .clk_in1_n(clk_n)
 );
+`elsif NEXYS
+wire clk_w;
+clk_wiz_0 clk_wiz
+(
+    .CLK_60MHZ(clk_w),
+    .reset(1'b0), 
+    .locked(clk_wiz_locked),
+    .clk_in1(clk_i)
+);
 `else
+assign clk_w = clk_i;
 assign clk_wiz_locked = rst_ni; 
 `endif
 
@@ -76,7 +86,7 @@ wire   rst_n;
 assign rst_n = prog_system_reset & rst_ni & clk_wiz_locked;
 
 islemci soc (
-  .clk           (clk_i        ),
+  .clk           (clk_w        ),
   .resetn        (rst_n        ),
   .iomem_valid   (iomem_valid  ),
   .iomem_ready   (iomem_ready  ),
@@ -100,7 +110,7 @@ wire ram_ready_check;
 
 assign ram_ready_check = iomem_valid & iomem_ready & ((iomem_addr & ~RAM_MASK_ADDR) == RAM_BASE_ADDR);
 
-always @(posedge clk_i) begin
+always @(posedge clk_w) begin
   if (!rst_ni) begin
     ram_shift_q <= {RAM_DELAY{1'b0}};
   end else begin
@@ -109,7 +119,7 @@ always @(posedge clk_i) begin
   end
 end
 
-always @(posedge clk_i) begin
+always @(posedge clk_w) begin
   if (!rst_n) begin
     ram_ready <= 1'b0;
   end else begin
@@ -134,7 +144,7 @@ teknofest_ram #(
   .INIT_FILE("")  //Yüklenecek program?n yolu
 ) main_memory
 (
-  .clk_i           (clk_i ),
+  .clk_i           (clk_w ),
   .rst_ni          (rst_ni && clk_wiz_locked),
   .wr_addr         (iomem_addr[clogb2(RAM_DEPTH*4-1)-1:2]),
   .rd_addr         (iomem_addr[clogb2(RAM_DEPTH*4-1)-1:2]),
@@ -148,7 +158,7 @@ teknofest_ram #(
   .prog_mode_led_o (prog_mode_led_o  )
 );
 
-always @(posedge clk_i) begin
+always @(posedge clk_w) begin
   if (!rst_n) begin
     timer <= 64'h0;
   end else begin

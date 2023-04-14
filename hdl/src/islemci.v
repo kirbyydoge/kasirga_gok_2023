@@ -6,6 +6,11 @@ module islemci (
   input                 clk,
   input                 resetn,
 
+`ifdef USE_POWER_PINS
+  input                 vccd1,
+  input                 vssd1,
+`endif
+
   output                iomem_valid,
   input                 iomem_ready,
   output    [3:0]       iomem_wstrb,
@@ -134,53 +139,58 @@ wire [`ADRES_ETIKET_BIT-1:0]    io_l1bv_oku_etiket_bw       [0:`L1B_YOL-1];
 wire [`L1_BLOK_BIT-1:0]         io_l1bv_oku_blok_bw         [0:`L1B_YOL-1];
 
 genvar i;
+`ifdef OPENLANE
+    wire [335:0] l1b_wr_connect;
+    wire [335:0] l1b_rd_connect;
+    wire [41:0] l1b_wr_mask;
+    localparam L1B_DATA_OFF = 56;
+    generate
+        for (i = 0; i < `L1B_YOL; i = i + 1) begin
+            assign l1b_wr_connect[i * L1B_DATA_OFF +: 32] = io_l1bv_yaz_blok_bw[i];
+            assign l1b_wr_connect[i * L1B_DATA_OFF + 32 +: 24] = {1'b0, io_l1bv_yaz_etiket_bw[i]};
+            assign io_l1bv_oku_blok_bw[i] = l1b_rd_connect[i * L1B_DATA_OFF +: 32];
+            assign io_l1bv_oku_etiket_bw[i] = l1b_rd_connect[i * L1B_DATA_OFF + 32 +: 23];
+            assign l1b_wr_mask[i * 7 +: 7] = io_l1bv_komut_yaz_w[i] ? 7'h00 : 7'h7F;
+        end
+    endgenerate
+    sram_336x128 l1b_sram (
+        .clk0           ( io_l1bv_clk_w ), 
+        .csb0           ( !io_l1bv_komut_gecerli_w ),
+        .web0           ( l1b_wr_mask ), 
+        .addr0          ( {0, io_l1bv_komut_adres_w} ),
+        .wmask0         ( 'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF ),
+        .din0           ( l1b_wr_connect ),
+        .dout0          ( l1b_rd_connect )
+    );
+`else
 generate
     for (i = 0; i < `L1B_YOL; i = i + 1) begin
-        `ifdef OPENLANE
-            sram_l1etiket l1b_etiket (
-                .clk0           ( io_l1bv_clk_w ), 
-                .csb0           ( !io_l1bv_komut_gecerli_w ),
-                .web0           ( !io_l1bv_komut_yaz_w[i] ), 
-                .addr0          ( {1'b0, io_l1bv_komut_adres_w} ), 
-                .din0           ( io_l1bv_yaz_etiket_bw[i] ),
-                .dout0          ( io_l1bv_oku_etiket_bw[i] )
-            );
-            
-            sram_l1veri l1b_veri (
-                .clk0           ( io_l1bv_clk_w ),
-                .csb0           ( !io_l1bv_komut_gecerli_w ),
-                .web0           ( !io_l1bv_komut_yaz_w[i] ), 
-                .addr0          ( {1'b0, io_l1bv_komut_adres_w} ), 
-                .din0           ( io_l1bv_yaz_blok_bw[i] ), 
-                .dout0          ( io_l1bv_oku_blok_bw[i] )
-            );
-        `else
-            bram_model #(
-                .DATA_WIDTH(`ADRES_ETIKET_BIT),
-                .BRAM_DEPTH(`L1B_SATIR)
-            ) l1b_etiket (
-                .clk_i          ( io_l1bv_clk_w ), 
-                .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
-                .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
-                .addr_i         ( io_l1bv_komut_adres_w ), 
-                .data_i         ( io_l1bv_yaz_etiket_bw[i] ), 
-                .data_o         ( io_l1bv_oku_etiket_bw[i] )
-            );
-            
-            bram_model #(
-                .DATA_WIDTH(`L1_BLOK_BIT),
-                .BRAM_DEPTH(`L1B_SATIR)
-            ) l1b_veri (
-                .clk_i          ( io_l1bv_clk_w ),
-                .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
-                .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
-                .addr_i         ( io_l1bv_komut_adres_w ), 
-                .data_i         ( io_l1bv_yaz_blok_bw[i] ), 
-                .data_o         ( io_l1bv_oku_blok_bw[i] )
-            );
-        `endif
+        bram_model #(
+            .DATA_WIDTH(`ADRES_ETIKET_BIT),
+            .BRAM_DEPTH(`L1B_SATIR)
+        ) l1b_etiket (
+            .clk_i          ( io_l1bv_clk_w ), 
+            .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
+            .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
+            .addr_i         ( io_l1bv_komut_adres_w ), 
+            .data_i         ( {0, io_l1bv_yaz_etiket_bw[i]} ), 
+            .data_o         ( io_l1bv_oku_etiket_bw[i] )
+        );
+        
+        bram_model #(
+            .DATA_WIDTH(`L1_BLOK_BIT),
+            .BRAM_DEPTH(`L1B_SATIR)
+        ) l1b_veri (
+            .clk_i          ( io_l1bv_clk_w ),
+            .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
+            .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
+            .addr_i         ( io_l1bv_komut_adres_w ), 
+            .data_i         ( {0, io_l1bv_yaz_blok_bw[i]} ), 
+            .data_o         ( io_l1bv_oku_blok_bw[i] )
+        );
     end
 endgenerate
+`endif
 
 // ---- L1 Veri Denetleyicisi ----
 wire                                            io_l1vd_clk_w;
@@ -257,27 +267,32 @@ wire [`L1_BLOK_BIT-1:0]         io_l1vv_yaz_blok_bw         [0:`L1V_YOL-1];
 wire [`ADRES_ETIKET_BIT-1:0]    io_l1vv_oku_etiket_bw       [0:`L1V_YOL-1];
 wire [`L1_BLOK_BIT-1:0]         io_l1vv_oku_blok_bw         [0:`L1V_YOL-1];
 
+`ifdef OPENLANE
+    wire [335:0] l1v_wr_connect;
+    wire [335:0] l1v_rd_connect;
+    wire [41:0] l1v_wr_mask;
+    localparam L1V_DATA_OFF = 56;
+    generate
+        for (i = 0; i < `L1V_YOL; i = i + 1) begin
+            assign l1v_wr_connect[i * L1V_DATA_OFF +: 32] = io_l1vv_yaz_blok_bw[i];
+            assign l1v_wr_connect[i * L1V_DATA_OFF + 32 +: 24] = {1'b0, io_l1vv_yaz_etiket_bw[i]};
+            assign io_l1vv_oku_blok_bw[i] = l1v_rd_connect[i * L1V_DATA_OFF +: 32];
+            assign io_l1vv_oku_etiket_bw[i] = l1v_rd_connect[i * L1V_DATA_OFF + 32 +: 23];
+            assign l1v_wr_mask[i * 7 +: 7] =  io_l1vv_komut_yaz_w[i] ? 7'h00 : 7'h7F;
+        end
+    endgenerate
+    sram_112x128 l1v_sram (
+        .clk0           ( io_l1vv_clk_w ), 
+        .csb0           ( !io_l1vv_komut_gecerli_w ),
+        .web0           ( l1v_wr_mask ), 
+        .addr0          ( {0, io_l1vv_komut_adres_w} ),
+        .wmask0         ( 'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF ),
+        .din0           ( l1v_wr_connect ),
+        .dout0          ( l1v_rd_connect )
+    );
+`else
 generate
     for (i = 0; i < `L1V_YOL; i = i + 1) begin
-        `ifdef OPENLANE
-            sram_l1etiket l1v_etiket (
-                .clk0           ( io_l1vv_clk_w ), 
-                .csb0           ( !io_l1vv_komut_gecerli_w ),
-                .web0           ( !io_l1vv_komut_yaz_w[i] ), 
-                .addr0          ( io_l1vv_komut_adres_w ), 
-                .din0           ( io_l1vv_yaz_etiket_bw[i] ), 
-                .dout0          ( io_l1vv_oku_etiket_bw[i] )
-            );
-            
-            sram_l1veri l1v_veri (
-                .clk0           ( io_l1vv_clk_w ),
-                .csb0           ( !io_l1vv_komut_gecerli_w ),
-                .web0           ( !io_l1vv_komut_yaz_w[i] ), 
-                .addr0          ( io_l1vv_komut_adres_w ), 
-                .din0           ( io_l1vv_yaz_blok_bw[i] ), 
-                .dout0          ( io_l1vv_oku_blok_bw[i] )
-            );
-        `else
             bram_model #(
                 .DATA_WIDTH(`ADRES_ETIKET_BIT),
                 .BRAM_DEPTH(`L1V_SATIR)
@@ -285,7 +300,7 @@ generate
                 .clk_i          ( io_l1vv_clk_w ), 
                 .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
                 .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
-                .addr_i         ( io_l1vv_komut_adres_w ), 
+                .addr_i         ( {0, io_l1vv_komut_adres_w} ), 
                 .data_i         ( io_l1vv_yaz_etiket_bw[i] ), 
                 .data_o         ( io_l1vv_oku_etiket_bw[i] )
             );
@@ -297,13 +312,13 @@ generate
                 .clk_i          ( io_l1vv_clk_w ),
                 .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
                 .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
-                .addr_i         ( io_l1vv_komut_adres_w ), 
+                .addr_i         ( {0, io_l1vv_komut_adres_w} ), 
                 .data_i         ( io_l1vv_yaz_blok_bw[i] ), 
                 .data_o         ( io_l1vv_oku_blok_bw[i] )
             );
-        `endif
     end
 endgenerate
+`endif
 
 // ---- Veri Yolu Denetleyicisi ----
 wire                            io_vyd_clk_w;

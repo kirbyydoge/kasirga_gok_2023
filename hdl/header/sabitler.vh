@@ -1,9 +1,10 @@
 //------Sentez Parametreleri------
 // `define VCU108
+`define NEXYS
 // `define SPIKE_DIFF
 // `define LOG_COMMITS
 // `define OPENLANE
-// `define USE_MUL_PIPE
+`define USE_MUL_PIPE
 
 //-----------Diger----------------
 `define HIGH 1'b1
@@ -71,6 +72,9 @@
 `define L1_BOYUT    (`L1_BLOK_BIT * `L1B_SATIR * `L1B_YOL) + (`L1_BLOK_BIT * `L1V_SATIR * `L1V_YOL) // Teknofest 2022-2023 icin 4KB olmali
 `define L1_ONBELLEK_GECIKME 1 // Denetleyici gecikmesi degil, SRAM/BRAM gecikmesi
 
+`define ADRES_OZEL_DAGITIM
+`define ADRES_BUYRUK_OZEL_BIT 0
+`define ADRES_VERI_OZEL_BIT   0
 `define ADRES_BYTE_BIT      2 // Veriyi byte adreslemek icin gereken bit
 `define ADRES_BYTE_OFFSET   0 // ADRES_BYTE ilk bitine erismek icin gereken kaydirma
 `define ADRES_SATIR_BIT     8 // Satirlari indexlemek icin gereken bit

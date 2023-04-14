@@ -194,14 +194,24 @@ endgenerate
 function [`ADRES_ETIKET_BIT-1:0] get_etiket;
     input [`ADRES_BIT-1:0] adres;
     begin
-        get_etiket = adres[`ADRES_ETIKET_OFFSET +: `ADRES_ETIKET_BIT];
+        if (`ADRES_VERI_OZEL_BIT > 0) begin
+            get_etiket = {adres[`ADRES_ETIKET_OFFSET + `ADRES_VERI_OZEL_BIT +: `ADRES_ETIKET_BIT - `ADRES_VERI_OZEL_BIT], adres[`ADRES_SATIR_OFFSET +: `ADRES_VERI_OZEL_BIT]};
+        end
+        else begin
+            get_etiket = adres[`ADRES_ETIKET_OFFSET +: `ADRES_ETIKET_BIT];
+        end
     end
 endfunction
 
 function [`ADRES_SATIR_BIT-1:0] get_satir;
     input [`ADRES_BIT-1:0] adres;
     begin
-        get_satir = adres[`ADRES_SATIR_OFFSET +: `ADRES_SATIR_BIT];
+        if (`ADRES_VERI_OZEL_BIT > 0) begin
+            get_satir = adres[`ADRES_SATIR_OFFSET + `ADRES_VERI_OZEL_BIT +: `ADRES_SATIR_BIT];
+        end
+        else begin
+            get_satir = adres[`ADRES_SATIR_OFFSET +: `ADRES_SATIR_BIT];
+        end
     end
 endfunction
 
@@ -209,7 +219,12 @@ function [`ADRES_BIT-1:0] adres_birlestir;
     input [`ADRES_ETIKET_BIT-1:0] etiket;
     input [`ADRES_SATIR_BIT-1:0] satir;
     begin
-        adres_birlestir = {etiket, satir} << `ADRES_BYTE_BIT;
+         if (`ADRES_VERI_OZEL_BIT > 0) begin
+            adres_birlestir = {etiket[`ADRES_VERI_OZEL_BIT +: `ADRES_ETIKET_BIT - `ADRES_VERI_OZEL_BIT], satir, etiket[0 +: `ADRES_VERI_OZEL_BIT]} << `ADRES_BYTE_BIT;
+         end
+         else begin
+            adres_birlestir = {etiket, satir} << `ADRES_BYTE_BIT;
+         end
     end
 endfunction
 

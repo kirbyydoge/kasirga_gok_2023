@@ -92,9 +92,9 @@ assign uart_rx_i = uart_msg[10 - uart_ctr];
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
 localparam RISCV_TEST = 0;
 //localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
- localparam STANDALONE_PATH = "/home/sevval/Desktop/Teknofest/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
-localparam LOG_PATH = "/home/sevval/Desktop/vivado.txt";
-localparam UART_PATH = "/home/sevval/Desktop/uart.txt";
+localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
+localparam LOG_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/vivado.txt";
+localparam UART_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/uart.txt";
 initial begin
     uart_msg = 11'b10_10110011_1;
     if (RISCV_TEST) begin
