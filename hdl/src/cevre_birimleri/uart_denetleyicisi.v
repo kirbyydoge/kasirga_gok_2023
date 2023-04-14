@@ -127,6 +127,7 @@ always @* begin
                             end
                             else begin
                                 uart_veri_ns = rx_fifo_rd_data_w;
+                                rx_fifo_rd_en_cmb = `HIGH;
                                 uart_gecerli_ns = `HIGH;
                             end
                         end

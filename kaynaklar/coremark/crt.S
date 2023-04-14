@@ -75,12 +75,15 @@ _start:
 1:bgeu a0, a1, 1b
 
   # give each core 128KB of stack + TLS
-#define STKSHIFT 17
-  sll a2, a0, STKSHIFT
-  add tp, tp, a2
-  add sp, a0, 1
-  sll sp, sp, STKSHIFT
-  add sp, sp, tp
+#define STKSHIFT 11
+  # sll a2, a0, STKSHIFT
+  # add tp, tp, a2
+  # add sp, x0, 1
+  # sll sp, sp, STKSHIFT
+  # add sp, sp, tp
+
+#define HI_MEM 0x40020000
+  la sp, 0x40020000
 
   j main
 

@@ -6,7 +6,7 @@ reg  rst_ni;
 reg  program_rx_i;
 wire prog_mode_led_o;
 wire uart_tx_o;
-reg  uart_rx_i;
+wire uart_rx_i;
 wire spi_cs_o;
 wire spi_sck_o;
 wire spi_mosi_o;
@@ -16,8 +16,12 @@ wire pwm1_o;
 
 
 teknofest_wrapper tw (
+`ifdef VCU108
 .clk_p (clk_i),
 .clk_n (~clk_i),
+`else
+.clk_i (clk_i),
+`endif
 .rst_ni (rst_ni),
 .program_rx_i (program_rx_i),
 .prog_mode_led_o (prog_mode_led_o),
@@ -62,12 +66,37 @@ integer cur_test;
 integer last_inst;
 integer last_uart;
 
+reg [10:0] uart_msg;
+localparam CPU_HZ = 100_000_000;
+localparam BAUD_RATE = 115200;
+localparam BAUD_DIV = CPU_HZ / BAUD_RATE;
+integer uart_baud_ctr;
+integer uart_ctr;
+
+always @(posedge clk_i) begin
+    if (!rst_ni) begin
+        uart_ctr <= 0;
+        uart_baud_ctr <= 0;
+    end
+    else if (tw.soc.uartd.rx_en_w) begin
+        uart_baud_ctr <= uart_baud_ctr + 1;
+        if (uart_baud_ctr == BAUD_DIV - 1) begin
+            uart_baud_ctr <= 0;
+            uart_ctr <= (uart_ctr + 1) % 11;
+        end
+    end
+end
+
+assign uart_rx_i = uart_msg[10 - uart_ctr];
+
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
 localparam RISCV_TEST = 0;
-localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+//localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+ localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
 localparam LOG_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/vivado.txt";
 localparam UART_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/uart.txt";
 initial begin
+    uart_msg = 11'b10_10110011_1;
     if (RISCV_TEST) begin
         test_passed = 0;
         test_list_fd = $fopen({PATH_TO_TEST_LIST, "/test_names.txt"}, "r");
@@ -141,6 +170,8 @@ initial begin
                 last_uart = tw.soc.uartd.tx_ctr_r;
                 $fwrite(uart_fd, "%c", tw.soc.uartd.tx_fifo_rd_data_w[7:0]);
             end
+            $fflush(log_fd);
+            $fflush(uart_fd);
         end
         $fclose(log_fd);
         $fclose(uart_fd);

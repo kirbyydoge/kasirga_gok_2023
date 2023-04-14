@@ -43,7 +43,7 @@ module teknofest_ram #(
     );
 
 localparam CPU_CLK   = 100_000_000;   //Default CPU frequency on FPGA
-localparam BAUD_RATE = 115200;          //Default Baud rate for programming on the run via UART
+localparam BAUD_RATE = 9600;          //Default Baud rate for programming on the run via UART
 
 reg [(NB_COL*COL_WIDTH)-1:0] ram [RAM_DEPTH-1:0];
 reg [(NB_COL*COL_WIDTH)-1:0] ram_data;
@@ -141,6 +141,13 @@ reg [31:0] prog_intr_ctr;
 reg  prog_inst_valid;
 reg  prog_sys_rst_n;
 wire ram_prog_rd_en;
+
+//ila_program dbg_program (
+//    .clk    (clk_i),
+//    .probe0 (ram_prog_data),
+//    .probe1 (prog_inst_valid),
+//    .probe2 (prog_mode_led_o)
+//);
 
 assign ram_prog_data       = prog_instruction;
 assign ram_prog_data_valid = prog_inst_valid;

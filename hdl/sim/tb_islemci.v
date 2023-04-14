@@ -74,7 +74,7 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/uart_test/kasirga.hex"; 
+localparam PATH_TO_TEST = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex"; 
 localparam RAM_DELAY = 1;
 reg [RAM_DELAY-1:0] delay_q;
 
