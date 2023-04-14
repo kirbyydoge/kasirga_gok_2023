@@ -21,6 +21,31 @@
 `define XLEN            32
 `define MXLEN           32
 
+`define TL_OP_GET          4
+`define TL_OP_ACK          0
+`define TL_OP_ACK_DATA     1
+`define TL_OP_PUT_FULL     0
+`define TL_OP_PUT_PART     1
+
+`define TL_A_MASK       16:9
+`define TL_A_PARAM      8:7
+`define TL_A_SRC        6
+`define TL_A_SZ         5:3
+`define TL_A_OP         2:0
+
+`define TL_D_SIZE       10:8
+`define TL_D_PARAM      7:6
+`define TL_D_SRC        5
+`define TL_D_SZ         4:3
+`define TL_D_OP         2:0
+
+`define TL_A_BITS       27
+`define TL_D_BITS       11
+
+`define TL_REQ_A_GET    17'b11111111_00_0_101_100
+`define TL_REQ_A_PUTF   17'b11111111_00_0_101_000
+`define TL_REQ_A_PUTP   17'b11111111_00_0_101_001
+
 //-----------Bellek---------------
 `define ADRES_BIT           32
 `define BELLEK_BASLANGIC    32'h4000_0000

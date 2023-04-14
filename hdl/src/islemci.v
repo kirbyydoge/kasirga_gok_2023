@@ -360,11 +360,12 @@ wire                        io_spid_clk_w;
 wire                        io_spid_rstn_w;
 wire  [`ADRES_BIT-1:0]      io_spid_cek_adres_w;
 wire  [`VERI_BIT-1:0]       io_spid_cek_veri_w;
-wire                        io_spid_cek_yaz_w;
+wire  [`TL_A_BITS-1:0]      io_spid_cek_tilefields_w;
 wire                        io_spid_cek_gecerli_w;
 wire                        io_spid_cek_hazir_w;
 wire  [`VERI_BIT-1:0]       io_spid_spi_veri_w;
 wire                        io_spid_spi_gecerli_w;
+wire  [`TL_D_BITS-1:0]      io_spid_spi_tilefields_w;
 wire                        io_spid_spi_hazir_w;
 wire                        io_spid_miso_w;
 wire                        io_spid_mosi_w;
@@ -376,10 +377,11 @@ spi_denetleyici spid (
     .rstn_i              ( io_spid_rstn_w ),
     .cek_adres_i         ( io_spid_cek_adres_w ),
     .cek_veri_i          ( io_spid_cek_veri_w ),
-    .cek_yaz_i           ( io_spid_cek_yaz_w ),
+    .cek_tilefields_i    ( io_spid_cek_tilefields_w ),
     .cek_gecerli_i       ( io_spid_cek_gecerli_w ),
     .cek_hazir_o         ( io_spid_cek_hazir_w ),
     .spi_veri_o          ( io_spid_spi_veri_w ),
+    .spi_tilefields_o    ( io_spid_spi_tilefields_w ),
     .spi_gecerli_o       ( io_spid_spi_gecerli_w ),
     .spi_hazir_i         ( io_spid_spi_hazir_w ),
     .miso_i              ( io_spid_miso_w ),
@@ -393,11 +395,12 @@ wire                        io_uartd_clk_w;
 wire                        io_uartd_rstn_w;
 wire    [`ADRES_BIT-1:0]    io_uartd_cek_adres_w;
 wire    [`VERI_BIT-1:0]     io_uartd_cek_veri_w;
-wire                        io_uartd_cek_yaz_w;
+wire    [`TL_A_BITS-1:0]    io_uartd_cek_tilefields_w;
 wire                        io_uartd_cek_gecerli_w;
 wire                        io_uartd_cek_hazir_w;
 wire    [`VERI_BIT-1:0]     io_uartd_uart_veri_w;
 wire                        io_uartd_uart_gecerli_w;
+wire    [`TL_D_BITS-1:0]    io_uartd_uart_tilefields_w;
 wire                        io_uartd_uart_hazir_w;
 wire                        io_uartd_rx_w;
 wire                        io_uartd_tx_w;
@@ -407,11 +410,12 @@ uart_denetleyicisi uartd (
     .rstn_i                 ( io_uartd_rstn_w ),
     .cek_adres_i            ( io_uartd_cek_adres_w ),
     .cek_veri_i             ( io_uartd_cek_veri_w ),
-    .cek_yaz_i              ( io_uartd_cek_yaz_w ),
+    .cek_tilefields_i       ( io_uartd_cek_tilefields_w ),
     .cek_gecerli_i          ( io_uartd_cek_gecerli_w ),
     .cek_hazir_o            ( io_uartd_cek_hazir_w ),
     .uart_veri_o            ( io_uartd_uart_veri_w ),
     .uart_gecerli_o         ( io_uartd_uart_gecerli_w ),
+    .uart_tilefields_o      ( io_uartd_uart_tilefields_w ),
     .uart_hazir_i           ( io_uartd_uart_hazir_w ),
     .rx_i                   ( io_uartd_rx_w ),
     .tx_o                   ( io_uartd_tx_w )
@@ -619,11 +623,11 @@ always @* begin
         bellek_veri = iomem_rdata;
         bellek_veri_gecerli = `HIGH;
     end
-    else if (io_spid_spi_gecerli_w) begin
+    else if (io_spid_spi_gecerli_w && io_spid_spi_tilefields_w[`TL_D_OP] != `TL_OP_ACK) begin
         bellek_veri = io_spid_spi_veri_w;
         bellek_veri_gecerli = `HIGH;
     end
-    else if (io_uartd_uart_gecerli_w) begin
+    else if (io_uartd_uart_gecerli_w && io_uartd_uart_tilefields_w[`TL_D_OP] != `TL_OP_ACK) begin
         bellek_veri = io_uartd_uart_veri_w;
         bellek_veri_gecerli = `HIGH;
     end
@@ -641,14 +645,14 @@ assign io_vyd_mem_veri_gecerli_w = bellek_veri_gecerli;
 // SPI Denetleyici < Veri Yolu Denetleyicisi
 assign io_spid_cek_adres_w = io_vyd_mem_istek_adres_w;
 assign io_spid_cek_veri_w = io_vyd_mem_istek_veri_w;
-assign io_spid_cek_yaz_w = io_vyd_mem_istek_yaz_w;
+assign io_spid_cek_tilefields_w = io_vyd_mem_istek_yaz_w ? `TL_REQ_A_PUTF : `TL_REQ_A_GET;
 assign io_spid_cek_gecerli_w = io_vyd_mem_istek_gecerli_w;
 assign io_spid_spi_hazir_w = io_vyd_mem_veri_hazir_w;
 
 // UART Denetleyici < Veri Yolu Denetleyicisi
 assign io_uartd_cek_adres_w = io_vyd_mem_istek_adres_w;
 assign io_uartd_cek_veri_w = io_vyd_mem_istek_veri_w;
-assign io_uartd_cek_yaz_w = io_vyd_mem_istek_yaz_w;
+assign io_uartd_cek_tilefields_w = io_vyd_mem_istek_yaz_w ? `TL_REQ_A_PUTF : `TL_REQ_A_GET;
 assign io_uartd_cek_gecerli_w = io_vyd_mem_istek_gecerli_w;
 assign io_uartd_uart_hazir_w = io_vyd_mem_veri_hazir_w;
 

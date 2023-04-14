@@ -8,12 +8,14 @@ module spi_denetleyici (
 
     input   [`ADRES_BIT-1:0]    cek_adres_i,
     input   [`VERI_BIT-1:0]     cek_veri_i,
-    input                       cek_yaz_i,
+    input   [`TL_A_BITS-1:0]    cek_tilefields_i,
+
     input                       cek_gecerli_i,
     output                      cek_hazir_o,
 
     output  [`VERI_BIT-1:0]     spi_veri_o,
     output                      spi_gecerli_o,
+    output  [`TL_D_BITS-1:0]    spi_tilefields_o,
     input                       spi_hazir_i,
 
     input                       miso_i,
@@ -24,9 +26,13 @@ module spi_denetleyici (
 
 wire        cek_spi_istek_w;
 wire [3:0]  cek_spi_addr_w;
+wire        cek_spi_yaz_w;
+wire        cek_spi_oku_w;
 
 assign cek_spi_istek_w = ((cek_adres_i & ~`SPI_MASK_ADDR) == `SPI_BASE_ADDR) && cek_gecerli_i;
 assign cek_spi_addr_w = cek_adres_i & `SPI_MASK_ADDR;
+assign cek_spi_yaz_w = cek_tilefields_i[`TL_A_OP] == `TL_OP_PUT_FULL || cek_tilefields_i[`TL_A_OP] == `TL_OP_PUT_PART;
+assign cek_spi_oku_w = cek_tilefields_i[`TL_A_OP] == `TL_OP_GET;
 
 reg [31:0]      fifo_miso_wr_data_cmb;
 reg             fifo_miso_wr_en_cmb;
@@ -101,6 +107,9 @@ reg         exe_cs_end_ns;
 reg [9:0]   exe_kalan_r;
 reg [9:0]   exe_kalan_ns;
 
+reg [`TL_D_BITS-1:0] spi_tilefields_r;
+reg [`TL_D_BITS-1:0] spi_tilefields_ns;
+
 reg                             sb_cmd_msb_first_cmb;
 reg     [`SPI_TXN_SIZE-1:0]     sb_cmd_data_cmb;
 reg                             sb_cmd_valid_cmb;
@@ -118,6 +127,8 @@ localparam  KOMUT_OKU = 2'b01;
 localparam  KOMUT_YAZ = 2'b10;
 
 always @* begin
+    spi_tilefields_ns = spi_tilefields_r;
+    spi_tilefields_ns[`TL_D_SIZE] = 5;
     spi_gecerli_ns = spi_gecerli_r;
     spi_veri_ns = spi_veri_r;
     durum_ns = durum_r;
@@ -147,29 +158,33 @@ always @* begin
         if (cek_spi_istek_w) begin
             case(cek_spi_addr_w)
             `SPI_CTRL_REG: begin
-                if (cek_yaz_i) begin
+                if (cek_spi_yaz_w) begin
                     spi_ctrl_ns = cek_veri_i;
                 end
             end
             `SPI_STATUS_REG: begin
-                if (!cek_yaz_i) begin
+                if (cek_spi_oku_w) begin
                     spi_veri_ns = spi_status_w;
+                    spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
                     spi_gecerli_ns = `HIGH;
                 end
             end
             `SPI_RDATA_REG: begin
-                if (!cek_yaz_i) begin
+                if (cek_spi_oku_w) begin
                     if (fifo_miso_empty_w) begin
                         durum_ns = DURUM_VERI_BEKLE;
                     end
                     else begin
                         spi_veri_ns = fifo_miso_rd_data_w;
+                        spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
                         spi_gecerli_ns = `HIGH;
                     end
                 end
             end
             `SPI_WDATA_REG: begin
-                if (cek_yaz_i) begin
+                if (cek_spi_yaz_w) begin
+                    spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
+                    spi_gecerli_ns = `HIGH;
                     if (fifo_mosi_full_w) begin
                         fifo_buf_veri_ns = cek_veri_i;
                         durum_ns = DURUM_MOSI_YER_BEKLE;
@@ -181,7 +196,9 @@ always @* begin
                 end
             end
             `SPI_CMD_REG: begin
-                if (cek_yaz_i) begin
+                if (cek_spi_yaz_w) begin
+                    spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
+                    spi_gecerli_ns = `HIGH;
                     if (fifo_cmd_full_w) begin
                         fifo_buf_veri_ns = cek_veri_i;
                         durum_ns = DURUM_CMD_YER_BEKLE;
@@ -198,6 +215,7 @@ always @* begin
     DURUM_VERI_BEKLE: begin
         if (!fifo_miso_empty_w) begin
             spi_veri_ns = fifo_miso_rd_data_w;
+            spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
             spi_gecerli_ns = `HIGH;
             durum_ns = DURUM_BOSTA;
         end
@@ -301,9 +319,11 @@ always @(posedge clk_i) begin
         exe_cmd_yon_r <= 0;
         exe_cs_end_r <= 0;
         exe_kalan_r <= 0;
+        spi_tilefields_r <= 0;
     end
     else begin
         spi_veri_r <= spi_veri_ns;
+        spi_tilefields_r <= spi_tilefields_ns;
         fifo_buf_veri_r <= fifo_buf_veri_ns;
         fifo_buf_miso_r <= fifo_buf_miso_ns;
         spi_gecerli_r <= spi_gecerli_ns;
@@ -385,6 +405,7 @@ assign spi_ctrl_cpha_w = spi_ctrl_r[2];
 assign spi_ctrl_cpol_w = spi_ctrl_r[3];
 assign spi_ctrl_sck_div_w = spi_ctrl_r[31:16];
 assign spi_veri_o = spi_veri_r;
+assign spi_tilefields_o = spi_tilefields_r;
 assign spi_gecerli_o = spi_gecerli_r;
 assign cek_hazir_o = cek_hazir_r;
 

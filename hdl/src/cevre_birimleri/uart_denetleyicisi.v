@@ -8,12 +8,14 @@ module uart_denetleyicisi (
 
     input   [`ADRES_BIT-1:0]    cek_adres_i,
     input   [`VERI_BIT-1:0]     cek_veri_i,
-    input                       cek_yaz_i,
+    input   [`TL_A_BITS-1:0]    cek_tilefields_i,
+
     input                       cek_gecerli_i,
     output                      cek_hazir_o,
 
     output  [`VERI_BIT-1:0]     uart_veri_o,
     output                      uart_gecerli_o,
+    output  [`TL_D_BITS-1:0]    uart_tilefields_o,
     input                       uart_hazir_i,
 
     input                       rx_i,
@@ -22,10 +24,13 @@ module uart_denetleyicisi (
 
 wire        cek_uart_istek_w;
 wire [3:0]  cek_uart_addr_w;
+wire        cek_uart_yaz_w;
+wire        cek_uart_oku_w;
 
 assign cek_uart_istek_w = ((cek_adres_i & ~`UART_MASK_ADDR) == `UART_BASE_ADDR) && cek_gecerli_i;
 assign cek_uart_addr_w = cek_adres_i & `UART_MASK_ADDR;
-
+assign cek_uart_yaz_w = cek_tilefields_i[`TL_A_OP] == `TL_OP_PUT_FULL || cek_tilefields_i[`TL_A_OP] == `TL_OP_PUT_PART;
+assign cek_uart_oku_w = cek_tilefields_i[`TL_A_OP] == `TL_OP_GET;
 
 reg [31:0] uart_ctrl_r;
 reg [31:0] uart_ctrl_ns;
@@ -40,6 +45,8 @@ reg [7:0] uart_wdata;
 reg [1:0] durum_r;
 reg [1:0] durum_ns;
 
+reg [`TL_D_BITS-1:0] uart_tilefields_r;
+reg [`TL_D_BITS-1:0] uart_tilefields_ns;
 reg [`VERI_BIT-1:0] uart_veri_r;
 reg [`VERI_BIT-1:0] uart_veri_ns;
 reg uart_gecerli_r;
@@ -79,6 +86,8 @@ wire                  verici_tx_w;
 wire                  verici_hazir_w;
 
 always @* begin
+    uart_tilefields_ns = uart_tilefields_r;
+    uart_tilefields_ns[`TL_D_SIZE] = 5;
     durum_ns = durum_r;
     uart_ctrl_ns = uart_ctrl_r;
     uart_veri_ns = uart_veri_r;
@@ -110,18 +119,18 @@ always @* begin
                         uart_ctrl_ns = cek_veri_i;
                     end
                     `UART_STATUS_REG: begin
-                        if (!cek_yaz_i) begin
+                        if (cek_uart_oku_w) begin
                         `ifndef SPIKE_DIFF
                             uart_veri_ns = uart_status_w;
                         `else
                             uart_veri_ns = 32'd0;
                         `endif
                             uart_gecerli_ns = `HIGH;
+                            uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
                         end
-
                     end
                     `UART_RDATA_REG: begin
-                        if (!cek_yaz_i) begin
+                        if (cek_uart_oku_w) begin
                             if (rx_fifo_empty) begin
                                 durum_ns = VERI_BEKLE;
                             end
@@ -129,11 +138,14 @@ always @* begin
                                 uart_veri_ns = rx_fifo_rd_data_w;
                                 rx_fifo_rd_en_cmb = `HIGH;
                                 uart_gecerli_ns = `HIGH;
+                                uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
                             end
                         end
                     end
                     `UART_WDATA_REG: begin
-                         if (cek_yaz_i) begin
+                         if (cek_uart_yaz_w) begin
+                            uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
+                            uart_gecerli_ns = `HIGH;
                             if (tx_fifo_full_w) begin
                                 fifo_buf_veri_ns = cek_veri_i;
                                 durum_ns = YER_BEKLE;
@@ -149,6 +161,7 @@ always @* begin
         end
         VERI_BEKLE: begin
              if (!rx_fifo_empty) begin
+                uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
                 uart_veri_ns = rx_fifo_rd_data_w;
                 rx_fifo_rd_en_cmb = `HIGH;
                 uart_gecerli_ns = `HIGH;
@@ -177,8 +190,10 @@ always @ (posedge clk_i) begin
             uart_veri_r <= 0;
             uart_gecerli_r <= `LOW;
             fifo_buf_veri_r <= 0;
+            uart_tilefields_r <= 0;
         end
         else begin
+            uart_tilefields_r <= uart_tilefields_ns;
             durum_r <= durum_ns; 
             uart_ctrl_r <= uart_ctrl_ns;
             uart_veri_r <= uart_veri_ns;
@@ -258,6 +273,7 @@ assign baud_div = 16'd2;
 
 assign uart_veri_o = uart_veri_r;
 assign uart_gecerli_o = uart_gecerli_r;
+assign uart_tilefields_o = uart_tilefields_r;
 assign uart_status_w [0] = tx_fifo_full_w;
 assign uart_status_w [1] = tx_fifo_empty;
 assign uart_status_w [2] = rx_fifo_full_w;
