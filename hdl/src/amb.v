@@ -183,7 +183,7 @@ always @* begin
     end
     `UOP_AMB_PKG: begin
         // assert (`VERI_BIT % 2 == 0)
-        islem_sonuc_cmb = {islem_islec2_i[`VERI_BIT/2 +: `VERI_BIT/2], islem_islec1_i[0 +: `VERI_BIT/2]};
+        islem_sonuc_cmb = {islem_islec2_i[0 +: `VERI_BIT/2], islem_islec1_i[0 +: `VERI_BIT/2]};
     end
     `UOP_AMB_RVRS: begin
         for (i = 0; i < `VERI_BIT; i = i + 1) begin

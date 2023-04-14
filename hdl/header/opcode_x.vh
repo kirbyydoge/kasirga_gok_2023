@@ -1,7 +1,7 @@
 // Kriptografi buyruklari
 `define MATCH_HMDST     32'ha001033
 `define MASK_HMDST      32'hfe00707f
-`define MATCH_PKG       32'h4004033
+`define MATCH_PKG       32'h8004033
 `define MASK_PKG        32'hfe00707f
 `define MATCH_RVRS      32'h6b805013
 `define MASK_RVRS       32'hfff0707f
