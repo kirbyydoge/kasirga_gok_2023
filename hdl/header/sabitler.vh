@@ -1,7 +1,7 @@
 //------Sentez Parametreleri------
-`define VCU108
+//`define VCU108
 // `define NEXYS
-`define SPIKE_DIFF
+// `define SPIKE_DIFF
 // `define LOG_COMMITS
 // `define OPENLANE
 // `define USE_MUL_PIPE
@@ -62,6 +62,8 @@
 `define RAM_MASK_ADDR       32'h0007_ffff
 `define TIMER_BASE_ADDR     32'h3000_0000
 `define TIMER_MASK_ADDR     32'h0000_000f
+`define PWM_BASE_ADDR       32'h2002_0000
+`define PWM_MASK_ADDR       32'h0000_00ff
 
 //-------Önbellek Denetleyiciler----------
 `define L1_BLOK_BIT 32    
@@ -122,6 +124,20 @@
 `define UART_RDATA_REG       8'h08
 `define UART_WDATA_REG       8'h0c
 `define UART_TXN_SIZE        8
+
+// ----PWM Denetleyici Tanimlamalar----
+`define PWM_CTRL_1_REG       8'h00
+`define PWM_CTRL_2_REG       8'h04
+`define PWM_PERIOD_1_REG     8'h08
+`define PWM_PERIOD_2_REG     8'h0c
+`define PWM_THRSLD_1_1_REG   8'h10
+`define PWM_THRSLD_1_2_REG   8'h14
+`define PWM_THRSLD_2_1_REG   8'h18
+`define PWM_THRSLD_2_2_REG   8'h1c
+`define PWM_STEP_1_REG       8'h20
+`define PWM_STEP_2_REG       8'h24
+`define PWM_WRT_1_REG        8'h28
+`define PWM_WRT_2_REG        8'h2c
 
 //----Dallanma Öngörücü Tanimlamalar----
 `define BTB_SATIR_SAYISI         32

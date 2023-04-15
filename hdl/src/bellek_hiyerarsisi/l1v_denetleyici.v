@@ -170,6 +170,9 @@ reg [`VERI_BIT-1:0] son_adres_veri_ns;
 reg [`VERI_BYTE-1:0] son_adres_maske_r;
 reg [`VERI_BYTE-1:0] son_adres_maske_ns;
 
+reg son_adres_onbellekleme_r;
+reg son_adres_onbellekleme_ns;
+
 // Duz girisleri yeniden isimlendir ve isimlendirilmis flip floplari cikislar icin geri duzlestir
 // degisken[yol_idx * <veri_bit> +: <veri_bit>] yerine degisken[yol_idx] erisim okunakligi sagliyor
 // Sentez programi zaten bu isimlendirmeleri kaldirarak orijinal tanimlari birakiyor. Maaliyeti yok
@@ -389,6 +392,7 @@ always @* begin
     son_adres_yaz_ns = son_adres_yaz_r;
     son_adres_veri_ns = son_adres_veri_r;
     son_adres_maske_ns = son_adres_maske_r;
+    son_adres_onbellekleme_ns = son_adres_onbellekleme_r;
 
     if (port_veri_hazir_i && port_veri_gecerli_o) begin
         port_veri_gecerli_ns = `LOW;
@@ -404,6 +408,7 @@ always @* begin
         son_adres_yaz_ns = port_istek_yaz_i;
         son_adres_veri_ns = port_istek_veri_i;
         son_adres_maske_ns = port_istek_maske_i;
+        son_adres_onbellekleme_ns = port_istek_onbellekleme_i;
 
         fn_l1_ara_sonuc_cmb = l1_ara(son_adres_r);
         if (son_adres_gecerli_r) begin
@@ -414,7 +419,16 @@ always @* begin
                 son_adres_yaz_ns = son_adres_yaz_r;
                 son_adres_veri_ns = son_adres_veri_r;
                 son_adres_maske_ns = son_adres_maske_r;
+                son_adres_onbellekleme_ns = son_adres_onbellekleme_r;
                 port_istek_hazir_cmb = `LOW;
+            end
+            else if (son_adres_onbellekleme_r) begin
+                port_istek_hazir_cmb = `LOW;
+                port_istek_adres_ns = son_adres_r;
+                port_istek_veri_ns = son_adres_veri_r;
+                port_istek_maske_ns = son_adres_maske_r;
+                port_yazma_istegi_ns = son_adres_yaz_r;
+                l1_durum_ns = son_adres_yaz_r ? L1_ONBELLEKSIZ_YAZ_ISTEK : L1_ONBELLEKSIZ_OKU_ISTEK;
             end
             else if (fn_l1_ara_sonuc_cmb[`FN_L1_SORGU_SONUC]) begin
                 if (son_adres_yaz_r) begin
@@ -445,6 +459,7 @@ always @* begin
                 son_adres_yaz_ns = son_adres_yaz_r;
                 son_adres_veri_ns = son_adres_veri_r;
                 son_adres_maske_ns = son_adres_maske_r;
+                son_adres_onbellekleme_ns = son_adres_onbellekleme_r;
                 vy_istek_adres_ns = son_adres_r;
                 vy_istek_gecerli_ns = `HIGH; 
                 vy_hedef_yol_ns = cikarma_sayaci_r;
@@ -463,58 +478,6 @@ always @* begin
                 end
             end   
         end 
-
-        if (port_istek_onbellekleme_i) begin
-            son_adres_gecerli_ns = `LOW;
-            port_istek_hazir_ns = `LOW;
-            port_istek_adres_ns = port_istek_adres_i;
-            port_istek_veri_ns = port_istek_veri_i;
-            port_istek_maske_ns = port_istek_maske_i;
-            port_yazma_istegi_ns = port_istek_yaz_i;
-            if (port_istek_onbellekleme_i) begin
-                l1_durum_ns = port_istek_yaz_i ? L1_ONBELLEKSIZ_YAZ_ISTEK : L1_ONBELLEKSIZ_OKU_ISTEK;
-            end
-            else begin
-                l1_cikar(port_istek_adres_i);
-            end
-        end
-    end
-    L1_SATIR_ACIK: begin
-    // Yine bostayiz ama elimizde acik bir satir var. Istek burayi vurursa l1 okumaya gerek yok.
-        port_istek_hazir_ns = `HIGH;
-        fn_l1_ara_sonuc_cmb = l1_ara(port_istek_adres_i);
-        if (port_istek_gecerli_i && port_istek_hazir_o) begin
-            port_istek_hazir_ns = `LOW;
-            port_istek_adres_ns = port_istek_adres_i;
-            port_istek_veri_ns = port_istek_veri_i;
-            port_istek_maske_ns = port_istek_maske_i;
-            port_yazma_istegi_ns = port_istek_yaz_i;
-            if (port_istek_onbellekleme_i) begin
-                if (l1_yol_guncellendi_r != {`L1V_YOL{`LOW}}) begin // Arabelleklerde SRAM'e yazilmamis veri var
-                    l1_istek_gecerli_ns = `HIGH;
-                    l1_istek_satir_ns = get_satir(son_adres_r);
-                    l1_istek_yaz_ns = l1_yol_guncellendi_r;
-                    l1_yol_guncellendi_ns = {`L1V_YOL{`LOW}};
-                end
-                l1_durum_ns = port_istek_yaz_i ? L1_ONBELLEKSIZ_YAZ_ISTEK : L1_ONBELLEKSIZ_OKU_ISTEK;
-            end
-            else if (fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_SONUC]) begin
-                if (port_istek_yaz_i) begin
-                    set_veri(fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL], port_istek_adres_i, port_istek_veri_i, port_istek_maske_i);
-                    port_yazma_istegi_ns = `LOW;
-                end
-                else if (port_veri_gecerli_o && !port_veri_hazir_i) begin
-                    l1_durum_ns = L1_SORGU;
-                end
-                else begin
-                    port_veri_ns = get_veri(l1_buffer_bloklar_r[fn_l1_ara_sonuc_cmb[`FN_L1V_SORGU_YOL]], port_istek_adres_i);
-                    port_veri_gecerli_ns = `HIGH;
-                end
-            end
-            else begin
-                l1_cikar(port_istek_adres_i);
-            end
-        end
     end
     L1_OKU: begin
     // BRAM/SRAM'lerden 1 satirin etiketlerini ve veri bloklarini getir
@@ -674,6 +637,7 @@ always @(posedge clk_i) begin
         son_adres_yaz_r <= `LOW;
         son_adres_veri_r <= 0;
         son_adres_maske_r <= 0;
+        son_adres_onbellekleme_r <= `LOW;
     end
     else begin
         for (i = 0; i < `L1V_SATIR; i = i + 1) begin
@@ -709,6 +673,7 @@ always @(posedge clk_i) begin
         son_adres_yaz_r <= son_adres_yaz_ns;
         son_adres_veri_r <= son_adres_veri_ns;
         son_adres_maske_r <= son_adres_maske_ns;
+        son_adres_onbellekleme_r <= son_adres_onbellekleme_ns;
     end
 end
 

@@ -42,7 +42,7 @@ always begin
     #5;
 end
 
-localparam PATH_TO_TEST_LIST = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex";
+localparam PATH_TO_TEST_LIST = "/home/ali/Desktop/TEKNOFEST/kasirga-teknofest-2023/kaynaklar/rv32test/rv32imc-hex/rv32ui-p-add.hex";
 localparam GP = 'd3;
 localparam A7 = 'd17;
 localparam MAX_TEST_COUNT = 64;
@@ -91,10 +91,10 @@ assign uart_rx_i = uart_msg[10 - uart_ctr];
 
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
 localparam RISCV_TEST = 0;
-localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
-//localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
-localparam LOG_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/vivado.txt";
-localparam UART_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/uart.txt";
+//localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+ localparam STANDALONE_PATH = "/home/ali/Desktop/TEKNOFEST/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
+localparam UART_PATH = "/home/ali/Desktop/TEKNOFEST/uart.txt";
+localparam LOG_PATH = "/home/ali/Desktop/TEKNOFEST/LOG.txt";
 initial begin
     uart_msg = 11'b10_10110011_1;
     if (RISCV_TEST) begin
