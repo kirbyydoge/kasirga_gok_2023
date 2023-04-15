@@ -1469,16 +1469,13 @@ task uop_cnnldx();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS1]};
     buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS2]};
-    buyruk_cnn_rs1_en_cmb = getir_buyruk_i[`CNN_RS1_EN];
     buyruk_cnn_rs2_en_cmb = getir_buyruk_i[`CNN_RS2_EN];
 
     uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
-    uop_ns[`UOP_RS1_EN] = buyruk_cnn_rs1_en_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
     uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
     uop_ns[`UOP_RS2_EN] = buyruk_cnn_rs2_en_cmb;
-    uop_ns[`UOP_YZB] =  buyruk_cnn_rs1_en_cmb && buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDX_ALL :
-                                                 buyruk_cnn_rs1_en_cmb  ? `UOP_YZB_LDX_OP1 :
-                                                 buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDX_OP2 : `UOP_YZB_NOP;
+    uop_ns[`UOP_YZB] =  buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDX_ALL : `UOP_YZB_LDX_OP1;
 end
 endtask
 
@@ -1492,16 +1489,13 @@ task uop_cnnldw();
 begin
     buyruk_rs1_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS1]};
     buyruk_rs2_cmb = {{27{`LOW}}, getir_buyruk_i[`CNN_RS2]};
-    buyruk_cnn_rs1_en_cmb = getir_buyruk_i[`CNN_RS1_EN];
     buyruk_cnn_rs2_en_cmb = getir_buyruk_i[`CNN_RS2_EN];
 
     uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
-    uop_ns[`UOP_RS1_EN] = buyruk_cnn_rs1_en_cmb;
+    uop_ns[`UOP_RS1_EN] = `HIGH;
     uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
     uop_ns[`UOP_RS2_EN] = buyruk_cnn_rs2_en_cmb;
-    uop_ns[`UOP_YZB] =  buyruk_cnn_rs1_en_cmb && buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDW_ALL :
-                                                 buyruk_cnn_rs1_en_cmb  ? `UOP_YZB_LDW_OP1 :
-                                                 buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDW_OP2 : `UOP_YZB_NOP;
+    uop_ns[`UOP_YZB] =  buyruk_cnn_rs2_en_cmb  ? `UOP_YZB_LDW_ALL : `UOP_YZB_LDW_OP1;
 end
 endtask
 

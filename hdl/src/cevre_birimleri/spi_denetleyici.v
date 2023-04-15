@@ -25,7 +25,7 @@ module spi_denetleyici (
 );
 
 wire        cek_spi_istek_w;
-wire [3:0]  cek_spi_addr_w;
+wire [4:0]  cek_spi_addr_w;
 wire        cek_spi_yaz_w;
 wire        cek_spi_oku_w;
 
@@ -34,7 +34,13 @@ assign cek_spi_addr_w = cek_adres_i & `SPI_MASK_ADDR;
 assign cek_spi_yaz_w = cek_tilefields_i[`TL_A_OP] == `TL_OP_PUT_FULL || cek_tilefields_i[`TL_A_OP] == `TL_OP_PUT_PART;
 assign cek_spi_oku_w = cek_tilefields_i[`TL_A_OP] == `TL_OP_GET;
 
-reg [31:0]      fifo_miso_wr_data_cmb;
+reg [31:0]      wr_buf_r;
+reg [31:0]      wr_buf_ns;
+reg [2:0]       wr_buf_rem_r;
+reg [2:0]       wr_buf_rem_ns;
+
+
+reg [8:0]       fifo_miso_wr_data_cmb;
 reg             fifo_miso_wr_en_cmb;
 wire [31:0]     fifo_miso_rd_data_w;
 reg             fifo_miso_rd_en_cmb;
@@ -85,6 +91,7 @@ localparam  DURUM_BOSTA = 'd0;
 localparam  DURUM_VERI_BEKLE = 'd1;
 localparam  DURUM_MOSI_YER_BEKLE = 'd2;
 localparam  DURUM_CMD_YER_BEKLE = 'd3;
+localparam  DURUM_MOSI_YAZ = 'd4;
 
 localparam  DURUM_EXE_BOSTA = 'd0;
 localparam  DURUM_EXE_BASLAT = 'd1;
@@ -92,8 +99,8 @@ localparam  DURUM_EXE_OKU_BEKLE = 'd2;
 localparam  DURUM_EXE_VERI_BEKLE = 'd3;
 localparam  DURUM_EXE_YER_BEKLE = 'd4;
 
-reg [1:0]   durum_r;
-reg [1:0]   durum_ns;
+reg [2:0]   durum_r;
+reg [2:0]   durum_ns;
 
 reg [2:0]   durum_exe_r;
 reg [2:0]   durum_exe_ns;
@@ -118,6 +125,7 @@ reg                             sb_cmd_cpol_cmb;
 reg     [15:0]                  sb_cmd_sck_div_cmb;
 reg                             sb_cmd_end_cs_cmb;
 reg     [1:0]                   sb_cmd_dir_cmb;
+reg                             sb_cmd_hint_cmb;
 wire                            sb_cmd_ready_w;
 wire    [`SPI_TXN_SIZE-1:0]     sb_recv_data_w;
 wire                            sb_recv_data_valid_w;
@@ -127,6 +135,8 @@ localparam  KOMUT_OKU = 2'b01;
 localparam  KOMUT_YAZ = 2'b10;
 
 always @* begin
+    wr_buf_ns = wr_buf_r;
+    wr_buf_rem_ns = wr_buf_rem_r;
     spi_tilefields_ns = spi_tilefields_r;
     spi_tilefields_ns[`TL_D_SIZE] = 5;
     spi_gecerli_ns = spi_gecerli_r;
@@ -149,7 +159,7 @@ always @* begin
     fifo_buf_miso_ns = fifo_buf_miso_r;
     spi_ctrl_ns = spi_ctrl_r;
 
-    if (spi_gecerli_o && spi_hazir_i) begin
+    if ((spi_gecerli_o && spi_hazir_i) || spi_tilefields_o[`TL_D_OP] == `TL_OP_ACK) begin
         spi_gecerli_ns = `LOW;
     end
 
@@ -188,11 +198,16 @@ always @* begin
                     if (fifo_mosi_full_w) begin
                         fifo_buf_veri_ns = cek_veri_i;
                         durum_ns = DURUM_MOSI_YER_BEKLE;
+                        wr_buf_ns = cek_veri_i;
+                        wr_buf_rem_ns = `VERI_BYTE - 1;
                     end
                     else begin
-                        fifo_mosi_wr_data_cmb = cek_veri_i;
+                        wr_buf_ns = cek_veri_i >> 8;
+                        wr_buf_rem_ns = `VERI_BYTE - 2;
+                        fifo_mosi_wr_data_cmb = cek_veri_i[7:0];
                         fifo_mosi_wr_en_cmb = `HIGH;
-                    end
+                        durum_ns = DURUM_MOSI_YAZ;
+                     end
                 end
             end
             `SPI_CMD_REG: begin
@@ -222,9 +237,16 @@ always @* begin
     end
     DURUM_MOSI_YER_BEKLE: begin
         if (!fifo_mosi_full_w) begin
-            fifo_mosi_wr_data_cmb = fifo_buf_veri_r;
+            wr_buf_ns = wr_buf_r >> 8;
+            wr_buf_rem_ns = wr_buf_rem_r - 1;
+            fifo_mosi_wr_data_cmb = wr_buf_r[7:0];
             fifo_mosi_wr_en_cmb = `HIGH;
-            durum_ns = DURUM_BOSTA;
+            if (wr_buf_rem_r == 0) begin
+                durum_ns = DURUM_BOSTA;
+            end
+            else begin
+                durum_ns = DURUM_MOSI_YAZ;
+            end
         end
     end
     DURUM_CMD_YER_BEKLE: begin
@@ -232,6 +254,20 @@ always @* begin
             fifo_cmd_wr_data_cmb = fifo_buf_veri_r;
             fifo_cmd_wr_en_cmb = `HIGH;
             durum_ns = DURUM_BOSTA;
+        end
+    end
+    DURUM_MOSI_YAZ: begin
+        if (fifo_miso_full_w) begin
+            durum_ns = DURUM_MOSI_YER_BEKLE;
+        end
+        else begin
+            wr_buf_ns = wr_buf_r >> 8;
+            wr_buf_rem_ns = wr_buf_rem_r - 1;
+            fifo_mosi_wr_data_cmb = wr_buf_r[7:0];
+            fifo_mosi_wr_en_cmb = `HIGH;
+            if (wr_buf_rem_r == 0) begin
+                durum_ns = DURUM_BOSTA;
+            end
         end
     end
     endcase
@@ -244,6 +280,7 @@ always @* begin
     sb_cmd_msb_first_cmb = 0;
     sb_cmd_sck_div_cmb = 0;
     sb_cmd_valid_cmb = 0;
+    sb_cmd_hint_cmb = 0;
 
     case(durum_exe_r)
     DURUM_EXE_BOSTA: begin
@@ -269,7 +306,8 @@ always @* begin
             sb_cmd_data_cmb = fifo_mosi_rd_data_w;
             fifo_mosi_rd_en_cmb = exe_cmd_yon_r == KOMUT_YAZ;
             sb_cmd_end_cs_cmb = exe_kalan_r == 1 ? exe_cs_end_r : `LOW;
-            sb_cmd_msb_first_cmb = `HIGH;
+            sb_cmd_hint_cmb = exe_kalan_r == 1 ? `HIGH : `LOW;
+            sb_cmd_msb_first_cmb = `LOW;
             sb_cmd_sck_div_cmb = spi_ctrl_sck_div_w;
             sb_cmd_valid_cmb = `HIGH;
             exe_kalan_ns = exe_kalan_r - 1;
@@ -320,6 +358,8 @@ always @(posedge clk_i) begin
         exe_cs_end_r <= 0;
         exe_kalan_r <= 0;
         spi_tilefields_r <= 0;
+        wr_buf_r <= 0;
+        wr_buf_rem_r <= 0;
     end
     else begin
         spi_veri_r <= spi_veri_ns;
@@ -334,6 +374,8 @@ always @(posedge clk_i) begin
         exe_cmd_yon_r <= exe_cmd_yon_ns;
         exe_cs_end_r <= exe_cs_end_ns;
         exe_kalan_r <= exe_kalan_ns;
+        wr_buf_r <= wr_buf_ns;
+        wr_buf_rem_r <= wr_buf_rem_ns;
     end
 end
 
@@ -348,6 +390,7 @@ spi_birimi spi (
     .cmd_sck_div_i       ( sb_cmd_sck_div_cmb ),
     .cmd_end_cs_i        ( sb_cmd_end_cs_cmb ),
     .cmd_dir_i           ( sb_cmd_dir_cmb ),
+    .cmd_hint_i          ( sb_cmd_hint_cmb ),
     .cmd_ready_o         ( sb_cmd_ready_w ),
     .recv_data_o         ( sb_recv_data_w ),
     .recv_data_valid_o   ( sb_recv_data_valid_w ),
@@ -358,8 +401,8 @@ spi_birimi spi (
 ); 
 
 fifo #(
-    .DATA_WIDTH(32),
-    .DATA_DEPTH(8)
+    .DATA_WIDTH(8),
+    .DATA_DEPTH(32)
 ) fifo_miso (
     .clk_i      ( clk_i ),
     .rstn_i     ( rstn_i ),

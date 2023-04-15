@@ -107,6 +107,24 @@ always @* begin
 
         islem_sayac_ns = islem_sayac_r + 5'b1;
     end
+    // `UOP_AMB_MULHU   : begin
+    //     carpici_is0_cmb = islem_islec1_i;
+    //     carpici_is1_cmb = islem_islec2_i;
+    //     carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
+    //     islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
+    //     islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+
+    //     islem_sayac_ns = islem_sayac_r + 5'b1;
+    // end
+    // `UOP_AMB_MULHSU   : begin
+    //     carpici_is0_cmb = islem_islec1_i;
+    //     carpici_is1_cmb = islem_islec2_i;
+    //     carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
+    //     islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
+    //     islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+
+    //     islem_sayac_ns = islem_sayac_r + 5'b1;
+    // end
     `UOP_AMB_DIV    : begin
         if (islem_islec2_i == 0) begin
             islem_sonuc_cmb = {`VERI_BIT{1'b1}};
@@ -186,9 +204,10 @@ always @* begin
         islem_sonuc_cmb = {islem_islec2_i[0 +: `VERI_BIT/2], islem_islec1_i[0 +: `VERI_BIT/2]};
     end
     `UOP_AMB_RVRS: begin
-        for (i = 0; i < `VERI_BIT; i = i + 1) begin
-            islem_sonuc_cmb[i] = islem_islec1_i[`VERI_BIT - i - 1];
-        end
+        // for (i = 0; i < `VERI_BIT; i = i + 1) begin
+        //     islem_sonuc_cmb[i] = islem_islec1_i[`VERI_BIT - i - 1];
+        // end
+        islem_sonuc_cmb = {islem_islec1_i[7:0], islem_islec1_i[15:8], islem_islec1_i[23:16], islem_islec1_i[31:24]};
     end
     `UOP_AMB_SLADD: begin
         // TODO: Toplama birimi kullanilacak mi?

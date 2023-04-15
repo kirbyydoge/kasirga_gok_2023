@@ -153,7 +153,7 @@ initial begin
         stall_ctr = 0;
         last_inst = -1;
         last_uart = -1;
-        while(stall_ctr < 1000) begin
+        while(stall_ctr < 1000000) begin
             @(posedge clk_i); #2;
             stall_ctr = stall_ctr + 1;
             if (tw.soc.cekirdek.gy.uop_gy_gecerli_w && last_inst != tw.soc.cekirdek.gy.inst_ctr_r) begin

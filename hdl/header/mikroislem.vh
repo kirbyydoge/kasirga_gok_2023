@@ -188,14 +188,12 @@
 // Yapaz Zeka Birimi
 `define UOP_YZB_NOP             0
 `define UOP_YZB_LDX_OP1         1
-`define UOP_YZB_LDX_OP2         2
-`define UOP_YZB_LDX_ALL         3
-`define UOP_YZB_LDW_OP1         4
-`define UOP_YZB_LDW_OP2         5
-`define UOP_YZB_LDW_ALL         6
-`define UOP_YZB_CLRX            7
-`define UOP_YZB_CLRW            8
-`define UOP_YZB_RUN             9
+`define UOP_YZB_LDX_ALL         2
+`define UOP_YZB_LDW_OP1         3
+`define UOP_YZB_LDW_ALL         4
+`define UOP_YZB_CLRX            5
+`define UOP_YZB_CLRW            6
+`define UOP_YZB_RUN             7
 
 `define UOP_YZB_BIT             4
 `define UOP_YZB_PTR             (`UOP_CSR_OP_PTR + `UOP_CSR_OP_BIT)

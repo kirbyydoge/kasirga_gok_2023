@@ -8,7 +8,6 @@
 `define CNN_RD          11:7
 `define CNN_RS1         19:15
 `define CNN_RS2         24:20
-`define CNN_RS1_EN      30
 `define CNN_RS2_EN      31
 
 `define I_RD            11:7

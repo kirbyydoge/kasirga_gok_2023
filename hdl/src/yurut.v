@@ -239,6 +239,7 @@ dallanma_birimi db (
 yapay_zeka_birimi yzb (
     .clk_i                          ( clk_i ),
     .rstn_i                         ( rstn_i ),
+    .islem_gecerli_i                ( uop_gecerli_w ),
     .islem_kod_i                    ( uop_yzb_islem_sec_w ),
     .islem_islec1_i                 ( yzb_islec1_w ),
     .islem_islec2_i                 ( yzb_islec2_w ),
