@@ -22,11 +22,6 @@ module pwm_denetleyici (
     output                      o2
 );
 
-assign cek_hazir_o = `HIGH;
-assign pwm_veri_o = pwm_veri_r;
-assign pwm_gecerli_o = pwm_gecerli_r;
-assign pwm_tilefields_o = pwm_tilefields_r;
-
 reg [`VERI_BIT-1:0] pwm_veri_r;
 reg [`VERI_BIT-1:0] pwm_veri_ns;
 reg pwm_gecerli_r;
@@ -269,5 +264,10 @@ always@( posedge clk_i) begin
         pwm_tilefields_r <= pwm_tilefields_ns;
     end
 end
+
+assign cek_hazir_o = `HIGH;
+assign pwm_veri_o = pwm_veri_r;
+assign pwm_gecerli_o = pwm_gecerli_r;
+assign pwm_tilefields_o = pwm_tilefields_r;
 
 endmodule

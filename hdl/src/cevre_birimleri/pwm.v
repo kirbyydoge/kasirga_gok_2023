@@ -310,6 +310,8 @@ module pwm(
         art_azal2_ns=art_azal2;
         mod2_ns=mod2;
         kalp_sayma2_ns=kalp_sayma2;
+        pwm_output_1=0;
+        pwm_output_2=0;
     
             
         case(pwm_control_1)
