@@ -56,9 +56,6 @@ reg     [`PS_BIT-1:0]       coz_buyruk_ps_ns;
 reg                         coz_buyruk_gecerli_r;
 reg                         coz_buyruk_gecerli_ns;
 
-reg                         coz_buyruk_atladi_r;
-reg                         coz_buyruk_atladi_ns;
-
 reg                         coz_buyruk_rvc_r;
 reg                         coz_buyruk_rvc_ns;
 
@@ -116,7 +113,7 @@ always @* begin
     coz_buyruk_ns = coz_buyruk_r;
     coz_buyruk_ps_ns = coz_buyruk_ps_r;
     coz_buyruk_gecerli_ns = cek_duraklat_i ? coz_buyruk_gecerli_r : `LOW;
-    coz_buyruk_atladi_ns = cek_duraklat_i ? coz_buyruk_atladi_r : `LOW;
+    // coz_buyruk_atladi_ns = cek_duraklat_i ? coz_buyruk_atladi_r : `LOW;
     coz_buyruk_rvc_ns = cek_duraklat_i ? coz_buyruk_rvc_r : `LOW;
     l1b_buyruk_hazir_cmb = `LOW;
     g1_ps_hazir_cmb = `LOW;
@@ -154,14 +151,14 @@ always @* begin
                 coz_buyruk_ns = l1b_buyruk_i;
                 coz_buyruk_ps_ns = l1b_obek_ps_w;
                 coz_buyruk_gecerli_ns = `HIGH;
-                coz_buyruk_atladi_ns = do_atladi_w;
+                // coz_buyruk_atladi_ns = do_atladi_w;
             end
             else if(!l1b_alt_gecersiz_w && l1b_alt_compressed_w) begin
                 coz_buyruk_ns = {16'b0, l1b_alt_buyruk_w};
                 coz_buyruk_ps_ns = l1b_obek_ps_w;
                 coz_buyruk_gecerli_ns = `HIGH;
                 coz_buyruk_rvc_ns = `HIGH;
-                coz_buyruk_atladi_ns = do_atladi_w;
+                // coz_buyruk_atladi_ns = do_atladi_w;
 
                 buf_buyruk_ns = {16'b0, l1b_ust_buyruk_w};
                 buf_ps_ns = l1b_obek_ps_w + 2'd2;
@@ -177,7 +174,7 @@ always @* begin
                 coz_buyruk_ps_ns = l1b_obek_ps_w + 2'd2;
                 coz_buyruk_gecerli_ns = `HIGH;
                 coz_buyruk_rvc_ns = `HIGH;
-                coz_buyruk_atladi_ns = do_atladi_w;
+                // coz_buyruk_atladi_ns = do_atladi_w;
             end
         end
     end
@@ -191,7 +188,7 @@ always @* begin
                 coz_buyruk_ps_ns = buf_ps_r;
                 coz_buyruk_gecerli_ns = `HIGH;
                 coz_buyruk_rvc_ns = `HIGH;
-                coz_buyruk_atladi_ns = do_atladi_w;
+                // coz_buyruk_atladi_ns = do_atladi_w;
                 g2_durum_ns = G2_YAZMAC_BOS;
             end
             else if (l1b_buyruk_gecerli_i && g1_ps_gecerli_i) begin
@@ -201,7 +198,7 @@ always @* begin
                 coz_buyruk_ns = {l1b_alt_buyruk_w, buf_alt_buyruk_w};
                 coz_buyruk_ps_ns = buf_ps_r;
                 coz_buyruk_gecerli_ns = `HIGH;
-                coz_buyruk_atladi_ns = do_atladi_w;
+                // coz_buyruk_atladi_ns = do_atladi_w;
                 g2_durum_ns = G2_YAZMAC_YARIM;
             end
         end
@@ -231,7 +228,7 @@ always @* begin
         g2_durum_ns = g2_bos_istek_sayaci_r != 3'd0 && !l1b_buyruk_gecerli_i ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
         l1b_beklenen_sayisi_ns = g1_istek_yapildi_i ? 3'd1 : 3'd0;
         coz_buyruk_gecerli_ns = `LOW;
-        coz_buyruk_atladi_ns = `LOW;
+//        coz_buyruk_atladi_ns = `LOW;
         coz_buyruk_rvc_ns = `LOW;
         g1_ps_hazir_cmb = `LOW;
         g1_bosalt_aktif_ns = `LOW;
@@ -280,7 +277,7 @@ always @(posedge clk_i) begin
         buf_buyruk_r <= 32'h0;
         buf_ps_r <= 32'h0;
         ilk_buyruk_r <= `HIGH;
-        coz_buyruk_atladi_r <= `LOW;
+//        coz_buyruk_atladi_r <= `LOW;
         duraklat_istek_yapildi_r <= `LOW;
         g1_bosalt_hedef_ps_r <= 32'h0;
         g1_bosalt_aktif_r <= `LOW;
@@ -294,7 +291,7 @@ always @(posedge clk_i) begin
         coz_buyruk_r <= coz_buyruk_ns;
         coz_buyruk_ps_r <= coz_buyruk_ps_ns;
         coz_buyruk_gecerli_r <= coz_buyruk_gecerli_ns;
-        coz_buyruk_atladi_r <= coz_buyruk_atladi_ns;
+        // coz_buyruk_atladi_r <= coz_buyruk_atladi_ns;
         coz_buyruk_rvc_r <= coz_buyruk_rvc_ns;
         buf_buyruk_r <= buf_buyruk_ns;
         buf_ps_r <= buf_ps_ns;
