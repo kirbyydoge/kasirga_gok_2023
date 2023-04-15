@@ -147,6 +147,10 @@ wire    [`VERI_BIT-1:0]         io_yo_geriyaz_veri_w;
 wire    [`YAZMAC_BIT-1:0]       io_yo_geriyaz_adres_w;
 wire    [`UOP_TAG_BIT-1:0]      io_yo_geriyaz_etiket_w;
 wire                            io_yo_geriyaz_gecerli_w;
+wire    [`VERI_BIT-1:0]         io_yo_bellek_veri_w;
+wire    [`YAZMAC_BIT-1:0]       io_yo_bellek_adres_w;
+wire    [`UOP_TAG_BIT-1:0]      io_yo_bellek_etiket_w;
+wire                            io_yo_bellek_gecerli_w;
 wire    [`VERI_BIT-1:0]         io_yo_yurut_veri_w;
 wire    [`YAZMAC_BIT-1:0]       io_yo_yurut_adres_w;
 wire    [`UOP_TAG_BIT-1:0]      io_yo_yurut_etiket_w;
@@ -169,6 +173,10 @@ yazmac_oku yo (
     .geriyaz_adres_i            ( io_yo_geriyaz_adres_w ),
     .geriyaz_etiket_i           ( io_yo_geriyaz_etiket_w ),
     .geriyaz_gecerli_i          ( io_yo_geriyaz_gecerli_w ),
+    .bellek_veri_i              ( io_yo_bellek_veri_w ),   
+    .bellek_adres_i             ( io_yo_bellek_adres_w ),   
+    .bellek_etiket_i            ( io_yo_bellek_etiket_w ),       
+    .bellek_gecerli_i           ( io_yo_bellek_gecerli_w ),       
     .yurut_veri_i               ( io_yo_yurut_veri_w ),
     .yurut_adres_i              ( io_yo_yurut_adres_w ),
     .yurut_etiket_i             ( io_yo_yurut_etiket_w ),
@@ -249,9 +257,10 @@ wire                            io_bellek_l1v_istek_hazir_w;
 wire    [`VERI_BIT-1:0]         io_bellek_l1v_veri_w;
 wire                            io_bellek_l1v_veri_gecerli_w;
 wire                            io_bellek_l1v_veri_hazir_w;
-wire                            io_bellek_l1v_istek_hazir_w;
-wire  [`PS_BIT-1:0]             io_bellek_l1v_istek_adres_w;
-wire                            io_bellek_l1v_istek_gecerli_w;
+wire    [`VERI_BIT-1:0]         io_bellek_yo_veri_w;
+wire    [`YAZMAC_BIT-1:0]       io_bellek_yo_adres_w;
+wire    [`UOP_TAG_BIT-1:0]      io_bellek_yo_etiket_w;
+wire                            io_bellek_yo_gecerli_w;
 wire                            io_bellek_duraklat_w;
 wire  [`UOP_BIT-1:0]            io_bellek_bellek_uop_w;
 wire  [`UOP_BIT-1:0]            io_bellek_gy_uop_w;
@@ -269,9 +278,10 @@ bellek bellek (
     .l1v_veri_i                 ( io_bellek_l1v_veri_w ),
     .l1v_veri_gecerli_i         ( io_bellek_l1v_veri_gecerli_w ),
     .l1v_veri_hazir_o           ( io_bellek_l1v_veri_hazir_w ),
-    .l1v_istek_hazir_i          ( io_bellek_l1v_istek_hazir_w ),
-    .l1v_istek_adres_o          ( io_bellek_l1v_istek_adres_w ),
-    .l1v_istek_gecerli_o        ( io_bellek_l1v_istek_gecerli_w ),
+    .yo_veri_o                  ( io_bellek_yo_veri_w ),
+    .yo_adres_o                 ( io_bellek_yo_adres_w ),
+    .yo_etiket_o                ( io_bellek_yo_etiket_w ),    
+    .yo_gecerli_o               ( io_bellek_yo_gecerli_w ),    
     .duraklat_o                 ( io_bellek_duraklat_w ),
     .bellek_uop_i               ( io_bellek_bellek_uop_w ),
     .geri_yaz_uop_o             ( io_bellek_gy_uop_w )
@@ -487,6 +497,12 @@ assign io_yo_geriyaz_veri_w = io_gy_yo_veri_w;
 assign io_yo_geriyaz_adres_w = io_gy_yo_adres_w;
 assign io_yo_geriyaz_etiket_w = io_gy_yo_etiket_w;
 assign io_yo_geriyaz_gecerli_w = io_gy_yo_gecerli_w;
+
+// Yazmac Oku < Bellek
+assign io_yo_bellek_veri_w = io_bellek_yo_veri_w;
+assign io_yo_bellek_adres_w = io_bellek_yo_adres_w;
+assign io_yo_bellek_etiket_w = io_bellek_yo_etiket_w;
+assign io_yo_bellek_gecerli_w = io_bellek_yo_gecerli_w;
 
 // Yazmac Oku < Denetim Durum Birimi
 assign io_yo_csr_veri_w = io_ddb_csr_veri_w;

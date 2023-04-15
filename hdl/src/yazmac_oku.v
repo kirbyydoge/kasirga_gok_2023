@@ -12,6 +12,11 @@ module yazmac_oku(
     input   [`UOP_TAG_BIT-1:0]      geriyaz_etiket_i,
     input                           geriyaz_gecerli_i,
 
+    input   [`VERI_BIT-1:0]         bellek_veri_i,
+    input   [`YAZMAC_BIT-1:0]       bellek_adres_i,
+    input   [`UOP_TAG_BIT-1:0]      bellek_etiket_i,
+    input                           bellek_gecerli_i,
+
     input   [`VERI_BIT-1:0]         yurut_veri_i,
     input   [`YAZMAC_BIT-1:0]       yurut_adres_i,
     input   [`UOP_TAG_BIT-1:0]      yurut_etiket_i,
@@ -82,6 +87,10 @@ always @* begin
         oku_veri1_cmb = yurut_veri_i;
         oku_veri1_gecerli_cmb = `HIGH;
     end
+    else if (bellek_gecerli_i && bellek_adres_i == obek_adres1_w && bellek_etiket_i == obek_veri1_etiket_w) begin
+        oku_veri1_cmb = bellek_veri_i;
+        oku_veri1_gecerli_cmb = `HIGH;
+    end
     else if (geriyaz_gecerli_i && geriyaz_adres_i == obek_adres1_w && geriyaz_etiket_i == obek_veri1_etiket_w) begin
         oku_veri1_cmb = geriyaz_veri_i;
         oku_veri1_gecerli_cmb = `HIGH;
@@ -93,6 +102,10 @@ always @* begin
 
     if (yurut_gecerli_i && yurut_adres_i == obek_adres2_w && yurut_etiket_i == obek_veri2_etiket_w) begin
         oku_veri2_cmb = yurut_veri_i;
+        oku_veri2_gecerli_cmb = `HIGH;
+    end
+    else if (bellek_gecerli_i && bellek_adres_i == obek_adres2_w && bellek_etiket_i == obek_veri2_etiket_w) begin
+        oku_veri2_cmb = bellek_veri_i;
         oku_veri2_gecerli_cmb = `HIGH;
     end
     else if (geriyaz_gecerli_i && geriyaz_adres_i == obek_adres2_w && geriyaz_etiket_i == obek_veri2_etiket_w) begin
