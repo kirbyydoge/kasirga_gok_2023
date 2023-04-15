@@ -40,16 +40,16 @@ reg [2:0]       wr_buf_rem_r;
 reg [2:0]       wr_buf_rem_ns;
 
 
-reg [8:0]       fifo_miso_wr_data_cmb;
+reg [31:0]      fifo_miso_wr_data_cmb;
 reg             fifo_miso_wr_en_cmb;
 wire [31:0]     fifo_miso_rd_data_w;
 reg             fifo_miso_rd_en_cmb;
 wire            fifo_miso_full_w;
 wire            fifo_miso_empty_w;
 
-reg [31:0]      fifo_mosi_wr_data_cmb;
+reg [7:0]       fifo_mosi_wr_data_cmb;
 reg             fifo_mosi_wr_en_cmb;
-wire [31:0]     fifo_mosi_rd_data_w;
+wire [7:0]      fifo_mosi_rd_data_w;
 reg             fifo_mosi_rd_en_cmb;
 wire            fifo_mosi_full_w;
 wire            fifo_mosi_empty_w;
@@ -67,8 +67,8 @@ reg [`VERI_BIT-1:0] spi_veri_ns;
 reg [`VERI_BIT-1:0] fifo_buf_veri_r;
 reg [`VERI_BIT-1:0] fifo_buf_veri_ns;
 
-reg [`VERI_BIT-1:0] fifo_buf_miso_r;
-reg [`VERI_BIT-1:0] fifo_buf_miso_ns;
+reg [7:0] fifo_buf_miso_r;
+reg [7:0] fifo_buf_miso_ns;
 
 reg         spi_gecerli_r;
 reg         spi_gecerli_ns;
@@ -117,6 +117,12 @@ reg [9:0]   exe_kalan_ns;
 reg [`TL_D_BITS-1:0] spi_tilefields_r;
 reg [`TL_D_BITS-1:0] spi_tilefields_ns;
 
+reg [31:0]  exe_byte_buf_r;
+reg [31:0]  exe_byte_buf_ns;
+
+reg [2:0]   exe_byte_ctr_r;
+reg [2:0]   exe_byte_ctr_ns;
+
 reg                             sb_cmd_msb_first_cmb;
 reg     [`SPI_TXN_SIZE-1:0]     sb_cmd_data_cmb;
 reg                             sb_cmd_valid_cmb;
@@ -135,6 +141,8 @@ localparam  KOMUT_OKU = 2'b01;
 localparam  KOMUT_YAZ = 2'b10;
 
 always @* begin
+    exe_byte_buf_ns = exe_byte_buf_r;
+    exe_byte_ctr_ns = exe_byte_ctr_r;
     wr_buf_ns = wr_buf_r;
     wr_buf_rem_ns = wr_buf_rem_r;
     spi_tilefields_ns = spi_tilefields_r;
@@ -282,11 +290,17 @@ always @* begin
     sb_cmd_valid_cmb = 0;
     sb_cmd_hint_cmb = 0;
 
+    if (exe_byte_ctr_r == 4) begin
+        fifo_miso_wr_data_cmb = exe_byte_buf_r;
+        fifo_miso_wr_en_cmb = `HIGH;
+        exe_byte_ctr_ns = 0;
+    end
+
     case(durum_exe_r)
     DURUM_EXE_BOSTA: begin
         if (!fifo_cmd_empty_w && spi_ctrl_en_w) begin
             exe_kalan_ns = fifo_cmd_rd_data_w[8:0] + 10'd1;
-            exe_cs_end_ns = fifo_cmd_rd_data_w[9];
+            exe_cs_end_ns = ~fifo_cmd_rd_data_w[9];
             exe_cmd_yon_ns = fifo_cmd_rd_data_w[13:12];
             fifo_cmd_rd_en_cmb = `HIGH;
             durum_exe_ns = DURUM_EXE_BASLAT;
@@ -317,13 +331,13 @@ always @* begin
     DURUM_EXE_OKU_BEKLE: begin
         if (sb_recv_data_valid_w) begin
             if (fifo_miso_full_w) begin
-                fifo_miso_wr_data_cmb = sb_recv_data_w;
-                fifo_miso_wr_en_cmb = `HIGH;
-                durum_exe_ns = DURUM_EXE_BASLAT;
-            end
-            else begin
                 fifo_buf_miso_ns = sb_recv_data_w;
                 durum_exe_ns = DURUM_EXE_YER_BEKLE;
+            end
+            else begin
+                exe_byte_buf_ns[exe_byte_ctr_r * 8 +: 8] = sb_recv_data_w;
+                exe_byte_ctr_ns = exe_byte_ctr_r + 1;
+                durum_exe_ns = DURUM_EXE_BASLAT;
             end 
         end
     end
@@ -360,6 +374,8 @@ always @(posedge clk_i) begin
         spi_tilefields_r <= 0;
         wr_buf_r <= 0;
         wr_buf_rem_r <= 0;
+        exe_byte_buf_r <= 0;
+        exe_byte_ctr_r <= 0;
     end
     else begin
         spi_veri_r <= spi_veri_ns;
@@ -376,6 +392,8 @@ always @(posedge clk_i) begin
         exe_kalan_r <= exe_kalan_ns;
         wr_buf_r <= wr_buf_ns;
         wr_buf_rem_r <= wr_buf_rem_ns;
+        exe_byte_buf_r <= exe_byte_buf_ns;
+        exe_byte_ctr_r <= exe_byte_ctr_ns;
     end
 end
 
@@ -401,8 +419,8 @@ spi_birimi spi (
 ); 
 
 fifo #(
-    .DATA_WIDTH(8),
-    .DATA_DEPTH(32)
+    .DATA_WIDTH(32),
+    .DATA_DEPTH(8)
 ) fifo_miso (
     .clk_i      ( clk_i ),
     .rstn_i     ( rstn_i ),
@@ -415,8 +433,8 @@ fifo #(
 );
 
 fifo #(
-    .DATA_WIDTH(32),
-    .DATA_DEPTH(8)
+    .DATA_WIDTH(8),
+    .DATA_DEPTH(32)
 ) fifo_mosi (
     .clk_i      ( clk_i ),
     .rstn_i     ( rstn_i ),
