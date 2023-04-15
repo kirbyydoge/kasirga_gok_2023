@@ -108,6 +108,7 @@ always @* begin
         OKU: begin
             duraklat_cmb = `HIGH;
             if (bellek_gecerli_w) begin // bana veri gelmiş demektir 
+                yo_gecerli_cmb = `HIGH;
                 case (uop_buyruk_secim_w)
                     `UOP_BEL_LW: begin // 32 Bit Okur
                         uop_ns[`UOP_RD] = bellek_veri_w;   
@@ -131,7 +132,6 @@ always @* begin
         end
     endcase
 
-    yo_gecerli_cmb =  !duraklat_cmb && uop_gecerli_w;
     uop_ns[`UOP_VALID] = !duraklat_cmb && uop_gecerli_w;
 end
 
@@ -216,7 +216,7 @@ assign bib_istek_oku_w = oku_w;
 assign bib_istek_adres_w = uop_rd_w;
 assign bib_istek_gecerli_w = bib_istek_gecerli_cmb;
 
-assign yo_veri_o = uop_rd_w;
+assign yo_veri_o = uop_ns[`UOP_RD];
 assign yo_adres_o = bellek_uop_i[`UOP_RD_ADDR];
 assign yo_gecerli_o = yo_gecerli_cmb && uop_gecerli_w;
 assign yo_etiket_o = uop_tag_w;

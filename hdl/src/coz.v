@@ -2148,16 +2148,12 @@ begin
 
     buyruk_etiket_gecerli_cmb = `HIGH;
 
-    uop_ns[`UOP_RS1] = buyruk_rs1_cmb;
-    uop_ns[`UOP_RS1_EN] = `HIGH;
     uop_ns[`UOP_RS2] = buyruk_rs2_cmb;
     uop_ns[`UOP_RS2_EN] = `HIGH;
     uop_ns[`UOP_RD_ADDR] = buyruk_rd_cmb;
     uop_ns[`UOP_RD_ALLOC] = `HIGH;
-    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS1;
-    uop_ns[`UOP_AMB_OP2] = `UOP_AMB_OP_RS2;
-    uop_ns[`UOP_AMB] = `UOP_AMB_ADD;
-    uop_ns[`UOP_YAZ] = `UOP_YAZ_AMB;
+    uop_ns[`UOP_AMB_OP1] = `UOP_AMB_OP_RS2;
+    uop_ns[`UOP_YAZ] = `UOP_YAZ_IS1;
 end
 endtask
 

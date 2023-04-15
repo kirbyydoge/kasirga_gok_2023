@@ -692,7 +692,7 @@ assign io_vyd_mem_istek_hazir_w = (io_vyd_mem_istek_adres_w & ~`RAM_MASK_ADDR) =
                                   (io_vyd_mem_istek_adres_w & ~`TIMER_MASK_ADDR) == `TIMER_BASE_ADDR ? iomem_ready :
                                   (io_vyd_mem_istek_adres_w & ~`SPI_MASK_ADDR) == `SPI_BASE_ADDR ? io_spid_cek_hazir_w :
                                   (io_vyd_mem_istek_adres_w & ~`UART_MASK_ADDR) == `UART_BASE_ADDR ? io_uartd_cek_hazir_w :
-                                  (io_vyd_mem_istek_adres_w & ~`PWM_MASK_ADDR) == `PWM_BASE_ADDR ? io_pwmd_cek_hazir_w :`LOW;
+                                  (io_vyd_mem_istek_adres_w & ~`PWM_MASK_ADDR) == `PWM_BASE_ADDR ? io_pwmd_cek_hazir_w : `LOW;
 
 assign io_vyd_mem_veri_w = bellek_veri;
 assign io_vyd_mem_veri_gecerli_w = bellek_veri_gecerli;
