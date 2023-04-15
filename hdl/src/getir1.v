@@ -66,14 +66,14 @@ always @* begin
         ps_gecerli_cmb = `HIGH;
         ps_ns = cek_ps_i;
         ps_gecerli_ns = `HIGH;
-        if (cek_bosalt_i) begin
-            g2_ps_gecerli_ns = `LOW;
-        end
+        g2_ps_gecerli_ns = `LOW;
+        // if (cek_bosalt_i) begin
+        // end
     end
 
     if (l1b_istek_hazir_i && l1b_istek_gecerli_o) begin // L1B istegi kabul ediyor
         g2_istek_yapildi_cmb = `HIGH;
-        if (!cek_bosalt_i && g2_ps_gecerli_r && !g2_ps_hazir_i) begin // Getir2'yi bekleyen buyruk var ve kabul edilmiyor, Getir1'i duraklat
+        if (!cek_ps_gecerli_i && !cek_bosalt_i && g2_ps_gecerli_r && !g2_ps_hazir_i) begin // Getir2'yi bekleyen buyruk var ve kabul edilmiyor, Getir1'i duraklat
             ps_gecerli_ns = `LOW;
         end
         else begin // Getir2'yi bekleyen buyruk yok ya da var ve su an kabul ediliyor

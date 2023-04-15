@@ -97,6 +97,9 @@ reg     [`PS_BIT-1:0]       buf_ps_ns;
 reg                         ilk_buyruk_r;
 reg                         ilk_buyruk_ns;
 
+reg                         branch_req_r;
+reg                         branch_req_ns;
+
 // Dallanma Ongorucu
 wire   [`PS_BIT-1:0]   do_ps_w;
 wire                   do_ps_gecerli_w;
@@ -109,6 +112,7 @@ wire   [`PS_BIT-1:0]   do_yurut_atlanan_adres_w;
 wire                   do_yurut_hatali_tahmin_w;
 
 always @* begin
+    branch_req_ns = cek_duraklat_i && (branch_req_r || g1_istek_yapildi_i);
     l1b_beklenen_sayisi_ns = l1b_beklenen_sayisi_r;
     coz_buyruk_ns = coz_buyruk_r;
     coz_buyruk_ps_ns = coz_buyruk_ps_r;
@@ -123,7 +127,7 @@ always @* begin
     buf_buyruk_ns = buf_buyruk_r;
     ilk_buyruk_ns = ilk_buyruk_r;
     duraklat_istek_yapildi_ns = cek_duraklat_i ? duraklat_istek_yapildi_r : g1_istek_yapildi_i;
-    g1_bosalt_hedef_ps_ns = g1_bosalt_hedef_ps_r;
+    g1_bosalt_hedef_ps_ns = g1_dallanma_gecerli_o ? g1_dallanma_ps_o : g1_bosalt_hedef_ps_r;
     g1_bosalt_aktif_ns = g1_bosalt_aktif_r;
 
     if (g2_durum_r != G2_CEK_BOSALT) begin
@@ -223,6 +227,19 @@ always @* begin
     endcase
 
     ilk_buyruk_ns = ilk_buyruk_r && (cek_duraklat_i || !coz_buyruk_gecerli_ns);
+    if (coz_buyruk_atladi_o && !cek_duraklat_i) begin
+        coz_buyruk_gecerli_ns = `LOW;
+        ilk_buyruk_ns = `HIGH;
+        g1_bosalt_aktif_ns = `HIGH;
+        l1b_beklenen_sayisi_ns = branch_req_r + g1_istek_yapildi_i;
+        g2_durum_ns = g2_durum_r == G2_CEK_BOSALT ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
+        if (l1b_beklenen_sayisi_r > branch_req_r) begin
+            g1_ps_hazir_cmb = g1_dallanma_ps_o != g1_ps_i;
+            g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r - l1b_buyruk_hazir_cmb - branch_req_r;
+            g2_durum_ns = g2_bos_istek_sayaci_ns == 0 ? G2_YAZMAC_BOS : G2_CEK_BOSALT;
+        end
+    end
+
     if (cek_bosalt_i && !cek_duraklat_i) begin
         ilk_buyruk_ns = `HIGH;
         g2_durum_ns = g2_bos_istek_sayaci_r != 3'd0 && !l1b_buyruk_gecerli_i ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
@@ -236,27 +253,7 @@ always @* begin
             l1b_buyruk_hazir_cmb = `HIGH;
             if (l1b_buyruk_gecerli_i) begin
                 g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r - 1;
-                g2_durum_ns = l1b_beklenen_sayisi_r != 1 ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
-            end
-            else begin
-                g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r;
-                g2_durum_ns = G2_CEK_BOSALT;
-            end
-        end
-    end
-
-    if (g1_dallanma_gecerli_o && !cek_duraklat_i) begin
-        ilk_buyruk_ns = `HIGH;
-        g2_durum_ns = g2_bos_istek_sayaci_r != 3'd0 && !l1b_buyruk_gecerli_i ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
-        l1b_beklenen_sayisi_ns = g1_istek_yapildi_i ? 3'd1 : 3'd0;
-        g1_bosalt_aktif_ns = `HIGH;
-        g1_bosalt_hedef_ps_ns = g1_dallanma_ps_o;
-        if (l1b_beklenen_sayisi_r != 0) begin
-            g1_ps_hazir_cmb = g1_dallanma_ps_o != g1_ps_i;
-            l1b_buyruk_hazir_cmb = `HIGH;
-            if (l1b_buyruk_gecerli_i) begin
-                g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r - 1;
-                g2_durum_ns = l1b_beklenen_sayisi_r != 1 ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
+                g2_durum_ns = g2_bos_istek_sayaci_ns > 0 ? G2_CEK_BOSALT : G2_YAZMAC_BOS;
             end
             else begin
                 g2_bos_istek_sayaci_ns = g2_bos_istek_sayaci_r + l1b_beklenen_sayisi_r;
@@ -283,6 +280,7 @@ always @(posedge clk_i) begin
         g1_bosalt_aktif_r <= `LOW;
         coz_buyruk_rvc_r <= `LOW;
         duraklat_past_r <= `LOW;
+        branch_req_r <= `LOW;
     end
     else begin
         g2_durum_r <= g2_durum_ns;
@@ -300,6 +298,7 @@ always @(posedge clk_i) begin
         g1_bosalt_hedef_ps_r <= g1_bosalt_hedef_ps_ns;
         g1_bosalt_aktif_r <= g1_bosalt_aktif_ns;
         duraklat_past_r <= cek_duraklat_i;
+        branch_req_r <= branch_req_ns;
     end
 end
 
@@ -310,7 +309,7 @@ assign l1b_buyruk_hazir_o = l1b_buyruk_hazir_cmb;
 assign coz_buyruk_o = coz_buyruk_r;
 assign coz_buyruk_ps_o = coz_buyruk_ps_r;
 assign coz_buyruk_gecerli_o = coz_buyruk_gecerli_r;
-assign coz_buyruk_atladi_o = do_atladi_w;
+assign coz_buyruk_atladi_o = do_atladi_w && coz_buyruk_gecerli_r;
 assign coz_buyruk_rvc_o = coz_buyruk_rvc_r;
 
 assign l1b_alt_buyruk_w = l1b_buyruk_i[0 +: `BUYRUK_BIT/2];

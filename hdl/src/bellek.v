@@ -16,6 +16,12 @@ module bellek (
     output  [`VERI_BYTE-1:0]    l1v_istek_maske_o,
     input                       l1v_istek_hazir_i,
 
+    // Yazmc oku sonuna veri yonlendirmesi
+    output  [`VERI_BIT-1:0]     yo_veri_o,
+    output  [`YAZMAC_BIT-1:0]   yo_adres_o,
+    output  [`UOP_TAG_BIT-1:0]  yo_etiket_o,
+    output                      yo_gecerli_o,
+
     // l1v yanit <> bellek
     input   [`VERI_BIT-1:0]     l1v_veri_i,
     input                       l1v_veri_gecerli_i,
@@ -69,6 +75,8 @@ reg [`VERI_BIT-1:0] bib_veri_cmb;
 reg bellek_veri_r;
 reg bellek_veri_ns;
 
+reg yo_gecerli_cmb;
+
 reg duraklat_cmb;
 
 reg[1:0] durum_r;
@@ -79,6 +87,7 @@ localparam HAZIR = 1;
 
 always @* begin
     uop_ns = bellek_uop_i;
+    yo_gecerli_cmb = `LOW;
 
     bib_istek_gecerli_cmb = `LOW;
     duraklat_cmb = `LOW;
@@ -122,6 +131,7 @@ always @* begin
         end
     endcase
 
+    yo_gecerli_cmb =  !duraklat_cmb && uop_gecerli_w;
     uop_ns[`UOP_VALID] = !duraklat_cmb && uop_gecerli_w;
 end
 
@@ -205,6 +215,11 @@ assign bib_istek_yaz_w = yaz_w;
 assign bib_istek_oku_w = oku_w;
 assign bib_istek_adres_w = uop_rd_w;
 assign bib_istek_gecerli_w = bib_istek_gecerli_cmb;
+
+assign yo_veri_o = uop_rd_w;
+assign yo_adres_o = bellek_uop_i[`UOP_RD_ADDR];
+assign yo_gecerli_o = yo_gecerli_cmb && uop_gecerli_w;
+assign yo_etiket_o = uop_tag_w;
 
 assign duraklat_o = duraklat_cmb;
 

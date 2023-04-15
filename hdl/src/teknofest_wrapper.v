@@ -44,7 +44,7 @@ parameter RAM_DEPTH = 32'h20000;
 wire   clk_wiz_locked;
 `ifdef VCU108
 wire clk_w;
-clk_wiz_0 clk_wiz
+clk_wiz_1 clk_wiz
 (
     .CLK_100MHZ(clk_w),
     .reset(1'b0), 

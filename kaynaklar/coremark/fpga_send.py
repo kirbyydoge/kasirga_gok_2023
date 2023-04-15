@@ -13,7 +13,7 @@ args = parser.parse_args()
 serial_port = args.port 
 hex = args.hex
 
-ser = serial.Serial(serial_port, 115200)
+ser = serial.Serial(serial_port, 9600)
 
 hex_f = open(hex)
 

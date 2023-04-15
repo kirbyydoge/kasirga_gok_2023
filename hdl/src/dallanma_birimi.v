@@ -115,7 +115,7 @@ always @* begin
     end
     `UOP_DAL_JAL: begin
         g2_ps_cmb = islem_ps_i;
-        g2_guncelle_cmb = `HIGH;
+        g2_guncelle_cmb = `LOW;
         g2_atladi_cmb = `HIGH;
         g2_hatali_tahmin_cmb = `HIGH;
 
@@ -124,7 +124,7 @@ always @* begin
     end
     `UOP_DAL_JALR: begin
         g2_ps_cmb = islem_ps_i;
-        g2_guncelle_cmb = `HIGH;
+        g2_guncelle_cmb = `LOW;
         g2_atladi_cmb = `HIGH;
         g2_hatali_tahmin_cmb = `HIGH;
 
@@ -133,7 +133,7 @@ always @* begin
     end
     `UOP_DAL_CJALR: begin
         g2_ps_cmb = islem_ps_i;
-        g2_guncelle_cmb = `HIGH;
+        g2_guncelle_cmb = `LOW;
         g2_atladi_cmb = `HIGH;
         g2_hatali_tahmin_cmb = `HIGH;
 
@@ -144,7 +144,7 @@ always @* begin
     end
     `UOP_DAL_CJAL: begin
         g2_ps_cmb = islem_ps_i;
-        g2_guncelle_cmb = `HIGH;
+        g2_guncelle_cmb = `LOW;
         g2_atladi_cmb = `HIGH;
         g2_hatali_tahmin_cmb = `HIGH;
 
