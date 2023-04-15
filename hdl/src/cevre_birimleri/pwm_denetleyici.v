@@ -101,32 +101,52 @@ always @* begin
     if(cek_pwm_istek_w) begin
         case(cek_pwm_addr_w)
             `PWM_CTRL_1_REG: begin
-                if( cek_pwm_yaz_w) begin
+                if(cek_pwm_yaz_w) begin
                     pwm_control_1_ns = cek_veri_i;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_control_1_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end
             end
             `PWM_CTRL_2_REG: begin
-                if( cek_pwm_yaz_w) begin
+                if(cek_pwm_yaz_w) begin
                     pwm_control_2_ns = cek_veri_i;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_control_2_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end
             end
             `PWM_PERIOD_1_REG: begin
-                if( cek_pwm_yaz_w) begin
+                if(cek_pwm_yaz_w) begin
                     pwm_period_1_ns = cek_veri_i;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_period_1_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end
             end
             `PWM_PERIOD_2_REG: begin
-                if( cek_pwm_yaz_w) begin
+                if(cek_pwm_yaz_w) begin
                     pwm_period_2_ns = cek_veri_i;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
-                end      
+                end     
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_period_2_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end 
             end
             `PWM_THRSLD_1_1_REG: begin
                 if( cek_pwm_yaz_w) begin
@@ -134,6 +154,11 @@ always @* begin
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_threshold_1_1_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end 
             end
             `PWM_THRSLD_1_2_REG: begin
                 if( cek_pwm_yaz_w) begin
@@ -141,6 +166,11 @@ always @* begin
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_threshold_1_2_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end 
             end
             `PWM_THRSLD_2_1_REG: begin
                 if( cek_pwm_yaz_w) begin
@@ -148,20 +178,35 @@ always @* begin
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end     
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_threshold_2_1_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end 
             end
             `PWM_THRSLD_2_2_REG: begin
-                if( cek_pwm_yaz_w) begin
+                if(cek_pwm_yaz_w) begin
                     pwm_threshold_2_2_ns = cek_veri_i;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_threshold_2_2_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end 
             end
             `PWM_STEP_1_REG: begin
-                if( cek_pwm_yaz_w) begin
+                if(cek_pwm_yaz_w) begin
                     pwm_step_1_ns = cek_veri_i;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_step_1_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end 
             end
             `PWM_STEP_2_REG: begin
                 if( cek_pwm_yaz_w) begin
@@ -169,16 +214,21 @@ always @* begin
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
                 end
+                else if (cek_pwm_oku_w) begin
+                    pwm_veri_ns = pwm_step_2_r; 
+                    pwm_gecerli_ns = `HIGH;
+                    pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                end 
             end
             `PWM_WRT_1_REG: begin
-                if( cek_pwm_oku_w) begin
+                if(cek_pwm_oku_w) begin
                     pwm_veri_ns = pwm_output_1_w;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
                 end
             end
             `PWM_WRT_2_REG: begin
-                if( cek_pwm_oku_w) begin
+                if(cek_pwm_oku_w) begin
                     pwm_veri_ns = pwm_output_2_w;
                     pwm_gecerli_ns = `HIGH;
                     pwm_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;

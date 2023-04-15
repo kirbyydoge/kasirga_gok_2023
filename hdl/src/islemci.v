@@ -439,10 +439,10 @@ wire    [`VERI_BIT-1:0]     io_pwmd_cek_veri_w;
 wire    [`TL_A_BITS-1:0]    io_pwmd_cek_tilefields_w;
 wire                        io_pwmd_cek_gecerli_w;
 wire                        io_pwmd_cek_hazir_w;
-wire    [`VERI_BIT-1:0]     io_pwmd_uart_veri_w;
-wire                        io_pwmd_uart_gecerli_w;
-wire    [`TL_D_BITS-1:0]    io_pwmd_uart_tilefields_w;
-wire                        io_pwmd_uart_hazir_w;
+wire    [`VERI_BIT-1:0]     io_pwmd_pwm_veri_w;
+wire                        io_pwmd_pwm_gecerli_w;
+wire    [`TL_D_BITS-1:0]    io_pwmd_pwm_tilefields_w;
+wire                        io_pwmd_pwm_hazir_w;
 wire                        io_pwmd_o1_w;
 wire                        io_pwmd_o2_w;
 
@@ -454,10 +454,10 @@ pwm_denetleyici pwmd(
     .cek_tilefields_i       ( io_pwmd_cek_tilefields_w ),
     .cek_gecerli_i          ( io_pwmd_cek_gecerli_w ),
     .cek_hazir_o            ( io_pwmd_cek_hazir_w ),
-    .pwm_veri_o             ( io_pwmd_uart_veri_w ),
-    .pwm_gecerli_o          ( io_pwmd_uart_gecerli_w ),
-    .pwm_tilefields_o       ( io_pwmd_uart_tilefields_w ),
-    .pwm_hazir_i            ( io_pwmd_uart_hazir_w ),
+    .pwm_veri_o             ( io_pwmd_pwm_veri_w ),
+    .pwm_gecerli_o          ( io_pwmd_pwm_gecerli_w ),
+    .pwm_tilefields_o       ( io_pwmd_pwm_tilefields_w ),
+    .pwm_hazir_i            ( io_pwmd_pwm_hazir_w ),
     .o1                     ( io_pwmd_o1_w ),
     .o2                     ( io_pwmd_o2_w )
 );
@@ -676,6 +676,10 @@ always @* begin
         bellek_veri = io_uartd_uart_veri_w;
         bellek_veri_gecerli = `HIGH;
     end
+    else if (io_pwmd_pwm_gecerli_w && io_pwmd_pwm_tilefields_w[`TL_D_OP] != `TL_OP_ACK) begin
+        bellek_veri = io_pwmd_pwm_veri_w;
+        bellek_veri_gecerli = `HIGH;
+    end
 end
 
 // Veri Yolu Denetleyicisi < Sistem Veri Yolu
@@ -683,7 +687,7 @@ assign io_vyd_mem_istek_hazir_w = (io_vyd_mem_istek_adres_w & ~`RAM_MASK_ADDR) =
                                   (io_vyd_mem_istek_adres_w & ~`TIMER_MASK_ADDR) == `TIMER_BASE_ADDR ? iomem_ready :
                                   (io_vyd_mem_istek_adres_w & ~`SPI_MASK_ADDR) == `SPI_BASE_ADDR ? io_spid_cek_hazir_w :
                                   (io_vyd_mem_istek_adres_w & ~`UART_MASK_ADDR) == `UART_BASE_ADDR ? io_uartd_cek_hazir_w :
-                                  (io_vyd_mem_istek_adres_w & ~`PWM_MASK_ADDR) == `PWM_BASE_ADDR ? io_pwmd_cek_hazir_w :`LOW ;
+                                  (io_vyd_mem_istek_adres_w & ~`PWM_MASK_ADDR) == `PWM_BASE_ADDR ? io_pwmd_cek_hazir_w :`LOW;
 
 assign io_vyd_mem_veri_w = bellek_veri;
 assign io_vyd_mem_veri_gecerli_w = bellek_veri_gecerli;
@@ -707,7 +711,7 @@ assign io_pwmd_cek_adres_w = io_vyd_mem_istek_adres_w;
 assign io_pwmd_cek_veri_w = io_vyd_mem_istek_veri_w;
 assign io_pwmd_cek_tilefields_w = io_vyd_mem_istek_yaz_w ? `TL_REQ_A_PUTF : `TL_REQ_A_GET;
 assign io_pwmd_cek_gecerli_w = io_vyd_mem_istek_gecerli_w;
-assign io_pwmd_uart_hazir_w = io_vyd_mem_veri_hazir_w;
+assign io_pwmd_pwm_hazir_w = io_vyd_mem_veri_hazir_w;
 
 
 // ---- Cekirdek <> Cevre Birimleri ----
