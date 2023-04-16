@@ -227,7 +227,7 @@ always @* begin
         islem_sonuc_ns = toplayici_sonuc_w;
         islem_sayac_ns = islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
-        islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTZ_STEP);
+        islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTZ_STEP) || !islem_flag0_cmb;
     end
     `UOP_AMB_CNTP: begin
         // assert (`VERI_BIT % `CNTP_STEP == 0)

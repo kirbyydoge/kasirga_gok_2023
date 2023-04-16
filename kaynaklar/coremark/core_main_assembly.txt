@@ -1352,8 +1352,8 @@ Disassembly of section .text:
 40000d20:	8082                	ret
 
 40000d22 <time_in_secs>:
-40000d22:	05f5e7b7          	lui	a5,0x5f5e
-40000d26:	10078793          	addi	a5,a5,256 # 5f5e100 <_tbss_end+0x5f5e100>
+40000d22:	02faf7b7          	lui	a5,0x2faf
+40000d26:	08078793          	addi	a5,a5,128 # 2faf080 <_tbss_end+0x2faf080>
 40000d2a:	02f55533          	divu	a0,a0,a5
 40000d2e:	8082                	ret
 
@@ -1363,7 +1363,7 @@ Disassembly of section .text:
 40000d34:	4605                	li	a2,1
 40000d36:	842a                	mv	s0,a0
 40000d38:	4585                	li	a1,1
-40000d3a:	36400513          	li	a0,868
+40000d3a:	1b200513          	li	a0,434
 40000d3e:	c606                	sw	ra,12(sp)
 40000d40:	5e1000ef          	jal	ra,40001b20 <uart_set_ctrl>
 40000d44:	4785                	li	a5,1
@@ -2599,11 +2599,11 @@ Disassembly of section .text:
 40001afa:	bef9                	j	400016d8 <ee_printf+0x246>
 
 40001afc <handle_trap>:
-40001afc:	8101c683          	lbu	a3,-2032(gp) # 400029d8 <error_msg.1528>
+40001afc:	8101c683          	lbu	a3,-2032(gp) # 400029d8 <error_msg.1005>
 40001b00:	ce99                	beqz	a3,40001b1e <handle_trap+0x22>
 40001b02:	8201a703          	lw	a4,-2016(gp) # 400029e8 <UART_STATUS>
 40001b06:	8181a583          	lw	a1,-2024(gp) # 400029e0 <UART_WRITE>
-40001b0a:	81118613          	addi	a2,gp,-2031 # 400029d9 <error_msg.1528+0x1>
+40001b0a:	81118613          	addi	a2,gp,-2031 # 400029d9 <error_msg.1005+0x1>
 40001b0e:	431c                	lw	a5,0(a4)
 40001b10:	8b85                	andi	a5,a5,1
 40001b12:	fff5                	bnez	a5,40001b0e <handle_trap+0x12>
@@ -4143,7 +4143,7 @@ Disassembly of section .sdata:
 400029d4:	0000                	unimp
 400029d6:	4002                	0x4002
 
-400029d8 <error_msg.1528>:
+400029d8 <error_msg.1005>:
 400029d8:	6148                	flw	fa0,4(a0)
 400029da:	6174                	flw	fa3,68(a0)
 400029dc:	0a21                	addi	s4,s4,8
