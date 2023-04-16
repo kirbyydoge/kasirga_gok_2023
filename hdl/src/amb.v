@@ -228,8 +228,8 @@ always @* begin
         end
         toplayici_is0_cmb = islem_sonuc_r;
         toplayici_is1_cmb = islem_temp0_cmb;
-        islem_sonuc_ns = islem_gecerli_cmb ? islem_sonuc_r : toplayici_sonuc_w;
-        islem_sayac_ns = islem_flag0_cmb ? (`VERI_BIT / `CNTZ_STEP) : islem_sayac_r + 5'b1;
+        islem_sonuc_ns = toplayici_sonuc_w;
+        islem_sayac_ns = islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
         islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTZ_STEP);
     end
@@ -240,7 +240,7 @@ always @* begin
         end
         toplayici_is0_cmb = islem_sonuc_r;
         toplayici_is1_cmb = islem_temp0_cmb;
-        islem_sonuc_ns = islem_gecerli_cmb ? islem_sonuc_r : toplayici_sonuc_w;
+        islem_sonuc_ns = toplayici_sonuc_w;
         islem_sayac_ns = islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
         islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTP_STEP);
