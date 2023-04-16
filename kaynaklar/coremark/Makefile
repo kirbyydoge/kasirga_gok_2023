@@ -12,7 +12,7 @@ $(demo-targets):
 	$(CC) $(CFLAGS) *.c crt.S -o $*.riscv
 	$(RISCVTYPE)-objdump -D $*.riscv > $*_assembly.txt
 	$(RISCVTYPE)-objcopy -O binary $*.riscv $*.bin
-	elf2hex 4 8192 $*.riscv 1073741824 > $*.hex
+	elf2hex 4 4096 $*.riscv 1073741824 > $*.hex
 	rm *.bin *.o *.s
 	
 .PHONY: clean
