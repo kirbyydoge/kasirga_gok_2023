@@ -35,6 +35,9 @@ reg [`VERI_BIT-1:0]     islem_temp0_cmb;
 reg [`VERI_BIT-1:0]     islem_temp1_cmb;
 reg                     islem_flag0_cmb;
 
+reg                     islem_sflag0_r;
+reg                     islem_sflag0_ns;
+
 reg [5:0]               islem_sayac_r;
 reg [5:0]               islem_sayac_ns;
 
@@ -68,6 +71,7 @@ always @* begin
     islem_temp0_cmb = {`VERI_BIT{1'b0}};
     islem_temp1_cmb = {`VERI_BIT{1'b0}};
     islem_flag0_cmb = `LOW;
+    islem_sflag0_ns = islem_sflag0_r;
     toplayici_is0_cmb = islem_islec1_i;
     toplayici_is1_cmb = islem_islec2_i;
 
@@ -215,19 +219,19 @@ always @* begin
     end
     `UOP_AMB_CNTZ: begin
         // assert (`VERI_BIT % `CNTZ_STEP == 0)
-        islem_flag0_cmb = `HIGH;
+        islem_sflag0_ns = islem_sayac_r == 5'b0 ? `HIGH : islem_sflag0_r;
         for (i = 0; i < `CNTZ_STEP; i = i + 1) begin
-            islem_temp0_cmb = islem_temp0_cmb + (~islem_islec1_i[islem_sayac_r * `CNTZ_STEP + i] && islem_flag0_cmb);
             if (islem_islec1_i[islem_sayac_r * `CNTZ_STEP + i]) begin
-                islem_flag0_cmb = `LOW;
+                islem_sflag0_ns = `LOW;
             end
+            islem_temp0_cmb = islem_temp0_cmb + islem_sflag0_ns;
         end
         toplayici_is0_cmb = islem_sonuc_r;
         toplayici_is1_cmb = islem_temp0_cmb;
-        islem_sonuc_ns = toplayici_sonuc_w;
-        islem_sayac_ns = islem_sayac_r + 5'b1;
+        islem_sonuc_ns = islem_gecerli_cmb ? islem_sonuc_r : toplayici_sonuc_w;
+        islem_sayac_ns = islem_flag0_cmb ? (`VERI_BIT / `CNTZ_STEP) : islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
-        islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTZ_STEP) || !islem_flag0_cmb;
+        islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTZ_STEP);
     end
     `UOP_AMB_CNTP: begin
         // assert (`VERI_BIT % `CNTP_STEP == 0)
@@ -236,7 +240,7 @@ always @* begin
         end
         toplayici_is0_cmb = islem_sonuc_r;
         toplayici_is1_cmb = islem_temp0_cmb;
-        islem_sonuc_ns = toplayici_sonuc_w;
+        islem_sonuc_ns = islem_gecerli_cmb ? islem_sonuc_r : toplayici_sonuc_w;
         islem_sayac_ns = islem_sayac_r + 5'b1;
         islem_sonuc_cmb = islem_sonuc_r;
         islem_gecerli_cmb = islem_sayac_r == (`VERI_BIT / `CNTP_STEP);
@@ -248,10 +252,12 @@ always @(posedge clk_i) begin
     if (!rstn_i) begin
         islem_sayac_r <= {`CTR_BIT{1'b0}};
         islem_sonuc_r <= {`VERI_BIT{1'b0}};
+        islem_sflag0_r <= `LOW;
     end
     else begin
         islem_sayac_r <= islem_gecerli_o || !islem_kod_gecerli_i ? {`CTR_BIT{1'b0}} : islem_sayac_ns;
         islem_sonuc_r <= islem_gecerli_o || !islem_kod_gecerli_i ? {`VERI_BIT{1'b0}} : islem_sonuc_ns;
+        islem_sflag0_r <= islem_sflag0_ns;
     end
 end
 
