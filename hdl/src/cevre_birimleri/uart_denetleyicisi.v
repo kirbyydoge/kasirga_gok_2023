@@ -107,7 +107,7 @@ always @* begin
     verici_gelen_veri_gecerli_cmb = `LOW;
     verici_gelen_veri_cmb = 8'd0;
 
-    if (uart_gecerli_o && uart_hazir_i) begin
+    if ((uart_gecerli_o && uart_hazir_i) || uart_tilefields_o[`TL_D_OP] == `TL_OP_ACK) begin
         uart_gecerli_ns = `LOW;
     end
 
