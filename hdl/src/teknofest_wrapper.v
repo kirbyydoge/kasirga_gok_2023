@@ -44,9 +44,9 @@ parameter RAM_DEPTH = 32'h20000;
 wire   clk_wiz_locked;
 `ifdef VCU108
 wire clk_w;
-clk_wiz_1 clk_wiz
+clk_wiz_vcu clk_wiz
 (
-    .CLK_100MHZ(clk_w),
+    .clk_100(clk_w),
     .reset(1'b0), 
     .locked(clk_wiz_locked),
     .clk_in1_p(clk_p),
@@ -54,10 +54,10 @@ clk_wiz_1 clk_wiz
 );
 `elsif NEXYS
 wire clk_w;
-clk_wiz_0 clk_wiz
+clk_wiz_nexys clk_wiz
 (
-    .CLK_100MHZ(),
-    .CLK_60MHZ(clk_w),
+    .clk_100(),
+    .clk_60(clk_w),
     .reset(1'b0), 
     .locked(clk_wiz_locked),
     .clk_in1(clk_i)
