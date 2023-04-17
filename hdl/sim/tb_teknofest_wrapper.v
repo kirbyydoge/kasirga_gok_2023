@@ -14,7 +14,6 @@ wire spi_miso_i;
 wire pwm0_o;
 wire pwm1_o;
 
-
 teknofest_wrapper tw (
 `ifdef VCU108
 .clk_p (clk_i),
