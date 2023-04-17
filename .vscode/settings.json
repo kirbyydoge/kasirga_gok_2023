@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "kasirga.h": "c"
+        "kasirga.h": "c",
+        "times.h": "c",
+        "types.h": "c"
     }
 }
