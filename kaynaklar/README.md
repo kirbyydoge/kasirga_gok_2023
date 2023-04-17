@@ -15,7 +15,7 @@ UART durum yazmaçlarının kontrol edilmesi, string yardımcı ile printf fonks
 `looptest`: Boru hattında dallanmaların test edilmesi için döngü.\
 `fotobas`: ASCII sanatı ile oluşturulan fotoğrafları basar. (kasirga.h kütüphanesi printlerini kullanarak kendi fotoğrafınızı yüklemelisiniz)\
 `memtest`: Önbellek ve ana bellek için stres testleri.\
-`multest`: Vektör dot product testi.\
+`multest`: Vektör dot product testi.
 
 ## RV32-Test
 
