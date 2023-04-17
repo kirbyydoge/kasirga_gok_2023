@@ -11,16 +11,16 @@ Kasırga Gök işlemcisi parametreleri ile yüksek esneklik sunar. Aşağıdaki 
 ## SPI Parametreleri
 
 `SPI_SEAMLESS`: Tanımlandığında ardışık komutlar takip ederek (cmd içerisinde belirtilmese bile) SCK gecikmelerini engeller.\
-`SPI_IS_MSB`: 1 iken MSB, 0 iken LSB transfer yapar. Transferler her zaman little endian yapılır.
+`SPI_IS_MSB`: 1 iken MSB, 0 iken LSB transfer yapar. Transferler her zaman little endian yapılır.\
 
 ## Bellek Parametreleri
 
 `BELLEK_BASLANGIC`: Ana bellek başlangıç adresini düzenler.\
-`BELLEK_BOYUT`: Ana bellek boyutu. (Aşağıdaki harita parametre maskesi tarafından üstüne yazılır)
+`BELLEK_BOYUT`: Ana bellek boyutu. (Aşağıdaki harita parametre maskesi tarafından üstüne yazılır)\
 
 ## Sistem Adres Haritası
 
-`UART/SPI/RAM/TIMER/PWM_BASE_ADDR`: İlgili birimin başlangıç adresini tanımlar.
+`UART/SPI/RAM/TIMER/PWM_BASE_ADDR`: İlgili birimin başlangıç adresini tanımlar.\
 `UART/SPI/RAM/TIMER/PWM_MASK_ADDR`: İlgili birimin erişim maskesini tanımlar.
 
 # İşlemci Verilog Hiyerarşisi
