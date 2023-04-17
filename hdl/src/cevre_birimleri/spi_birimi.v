@@ -26,6 +26,13 @@ module spi_birimi (
     output                          sck_o
 ); 
 
+ila_spi debug_spi (
+    .clk        (clk_i),
+    .probe0     (csn_o),
+    .probe1     (sck_o),
+    .probe2     (mosi_o),
+    .probe3     (miso_i)
+);
 
 reg           cmd_hint_r;
 reg           cmd_hint_ns;
@@ -161,7 +168,7 @@ always @* begin
         sck_enable_ns = cmd_dir_r[1] || cmd_dir_r[0];
         recv_valid_ns = `LOW;
         clock_edge_ctr_ns = 0;
-        transfer_sayac_ns = !cmd_cpha_i;
+        transfer_sayac_ns = cmd_dir_r[1] && !cmd_cpha_i;
 
         durum_ns =  cmd_dir_r[1] ? DURUM_GONDER :
                     cmd_dir_r[0] ? DURUM_GETIR  : DURUM_BOSTA;
