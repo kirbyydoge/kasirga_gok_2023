@@ -1,6 +1,6 @@
 //------Sentez Parametreleri------
-// `define VCU108
-`define NEXYS
+`define VCU108
+// `define NEXYS
 // `define SPIKE_DIFF
 // `define LOG_COMMITS
 // `define OPENLANE
