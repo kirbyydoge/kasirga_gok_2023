@@ -43,6 +43,7 @@ wire    [`VERI_BIT-1:0]         io_cek_l1vd_yanit_veri_w;
 wire                            io_cek_l1vd_yanit_gecerli_w;
 wire                            io_cek_l1vd_yanit_hazir_w;
 wire    [`VERI_BIT-1:0]         io_cek_l1vd_istek_veri_w;
+wire    [`VERI_BYTE-1:0]        io_cek_l1vd_istek_maske_w;
 wire    [`ADRES_BIT-1:0]        io_cek_l1vd_istek_adres_w;
 wire                            io_cek_l1vd_istek_yaz_w;
 wire                            io_cek_l1vd_istek_gecerli_w;
@@ -332,14 +333,22 @@ wire                            io_vyd_mem_istek_hazir_w;
 wire    [`VERI_BIT-1:0]         io_vyd_mem_veri_w;
 wire                            io_vyd_mem_veri_gecerli_w;
 wire                            io_vyd_mem_veri_hazir_w;
-wire    [`ADRES_BIT-1:0]        io_vyd_l1_istek_adres_w;
-wire                            io_vyd_l1_istek_gecerli_w;
-wire    [`L1_BLOK_BIT-1:0]      io_vyd_l1_istek_veri_w;
-wire                            io_vyd_l1_istek_yaz_w;
-wire                            io_vyd_l1_istek_hazir_w;
-wire    [`L1_BLOK_BIT-1:0]      io_vyd_l1_veri_w;
-wire                            io_vyd_l1_veri_gecerli_w;
-wire                            io_vyd_l1_veri_hazir_w;
+wire    [`ADRES_BIT-1:0]        io_vyd_l1b_istek_adres_w;
+wire                            io_vyd_l1b_istek_gecerli_w;
+wire    [`L1_BLOK_BIT-1:0]      io_vyd_l1b_istek_veri_w;
+wire                            io_vyd_l1b_istek_yaz_w;
+wire                            io_vyd_l1b_istek_hazir_w;
+wire    [`L1_BLOK_BIT-1:0]      io_vyd_l1b_veri_w;
+wire                            io_vyd_l1b_veri_gecerli_w;
+wire                            io_vyd_l1b_veri_hazir_w;
+wire    [`ADRES_BIT-1:0]        io_vyd_l1v_istek_adres_w;
+wire                            io_vyd_l1v_istek_gecerli_w;
+wire    [`L1_BLOK_BIT-1:0]      io_vyd_l1v_istek_veri_w;
+wire                            io_vyd_l1v_istek_yaz_w;
+wire                            io_vyd_l1v_istek_hazir_w;
+wire    [`L1_BLOK_BIT-1:0]      io_vyd_l1v_veri_w;
+wire                            io_vyd_l1v_veri_gecerli_w;
+wire                            io_vyd_l1v_veri_hazir_w;
 
 veri_yolu_denetleyici vyd (
    .clk_i               		( io_vyd_clk_w ),
@@ -611,9 +620,9 @@ generate
 endgenerate
 
 // L1BD < Veri Yolu Denetleyicisi
-assign io_l1bd_vy_istek_hazir_w = io_vyd_l1_istek_hazir_w;
-assign io_l1bd_vy_veri_w = io_vyd_l1_veri_w;
-assign io_l1bd_vy_veri_gecerli_w = io_vyd_l1_veri_gecerli_w;
+assign io_l1bd_vy_istek_hazir_w = io_vyd_l1b_istek_hazir_w;
+assign io_l1bd_vy_veri_w = io_vyd_l1b_veri_w;
+assign io_l1bd_vy_veri_gecerli_w = io_vyd_l1b_veri_gecerli_w;
 
 // Veri Yolu Denetleyicisi < L1BD
 assign io_vyd_l1b_istek_adres_w = io_l1bd_vy_istek_adres_w;

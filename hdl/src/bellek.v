@@ -50,6 +50,8 @@ wire [`UOP_RD_BIT-1:0]          uop_rd_w;
 wire                            vyb_hazir_w;
 wire [`VERI_BYTE-1:0]           maske_w;
 
+wire                            oku_w;
+wire                            yaz_w;
 
 // veri yolu birimine gidecek olanlar
 
@@ -143,16 +145,6 @@ always @(posedge clk_i) begin
    end
 end
 
-<<<<<<< HEAD
-bellek_islem_birimi bib(
-.clk_i                    ( clk_i               ),
-.rstn_i                   ( rstn_i              ),  
-.uop_buyruk_secim_i       ( uop_buyruk_secim_w  ),          
-.uop_rd_i                 ( uop_rd_w            ),  
-.maske_o                  ( maske_w             ) 
-);
-
-=======
 bellek_islem_birimi bib (
    .clk_i                            ( clk_i               ),
    .rstn_i                           ( rstn_i              ),  

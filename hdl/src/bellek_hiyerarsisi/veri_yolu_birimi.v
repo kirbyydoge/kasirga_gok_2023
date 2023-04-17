@@ -49,12 +49,13 @@ reg                     port_istek_onbellekleme_ns;
 // Okuma
 reg                     port_veri_hazir_r;
 reg                     port_veri_hazir_ns;
+
 // Yazma
 reg                     port_istek_yaz_r;
 reg                     port_istek_yaz_ns;
 
-reg [`VERI_BIT-1:0]     port_istek_veri_r,
-reg [`VERI_BIT-1:0]     port_istek_veri_ns,
+reg [`VERI_BIT-1:0]     port_istek_veri_r;
+reg [`VERI_BIT-1:0]     port_istek_veri_ns;
 
 reg [`VERI_BYTE-1:0]    port_istek_maske_r;
 reg [`VERI_BYTE-1:0]    port_istek_maske_ns;

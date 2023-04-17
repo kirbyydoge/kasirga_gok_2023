@@ -58,6 +58,7 @@ localparam  VY_YAZ_ISTEK             = 'd8;
 localparam  L1_ONBELLEKSIZ_OKU_ISTEK = 'd9;
 localparam  L1_ONBELLEKSIZ_OKU_BEKLE = 'd10;
 localparam  L1_ONBELLEKSIZ_YAZ_ISTEK = 'd11;
+localparam  L1_VY_YAZ                = 'd12;
 
 reg [L1_DURUM_BIT-1:0] l1_durum_r; 
 reg [L1_DURUM_BIT-1:0] l1_durum_ns;
@@ -91,15 +92,12 @@ reg port_veri_gecerli_cmb;
 
 reg l1_istek_gecerli_r;
 reg l1_istek_gecerli_ns;
-assign l1_istek_gecersiz_o = ~l1_istek_gecerli_r;       
 
 reg  [`ADRES_SATIR_BIT-1:0]     l1_istek_satir_r;
 reg  [`ADRES_SATIR_BIT-1:0]     l1_istek_satir_ns;
-assign l1_istek_satir_o = l1_istek_satir_r;
 
 reg  [`L1V_YOL-1:0]              l1_istek_yaz_r;
 reg  [`L1V_YOL-1:0]              l1_istek_yaz_ns;
-assign l1_istek_yaz_o = l1_istek_yaz_r;
 
 wire [`ADRES_ETIKET_BIT-1:0]    l1_okunan_etiketler_w [0:`L1V_YOL-1];
 wire [`L1_BLOK_BIT-1:0]         l1_okunan_bloklar_w [0:`L1V_YOL-1];
@@ -267,61 +265,6 @@ function [$clog2(`L1V_YOL):0] l1_ara;
       end
    end
 endfunction
-
-// Gelen adresi yerlestirmek icin bir yolu secer.
-// Gecersiz yol varsa ustune yaz, secilen yol kirliyse once ana bellege git.
-// TODO (Oguzhan): 
-//  - Kirli satiri bir buffera koy ve ana bellekten okuma yap.
-//  - Bu sayede istegi erken yanitlayip bos kalan vakitte yazabiliriz.
-//  - Simdilik donanim karmasikligini artirmak istemiyoruz. Son islerden olacak.
-task l1_cikar (input [`ADRES_BIT-1:0] istek_adres);
-    begin
-        if (get_satir(son_adres_r) != get_satir(istek_adres)) begin
-            if (l1_yol_guncellendi_r != {`L1V_YOL{`LOW}}) begin // Arabelleklerde SRAM'e yazilmamis veri var
-                l1_istek_gecerli_ns = `HIGH;
-                l1_istek_satir_ns = get_satir(son_adres_r);
-                l1_istek_yaz_ns = l1_yol_guncellendi_r;
-                l1_yol_guncellendi_ns = {`L1V_YOL{`LOW}};
-            end
-            if (satir_gecerli_r[get_satir(istek_adres)] != {`L1V_YOL{`LOW}}) begin // Tum satir gecersiz degil
-                l1_durum_ns = L1_OKU;
-            end
-            else begin
-                vy_hedef_yol_ns = 0;
-                vy_istek_adres_ns = istek_adres;
-                vy_istek_gecerli_ns = `HIGH;
-                vy_istek_yaz_ns = `LOW;
-                vy_veri_hazir_ns = `LOW;
-                l1_durum_ns = VY_OKU_ISTEK;
-            end
-        end
-        else if (gecersiz_yol_var_cmb) begin
-            vy_hedef_yol_ns = idx_gecersiz_yol_cmb;
-            vy_istek_adres_ns = istek_adres;
-            vy_istek_gecerli_ns = `HIGH;
-            vy_istek_yaz_ns = `LOW;
-            vy_veri_hazir_ns = `LOW;
-            l1_durum_ns = VY_OKU_ISTEK;
-        end
-        else if (satir_kirli_r[get_satir(istek_adres)][cikarma_sayaci_r]) begin
-            vy_hedef_yol_ns = cikarma_sayaci_r;
-            vy_istek_veri_ns = l1_buffer_bloklar_r[cikarma_sayaci_r];
-            vy_istek_adres_ns = adres_birlestir(l1_buffer_etiketler_r[cikarma_sayaci_r], get_satir(istek_adres));
-            vy_istek_gecerli_ns = `HIGH;
-            vy_istek_yaz_ns = `HIGH; 
-            vy_veri_hazir_ns = `LOW;
-            l1_durum_ns = VY_YAZ_ISTEK;
-        end
-        else begin
-            vy_hedef_yol_ns = cikarma_sayaci_r;
-            vy_istek_adres_ns = istek_adres;
-            vy_istek_gecerli_ns = `HIGH;
-            vy_istek_yaz_ns = `LOW;
-            vy_veri_hazir_ns = `LOW;
-            l1_durum_ns = VY_OKU_ISTEK;
-        end
-    end
-endtask
 
 // Acik satirdaki kirli ve gecerli yollari bul ve yeniden isimlendir
 always @* begin

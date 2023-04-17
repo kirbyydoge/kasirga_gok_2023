@@ -51,7 +51,7 @@ localparam  L1_YANIT        = 'd4;
 localparam  L1_SATIR_ACIK   = 'd5;
 localparam  VY_OKU_ISTEK    = 'd6;
 localparam  VY_OKU_BEKLE    = 'd7;
-localparam  VY_YAZ_ISTEK    = 'd8;
+localparam  L1_VY_YAZ       = 'd8;
 
 reg [L1_DURUM_BIT-1:0] l1_durum_r; 
 reg [L1_DURUM_BIT-1:0] l1_durum_ns;

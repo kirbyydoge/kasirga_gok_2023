@@ -21,7 +21,7 @@ reg                             l1_istek_gecerli_i;
 reg     [`L1_BLOK_BIT-1:0]      l1_istek_veri_i;
 reg                             l1_istek_yaz_i;
 wire                            l1_istek_hazir_o;
-wire     [`L1_BLOK_BIT-1:0]     l1_veri_o;
+wire    [`L1_BLOK_BIT-1:0]      l1_veri_o;
 wire                            l1_veri_gecerli_o;
 reg                             l1_veri_hazir_i;
 

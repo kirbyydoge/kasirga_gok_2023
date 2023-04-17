@@ -51,37 +51,31 @@ localparam VY_BLOK_OKU_ISTEK    = 'd1;
 localparam VY_BLOK_OKU_BEKLE    = 'd2;
 localparam VY_BLOK_OKU_YANIT    = 'd3;
 localparam VY_BLOK_YAZ          = 'd4;
+localparam VY_IKI_ISTEK         = 'd5;
 
 reg  [`ADRES_BIT-1:0]   mem_istek_adres_r;
 reg  [`ADRES_BIT-1:0]   mem_istek_adres_ns;
-assign mem_istek_adres_o = mem_istek_adres_r;
 
 reg  [`VERI_BIT-1:0]    mem_istek_veri_r;
 reg  [`VERI_BIT-1:0]    mem_istek_veri_ns;
-assign mem_istek_veri_o = mem_istek_veri_r;
 
 reg                     mem_istek_yaz_r;
 reg                     mem_istek_yaz_ns;
-assign mem_istek_yaz_o = mem_istek_yaz_r;
 
 reg                     mem_istek_gecerli_r;
 reg                     mem_istek_gecerli_ns;
-assign mem_istek_gecerli_o = mem_istek_gecerli_r;
 
 reg                     mem_veri_hazir_r;
 reg                     mem_veri_hazir_ns;
-assign mem_veri_hazir_o = mem_veri_hazir_r;
 
-reg [VY_DURUM_BIT-1:0]  vy_durum_r;
-reg [VY_DURUM_BIT-1:0]  vy_durum_ns;
+reg [VY_DURUM_BIT-1:0]      vy_durum_r;
+reg [VY_DURUM_BIT-1:0]      vy_durum_ns;
 
-reg                     l1_istek_hazir_r;
-reg                     l1_istek_hazir_ns;
-assign l1_istek_hazir_o = l1_istek_hazir_r;
+reg                         l1_istek_hazir_r;
+reg                         l1_istek_hazir_ns;
 
-reg [`L1_BLOK_BIT-1:0]  l1_veri_r;
-reg [`L1_BLOK_BIT-1:0]  l1_veri_ns;
-assign l1_veri_o = l1_veri_r;
+reg [`L1_BLOK_BIT-1:0]      l1_veri_r;
+reg [`L1_BLOK_BIT-1:0]      l1_veri_ns;
 
 reg                         l1_veri_gecerli_r;
 reg                         l1_veri_gecerli_ns;
@@ -334,5 +328,29 @@ always @(posedge clk_i) begin
       iki_istek_onbellekleme_r <= iki_istek_onbellekleme_ns;
    end
 end
+
+assign l1_istek_hazir_w     = l1_istek_hazir_r;
+assign l1_veri_w            = l1_veri_r;
+assign l1_veri_gecerli_w    = l1_veri_gecerli_r;
+
+assign l1_istek_adres_w     = l1b_sec_r ? l1b_istek_adres_i : l1v_istek_adres_i;
+assign l1_istek_gecerli_w   = l1b_sec_r ? l1b_istek_gecerli_i : l1v_istek_gecerli_i;
+assign l1_istek_veri_w      = l1b_sec_r ? l1b_istek_veri_i : l1v_istek_veri_i;
+assign l1_istek_yaz_w       = l1b_sec_r ? l1b_istek_yaz_i : l1v_istek_yaz_i;
+assign l1_veri_hazir_w      = l1b_sec_r ? l1b_veri_hazir_i : l1v_veri_hazir_i;
+
+assign l1b_veri_o           = l1_veri_w;
+assign l1b_istek_hazir_o    = l1_istek_hazir_w;
+assign l1b_veri_gecerli_o   = l1b_sec_r ? l1_veri_gecerli_w : `LOW;
+
+assign l1v_veri_o           = l1_veri_w;
+assign l1v_istek_hazir_o    = l1_istek_hazir_w;
+assign l1v_veri_gecerli_o   = l1b_sec_r ? `LOW : l1_veri_gecerli_w;
+
+assign mem_istek_adres_o = mem_istek_adres_r;
+assign mem_istek_veri_o = mem_istek_veri_r;
+assign mem_istek_yaz_o = mem_istek_yaz_r;
+assign mem_istek_gecerli_o = mem_istek_gecerli_r;
+assign mem_veri_hazir_o = mem_veri_hazir_r;
 
 endmodule

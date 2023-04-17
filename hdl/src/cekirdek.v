@@ -527,10 +527,11 @@ assign io_bellek_l1v_veri_gecerli_w = l1v_yanit_gecerli_i;
 assign io_bellek_l1v_istek_hazir_w = l1v_istek_hazir_i;
 
 // L1V < Bellek
-// assign l1v_istek_veri_o = ?? @Sevval burayi duzelt
 assign l1v_yanit_hazir_o = io_bellek_l1v_veri_hazir_w;
+assign l1v_istek_veri_o = io_bellek_l1v_istek_veri_w;
+assign l1v_istek_maske_o = io_bellek_l1v_istek_maske_w;
 assign l1v_istek_adres_o = io_bellek_l1v_istek_adres_w;
-// assign l1v_istek_yaz_o = ?? @Sevval burayi duzelt
+assign l1v_istek_yaz_o = io_bellek_l1v_istek_yaz_w;
 assign l1v_istek_gecerli_o = io_bellek_l1v_istek_gecerli_w;
 assign l1v_istek_onbellekleme_o = io_bellek_l1v_istek_onbellekleme_w;
 
