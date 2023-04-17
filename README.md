@@ -11,8 +11,8 @@ hdl/                        İşlemci gerçeklemesi ve doğrulaması donanım ka
  |_ sim/                    Verilog simülasyon dosyaları
    |_ model/                Simülasyon ve FPGA ortamı için bellek modelleri
  |_ src/                    İşlemci kaynak kodu
-   |_ bellek_hiyerarsisi    Önbellekler, Ana bellek denetleyicisi ve bellek işlem birimleri
-   |_ cevre_birimleri       UART, SPI ve PWM birimleri ile denetleyicileri
+   |_ bellek_hiyerarsisi/   Önbellekler, Ana bellek denetleyicisi ve bellek işlem birimleri
+   |_ cevre_birimleri/      UART, SPI ve PWM birimleri ile denetleyicileri
    |_ README.md             !! İşlemci hiyerarşisi !!
 kaynaklar/                  İşlemci test ve doğrulaması için kullanılan harici dosyalar
  |_ compile/                RISC-V Baremetal ortamı taban derleyicisi
