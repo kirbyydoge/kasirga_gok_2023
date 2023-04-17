@@ -2,7 +2,9 @@
 
 module carpici (
     input   [31:0]  islec0_i,
+    input           islec0_isaretli_i,
     input   [31:0]  islec1_i,
+    input           islec1_isaretli_i,
     output  [63:0]  carpim_o
 );
 
@@ -29,12 +31,15 @@ reg         islec0_is_negated;
 reg  [31:0] islec1_sign_corrected;
 reg         islec1_is_negated;
 
+assign islec0_isaret_w = islec0_i[31] && islec0_isaretli_i;
+assign islec1_isaret_w = islec1_i[31] && islec1_isaretli_i;
+
 integer i;
 always @* begin
-    islec0_sign_corrected = islec0_i[31] ? (~islec0_i + 32'b1) : islec0_i;
-    islec1_sign_corrected = islec1_i[31] ? (~islec1_i + 32'b1) : islec1_i;
-    islec0_is_negated = islec0_i[31];
-    islec1_is_negated = islec1_i[31];
+    islec0_sign_corrected = islec0_isaret_w ? (~islec0_i + 32'b1) : islec0_i;
+    islec1_sign_corrected = islec1_isaret_w ? (~islec1_i + 32'b1) : islec1_i;
+    islec0_is_negated = islec0_isaret_w;
+    islec1_is_negated = islec1_isaret_w;
     for (i = 0; i < 32; i = i + 1) begin
         if (islec1_sign_corrected[i]) begin
             partial[i] = {{32{islec0_sign_corrected[31]}}, islec0_sign_corrected} << i;

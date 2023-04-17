@@ -168,12 +168,14 @@ always @(posedge clk_i) begin
 end
 
 carpici_pipe3 carp (
-    .clk_i            ( clk_i ),
-    .islec0_i         ( carpici_is0_cmb ),
-    .islec1_i         ( carpici_is1_cmb ),
-    .islem_gecerli_i  ( carpici_gecerli_cmb ),
-    .carpim_o         ( carpici_sonuc_w ),
-    .carpim_gecerli_o ( carpici_sonuc_gecerli_w )
+    .clk_i             ( clk_i ),
+    .islec0_i          ( carpici_is0_cmb ),
+    .islec0_isaretli_i ( `HIGH ),
+    .islec1_i          ( carpici_is1_cmb ),
+    .islec1_isaretli_i ( `HIGH ),
+    .islem_gecerli_i   ( carpici_gecerli_cmb ),
+    .carpim_o          ( carpici_sonuc_w ),
+    .carpim_gecerli_o  ( carpici_sonuc_gecerli_w )
 );
 
 toplayici topla (

@@ -48,7 +48,9 @@ reg  [`VERI_BIT-1:0]    toplayici_is1_cmb;
 wire [`VERI_BIT-1:0]    toplayici_sonuc_w;
 
 reg  [`VERI_BIT-1:0]    carpici_is0_cmb;
+reg                     carpici_is0_isaretli_cmb;
 reg  [`VERI_BIT-1:0]    carpici_is1_cmb;
+reg                     carpici_is1_isaretli_cmb;
 reg                     carpici_gecerli_cmb;
 wire [2*`VERI_BIT-1:0]  carpici_sonuc_w;
 wire                    carpici_sonuc_gecerli_w;
@@ -77,6 +79,8 @@ always @* begin
 
     carpici_is0_cmb = islem_islec1_i;
     carpici_is1_cmb = islem_islec2_i;
+    carpici_is0_isaretli_cmb = `HIGH;
+    carpici_is1_isaretli_cmb = `HIGH;
     carpici_gecerli_cmb = `LOW;
 
     bolucu_kod_cmb = 0;
@@ -111,24 +115,28 @@ always @* begin
 
         islem_sayac_ns = islem_sayac_r + 5'b1;
     end
-    // `UOP_AMB_MULHU   : begin
-    //     carpici_is0_cmb = islem_islec1_i;
-    //     carpici_is1_cmb = islem_islec2_i;
-    //     carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
-    //     islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
-    //     islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+    `UOP_AMB_MULHU   : begin
+        carpici_is0_cmb = islem_islec1_i;
+        carpici_is1_cmb = islem_islec2_i;
+        carpici_is0_isaretli_cmb = `LOW;
+        carpici_is1_isaretli_cmb = `LOW;
+        carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
+        islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
+        islem_gecerli_cmb = carpici_sonuc_gecerli_w;
 
-    //     islem_sayac_ns = islem_sayac_r + 5'b1;
-    // end
-    // `UOP_AMB_MULHSU   : begin
-    //     carpici_is0_cmb = islem_islec1_i;
-    //     carpici_is1_cmb = islem_islec2_i;
-    //     carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
-    //     islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
-    //     islem_gecerli_cmb = carpici_sonuc_gecerli_w;
+        islem_sayac_ns = islem_sayac_r + 5'b1;
+    end
+    `UOP_AMB_MULHSU   : begin
+        carpici_is0_cmb = islem_islec1_i;
+        carpici_is1_cmb = islem_islec2_i;
+        carpici_is0_isaretli_cmb = `HIGH;
+        carpici_is1_isaretli_cmb = `LOW;
+        carpici_gecerli_cmb = islem_sayac_r == 5'b0 && islem_kod_gecerli_i;
+        islem_sonuc_cmb = carpici_sonuc_w[`VERI_BIT +: `VERI_BIT];
+        islem_gecerli_cmb = carpici_sonuc_gecerli_w;
 
-    //     islem_sayac_ns = islem_sayac_r + 5'b1;
-    // end
+        islem_sayac_ns = islem_sayac_r + 5'b1;
+    end
     `UOP_AMB_DIV    : begin
         if (islem_islec2_i == 0) begin
             islem_sonuc_cmb = {`VERI_BIT{1'b1}};
@@ -270,18 +278,22 @@ toplayici topla (
 
 `ifdef USE_MUL_PIPE
     carpici_pipe3 carp (
-        .clk_i            ( clk_i ),
-        .islec0_i         ( carpici_is0_cmb ),
-        .islec1_i         ( carpici_is1_cmb ),
-        .islem_gecerli_i  ( carpici_gecerli_cmb ),
-        .carpim_o         ( carpici_sonuc_w ),
-        .carpim_gecerli_o ( carpici_sonuc_gecerli_w )
+        .clk_i             ( clk_i ),
+        .islec0_i          ( carpici_is0_cmb ),
+        .islec0_isaretli_i ( carpici_is0_isaretli_cmb ),
+        .islec1_i          ( carpici_is1_cmb ),
+        .islec1_isaretli_i ( carpici_is1_isaretli_cmb ),
+        .islem_gecerli_i   ( carpici_gecerli_cmb ),
+        .carpim_o          ( carpici_sonuc_w ),
+        .carpim_gecerli_o  ( carpici_sonuc_gecerli_w )
     );
 `else
     carpici carp (
-        .islec0_i         ( carpici_is0_cmb ),
-        .islec1_i         ( carpici_is1_cmb ),
-        .carpim_o         ( carpici_sonuc_w )
+        .islec0_i          ( carpici_is0_cmb ),
+        .islec0_isaretli_i ( carpici_is0_isaretli_cmb ),
+        .islec1_i          ( carpici_is1_cmb ),
+        .islec1_isaretli_i ( carpici_is1_isaretli_cmb ),
+        .carpim_o          ( carpici_sonuc_w )
     );
     assign carpici_sonuc_gecerli_w = carpici_gecerli_cmb;
 `endif
