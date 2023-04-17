@@ -78,6 +78,7 @@ reg           csn_r;
 reg           csn_ns;
 
 wire [`SPI_TXN_SIZE-1:0] cmd_data_reversed_w;
+wire [`SPI_TXN_SIZE-1:0] miso_data_reversed_w;
 
 reg                      recv_data_valid_cmb;
 
@@ -85,6 +86,7 @@ genvar gen_i;
 generate
     for (gen_i = 0; gen_i < `SPI_TXN_SIZE; gen_i = gen_i + 1) begin
         assign cmd_data_reversed_w[gen_i] = cmd_data_i[`SPI_TXN_SIZE - gen_i - 1];
+        assign miso_data_reversed_w[gen_i] = buf_miso_r[`SPI_TXN_SIZE - gen_i - 1];
     end
 endgenerate
 
@@ -239,7 +241,7 @@ assign cmd_ready_o = cmd_ready_cmb;
 assign mosi_o = mosi_r;
 assign csn_o = csn_r;
 assign sck_o = sck_clk_r;
-assign recv_data_o = buf_miso_r;
+assign recv_data_o = cmd_msb_first_i ? miso_data_reversed_w : buf_miso_r;
 assign recv_data_valid_o = recv_data_valid_cmb;
 
 endmodule

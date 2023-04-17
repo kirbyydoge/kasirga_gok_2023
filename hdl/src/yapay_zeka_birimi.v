@@ -182,7 +182,8 @@ toplayici topla (
     .islec0_i ( toplayici_is0_cmb ),
     .islec1_i ( toplayici_is1_cmb ),
     .carry_i  ( 1'b0 ),
-    .toplam_o ( toplayici_sonuc_w )
+    .toplam_o ( toplayici_sonuc_w ),
+    .carry_o  ()
 );
 
 assign sayac_min_w = sayac_x_r < sayac_w_r ? sayac_x_r : sayac_w_r;

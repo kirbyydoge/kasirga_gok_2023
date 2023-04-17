@@ -56,6 +56,7 @@ clk_wiz_1 clk_wiz
 wire clk_w;
 clk_wiz_0 clk_wiz
 (
+    .CLK_100MHZ(),
     .CLK_60MHZ(clk_w),
     .reset(1'b0), 
     .locked(clk_wiz_locked),
