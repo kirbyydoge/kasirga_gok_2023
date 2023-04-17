@@ -34,6 +34,13 @@ reg         islec0_is_negated;
 reg  [31:0] islec1_sign_corrected;
 reg         islec1_is_negated;
 
+reg sign_check;
+wire sign_check_w;
+assign sign_check_w = ((~islec0_i[31])&&(islec1_i[31])&&(islec1_isaretli_i)) ||
+                      ((islec1_i[31])&&(~islec0_isaretli_i)&&(islec1_isaretli_i)) ||
+                      ((islec0_i[31])&&(~islec1_i[31])&&(islec0_isaretli_i)) ||
+                      ((islec0_i[31]) && (islec0_isaretli_i)&&(~islec1_isaretli_i));
+
 wire islec0_isaret_w;
 wire islec1_isaret_w;
 
@@ -46,9 +53,10 @@ always @* begin
     islec1_sign_corrected = islec1_isaret_w ? (~islec1_i + 32'b1) : islec1_i;
     islec0_is_negated = islec0_isaret_w;
     islec1_is_negated = islec1_isaret_w;
+    sign_check = sign_check_w;
     for (i = 0; i < 32; i = i + 1) begin
         if (islec1_sign_corrected[i]) begin
-            partial[i] = {{32{islec0_sign_corrected[31]}}, islec0_sign_corrected} << i;
+            partial[i] = {{32{1'b0}}, islec0_sign_corrected} << i;
         end
         else begin
             partial[i] = 64'd0;
@@ -93,7 +101,7 @@ always @(posedge clk_i) begin
     pipe_s0_cl2[3] <= c_l2[3];
     pipe_s0_sl2[4] <= s_l2[4];
     pipe_s0_cl2[4] <= c_l2[4];
-    pipe_s0_negate <= islec0_is_negated ^ islec1_is_negated;
+    pipe_s0_negate <= sign_check;
     pipe_s0_valid <= islem_gecerli_i;
 end
 

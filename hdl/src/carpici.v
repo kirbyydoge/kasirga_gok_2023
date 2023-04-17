@@ -31,18 +31,26 @@ reg         islec0_is_negated;
 reg  [31:0] islec1_sign_corrected;
 reg         islec1_is_negated;
 
+reg sign_check;
+wire sign_check_w;
+assign sign_check_w = ((~islec0_i[31])&&(islec1_i[31])&&(islec1_isaretli_i)) ||
+                      ((islec1_i[31])&&(~islec0_isaretli_i)&&(islec1_isaretli_i)) ||
+                      ((islec0_i[31])&&(~islec1_i[31])&&(islec0_isaretli_i)) ||
+                      ((islec0_i[31]) && (islec0_isaretli_i)&&(~islec1_isaretli_i));
+
 assign islec0_isaret_w = islec0_i[31] && islec0_isaretli_i;
 assign islec1_isaret_w = islec1_i[31] && islec1_isaretli_i;
 
 integer i;
 always @* begin
-    islec0_sign_corrected = islec0_isaret_w ? (~islec0_i + 32'b1) : islec0_i;
+    islec0_sign_corrected = islec0_isaret_w ? ((~islec0_i) + 32'd1) : islec0_i;
     islec1_sign_corrected = islec1_isaret_w ? (~islec1_i + 32'b1) : islec1_i;
     islec0_is_negated = islec0_isaret_w;
     islec1_is_negated = islec1_isaret_w;
+    sign_check = sign_check_w;
     for (i = 0; i < 32; i = i + 1) begin
         if (islec1_sign_corrected[i]) begin
-            partial[i] = {{32{islec0_sign_corrected[31]}}, islec0_sign_corrected} << i;
+            partial[i] = {{32{1'b0}}, islec0_sign_corrected} << i;
         end
         else begin
             partial[i] = 64'd0;
@@ -106,7 +114,7 @@ toplayici bk_msg (
 reg [63:0]  res_sign_corrected;
 
 always @* begin
-    res_sign_corrected = (islec0_is_negated ^ islec1_is_negated) ? (~res_l8 + 64'b1) : res_l8;
+    res_sign_corrected = sign_check ? (~res_l8 + 64'b1) : res_l8;
 end
 
 assign carpim_o = res_sign_corrected;
