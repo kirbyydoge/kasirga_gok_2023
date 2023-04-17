@@ -4,8 +4,10 @@ Kasırga Gök işlemcisi parametreleri ile yüksek esneklik sunar. Aşağıdaki 
 
 ## Önbellek Parametreleri
 
-`L1_BLOK_BIT`: Sistemin ve ilk düzey önbelleklerin veri öbeği boyutunu belirtir. 32'nin tam katı olmalıdır. (ADRES_BYTE_BIT log2(\`L1_BLOK_BIT) olmalıdır)\
-`L1B/V_SATIR`: Önbelleklerin satır sayılarını belirtir. Buyruk ve Veri önbelleği eşit satır sayısına sahip olmalıdır. (ADRES_SATIR_BIT log2(\`L1B/V_SATIR) olmalıdır)\
+`L1_BLOK_BIT`: Sistemin ve ilk düzey önbelleklerin veri öbeği boyutunu belirtir. 32'nin tam katı olmalıdır.\
+(ADRES_BYTE_BIT log2(\`L1_BLOK_BIT) olmalıdır)\
+`L1B/V_SATIR`: Önbelleklerin satır sayılarını belirtir. Buyruk ve Veri önbelleği eşit satır sayısına sahip olmalıdır.\
+(ADRES_SATIR_BIT log2(\`L1B/V_SATIR) olmalıdır)\
 `L1B/V_YOL`: Önbelleklerin yol sayılarını belirtir. L1B ve L1V için farklı yol sayıları kullanılabilir. Kullanılan yollar herhangi bir tamsayı olabilir. (Openlane akışı için yalnızca 6/2 oranında SRAM'ler sunulmuştur.)
 
 ## SPI Parametreleri
