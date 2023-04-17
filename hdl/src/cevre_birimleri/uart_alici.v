@@ -4,136 +4,152 @@
 `include "sabitler.vh"
 
 module uart_alici (
-      input                   clk_i,
-      input                   rstn_i,
+    input                   clk_i,
+    input                   rstn_i,
 
-      input                   rx_en_i,
-      output [7:0]            alinan_veri_o,
-      output                  alinan_gecerli_o,
-      input [15:0]            baud_div_i,
-      
-      input                   rx_i
-      
+    input                   rx_en_i,
+    output [7:0]            alinan_veri_o,
+    output                  alinan_gecerli_o,
+    input [15:0]            baud_div_i,
+    
+    input                   rx_i
+    
 );
-   reg     al_gecerli_o;
-   assign alinan_gecerli_o = al_gecerli_o;
-   localparam BOSTA          = 0;
-   localparam START_BITI_AL  = 1;
-   localparam VERI_AL        = 2;
-   localparam DUR            = 3;
 
-   reg [7:0] veri_ns, veri_r;    
-   reg [1:0] durum_ns, durum_r;
-   reg [31:0] baud_sayac_ns, baud_sayac_r;
-   reg [2:0] RX_ek_ns, RX_ek_r; 
-   
-   wire      saat_ac     = baud_sayac_r == baud_div_i;
-   wire      ornekle1    = baud_sayac_r == (baud_div_i/20 * 9);
-   wire      ornekle2    = baud_sayac_r == (baud_div_i/20 * 10);
-   wire      ornekle3    = baud_sayac_r == (baud_div_i/20 * 11);
-   
-   reg       RX_r1, RX_r2;
-   
-   reg       RX_ornek1_r, RX_ornek1_ns;
-   reg       RX_ornek2_r, RX_ornek2_ns;
-   reg       RX_ornek3_r, RX_ornek3_ns;
-   
-   wire      RX_ornek_cogunluk = (RX_ornek1_r & RX_ornek2_r) | 
-                                 (RX_ornek2_r & RX_ornek3_r) | 
-                                 (RX_ornek1_r & RX_ornek3_r);
-   
-   // yari kararli durumdan kurtulmak icin RX'i
-   // iki kez yazmaca yaz
-   always @(posedge clk_i) begin
-      RX_r1                      <=                   rx_i;
-      RX_r2                      <=                   RX_r1;
+localparam BOSTA = 0;
+localparam START_AL = 1;
+localparam VERI_AL = 2;
+localparam BITTI = 3;
+
+reg [7:0] alinan_veri_ns;
+reg [7:0] alinan_veri_r;
+
+reg [1:0] durum_r;
+reg [1:0] durum_ns;
+
+reg [15:0] sayac_r;
+reg [15:0] sayac_ns;
+
+reg [3:0] alinan_veri_biti_r;
+reg [3:0] alinan_veri_biti_ns;
+
+reg sample0_aktif_cmb;
+reg sample1_aktif_cmb;
+reg sample2_aktif_cmb;
+
+reg sample0_r;
+reg sample0_ns;
+
+reg sample1_r;
+reg sample1_ns;
+
+reg sample2_r;
+reg sample2_ns;
+
+reg rx_past0_r;
+reg rx_past0_ns;
+
+reg rx_past1_r;
+reg rx_past1_ns;
+
+reg hazir_cmb;
+reg saat_aktif_cmb;
+reg alinan_veri_gecerli_cmb;
+reg sample_maj_cmb;
+
+always @* begin
+   rx_past0_ns = rx_i;
+   rx_past1_ns = rx_past0_r;
+
+   hazir_cmb = `LOW;
+   saat_aktif_cmb = `LOW;
+   alinan_veri_gecerli_cmb = `LOW;
+   durum_ns = durum_r;
+   sayac_ns = sayac_r;
+   alinan_veri_biti_ns = alinan_veri_biti_r;
+   alinan_veri_ns = alinan_veri_r;
+
+   sayac_ns = sayac_r + 1;
+
+   saat_aktif_cmb = sayac_r == baud_div_i;
+   sample0_aktif_cmb = sayac_r == (baud_div_i / 20 * 9);
+   sample1_aktif_cmb = sayac_r == (baud_div_i / 20 * 10);
+   sample2_aktif_cmb = sayac_r == (baud_div_i / 20 * 11);
+
+   if (saat_aktif_cmb) begin
+      sayac_ns = 0;
    end
-   
-   assign alinan_veri_o            =                   veri_r;
-   
-   always @* begin
-       durum_ns                    =                   durum_r;
-       veri_ns                     =                   veri_r ;
-       baud_sayac_ns               =                   baud_sayac_r;
-       RX_ek_ns                    =                   RX_ek_r;
-       RX_ornek1_ns                =                   RX_ornek1_r;
-       RX_ornek2_ns                =                   RX_ornek2_r;
-       RX_ornek3_ns                =                   RX_ornek3_r;
-      
-       al_gecerli_o                =                   1'b0;
-      
-       if (ornekle1) begin
-          RX_ornek1_ns              =                   RX_r2;
-       end
-       if (ornekle2) begin
-          RX_ornek2_ns              =                   RX_r2;
-       end
-       if (ornekle3) begin
-          RX_ornek3_ns              =                   RX_r2;
-       end        
 
-       if (durum_r != BOSTA)
-          baud_sayac_ns             =                   baud_sayac_r + 1;
- 
-       case (durum_r)
-         BOSTA: begin
-            if (RX_r2 == 1'b0)
-               durum_ns              =                   START_BITI_AL;
-               baud_sayac_ns         =                   32'd0; 
+   if (sample0_aktif_cmb) begin
+      sample0_ns = rx_past1_r;
+   end
+
+   if (sample1_aktif_cmb) begin
+      sample1_ns = rx_past1_r;
+   end
+
+   if (sample2_aktif_cmb) begin
+      sample2_ns = rx_past1_r;
+   end
+
+   sample_maj_cmb = (sample0_r && sample1_r) || (sample1_r && sample2_r) || (sample0_r && sample2_r);
+
+   case (durum_r) 
+      BOSTA: begin
+         if (rx_i == `LOW && rx_en_i) begin 
+            durum_ns = START_AL;
+            sayac_ns = 16'd0;
+            alinan_veri_biti_ns = 0;
+         end    
+      end
+      START_AL: begin
+         if (saat_aktif_cmb) begin
+            durum_ns = sample_maj_cmb ? BOSTA : VERI_AL;
          end
-         START_BITI_AL: begin
-            if (saat_ac) begin
-               if (RX_ornek_cogunluk == 1'b0)
-                  durum_ns            =                   VERI_AL;
-               else
-                  durum_ns            =                   BOSTA;          
-            end      
-         end
-         VERI_AL: begin
-            if (saat_ac) begin
-               veri_ns[RX_ek_r]      =                   RX_ornek_cogunluk;        
-               if (RX_ek_r == 3'b111) begin 
-                  RX_ek_ns            =                   3'b000;
-                  durum_ns            =                   DUR;
-               end
-               else begin
-                  RX_ek_ns            =                   RX_ek_r + 1;
-               end
+      end
+      VERI_AL: begin
+         if (saat_aktif_cmb) begin
+            alinan_veri_ns[alinan_veri_biti_r] = sample_maj_cmb;
+            if (alinan_veri_biti_r == 4'd7) begin
+               durum_ns = BITTI;
             end
          end
-         DUR: begin
-            if (baud_sayac_r > (baud_div_i/20 * 11)) begin
-               durum_ns              =                   BOSTA;
-               baud_sayac_ns         =                   32'd0;
-               al_gecerli_o          =                   1'b1;    
-            end
+      end
+      BITTI: begin
+         if (sample2_aktif_cmb) begin
+            alinan_veri_gecerli_cmb = `HIGH;
+            durum_ns = BOSTA;
+            hazir_cmb = `HIGH;
          end
-      endcase
-   
-      if (saat_ac) begin  
-         baud_sayac_ns             =                   32'd0;
-      end          
+      end
+   endcase
+end
+
+always @ (posedge clk_i) begin
+   if (!rstn_i) begin
+      durum_r <= BOSTA;
+      sayac_r <= 16'd0;
+      alinan_veri_biti_r <= 0; 
+      rx_past0_r <= 0;
+      rx_past1_r <= 0;
+      sample0_r <= 0;
+      sample1_r <= 0;
+      sample2_r <= 0;
    end
-   
-   always @(posedge clk_i) begin
-      if (!rstn_i) begin
-         veri_r                      <=                  0;
-         durum_r                     <=                  BOSTA;
-         baud_sayac_r                <=                  0;
-         RX_ek_r                     <=                  0;    
-         RX_ornek1_r                 <=                  0;
-         RX_ornek2_r                 <=                  0;
-         RX_ornek3_r                 <=                  0;
-      end
-      else begin
-         veri_r                      <=                  veri_ns;
-         durum_r                     <=                  durum_ns;
-         baud_sayac_r                <=                  baud_sayac_ns;
-         RX_ek_r                     <=                  RX_ek_ns;
-         RX_ornek1_r                 <=                  RX_ornek1_ns;
-         RX_ornek2_r                 <=                  RX_ornek2_ns;
-         RX_ornek3_r                 <=                  RX_ornek3_ns;
-      end
-   end   
-   
+   else begin
+      durum_r <= durum_ns; 
+      sayac_r <= sayac_ns;
+      alinan_veri_biti_r <= alinan_veri_biti_ns;
+      alinan_veri_r <= alinan_veri_ns;
+      rx_past0_r <= rx_past0_ns;
+      rx_past1_r <= rx_past1_ns;
+      sample0_r <= sample0_ns;
+      sample1_r <= sample1_ns;
+      sample2_r <= sample2_ns;
+   end
+end
+
+assign alinan_veri_o = alinan_veri_r;
+assign alinan_gecerli_o = alinan_veri_gecerli_cmb;
+
 endmodule

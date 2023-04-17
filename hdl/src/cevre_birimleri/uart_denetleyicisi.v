@@ -276,7 +276,7 @@ assign tx_en_w = uart_ctrl_r [0];
 assign rx_en_w = uart_ctrl_r [1];
 
 `ifndef SPIKE_DIFF
-assign baud_div = uart_ctrl_r [31:16];
+assign baud_div = 64; // uart_ctrl_r [31:16];
 `else
 assign baud_div = 16'd2;
 `endif

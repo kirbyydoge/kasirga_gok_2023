@@ -90,7 +90,7 @@ integer last_uart;
 reg [10:0] uart_msg;
 localparam CPU_HZ = 50_000_000;
 localparam BAUD_RATE = 115200;
-localparam BAUD_DIV = 6;
+localparam BAUD_DIV = 128;
 integer uart_baud_ctr;
 integer uart_ctr;
 integer uart_stall;
