@@ -152,7 +152,7 @@ always @* begin
             cmd_hint_ns = cmd_hint_i;
             cmd_cpha_ns = cmd_cpha_i;
             cmd_cpol_ns = cmd_cpol_i;
-            cmd_sck_div_ns = 'h20;
+            cmd_sck_div_ns = cmd_sck_div_i;
             cmd_end_cs_ns = cmd_end_cs_i;
             cmd_dir_ns = cmd_dir_i;
             buf_mosi_ns = cmd_msb_first_i ? cmd_data_reversed_w : cmd_data_i;
