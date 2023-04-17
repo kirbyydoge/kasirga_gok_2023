@@ -27,7 +27,9 @@ kaynaklar/                  İşlemci test ve doğrulaması için kullanılan ha
    |_ elf2hex.sh            Elf dosyalarını hex dosyasına dönüştüren script
  |_ uart_test/              UART alıcı ve verici testleri
  |_ README.md               !! Koşulan testler ve baremetal ortamı hakkında bilgiler !!
+openlane/                   Kullanılan SRAM kütüphaneleri ve OpenLane konfigürasyonu
+ |_ README.md               !! OpenLane koşulmadan önce yapılması gerekenler !!
 ```
 
-## OpenLane Sonuçları Bağlantısı
+## OpenLane Sonuç Bağlantısı
 
