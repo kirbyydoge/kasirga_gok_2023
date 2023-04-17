@@ -26,14 +26,6 @@ module spi_birimi (
    output                          sck_o
 ); 
 
-ila_spi debug_spi (
-   .clk        (clk_i),
-   .probe0     (csn_o),
-   .probe1     (sck_o),
-   .probe2     (mosi_o),
-   .probe3     (miso_i)
-);
-
 reg           cmd_hint_r;
 reg           cmd_hint_ns;
 

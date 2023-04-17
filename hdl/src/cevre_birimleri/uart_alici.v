@@ -60,6 +60,9 @@ reg sample_maj_cmb;
 always @* begin
    rx_past0_ns = rx_i;
    rx_past1_ns = rx_past0_r;
+   sample0_ns = sample0_r;
+   sample1_ns = sample1_r;
+   sample2_ns = sample2_r;
 
    hazir_cmb = `LOW;
    saat_aktif_cmb = `LOW;
@@ -110,6 +113,7 @@ always @* begin
       VERI_AL: begin
          if (saat_aktif_cmb) begin
             alinan_veri_ns[alinan_veri_biti_r] = sample_maj_cmb;
+            alinan_veri_biti_ns = alinan_veri_biti_r + 1;
             if (alinan_veri_biti_r == 4'd7) begin
                durum_ns = BITTI;
             end

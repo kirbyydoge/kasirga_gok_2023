@@ -17,14 +17,14 @@ int terminal() {
     return cmd_ptr;
 }
 
-int main() {
-    uart_set_ctrl(CPU_HZ / BAUD_RATE, 1, 1);
-    unsigned char byte;
-    uart_write('a');
-    uart_write('\n');
-    while (1) {
-        byte = uart_read();
-        uart_write(byte);
-    }
-    return 0;
-}
+// int main() {
+//     uart_set_ctrl(CPU_HZ / BAUD_RATE, 1, 1);
+//     unsigned char byte;
+//     uart_write('a');
+//     uart_write('\n');
+//     while (1) {
+//         byte = uart_read();
+//         uart_write(byte);
+//     }
+//     return 0;
+// }
