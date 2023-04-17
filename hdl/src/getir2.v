@@ -324,30 +324,6 @@ assign buf_alt_compressed_w = buf_buyruk_r[1:0] != 2'b11;
 assign buf_ust_buyruk_w = buf_buyruk_r[`BUYRUK_BIT/2 +: `BUYRUK_BIT/2];
 assign buf_ust_compressed_w = buf_buyruk_r[1:0] != 2'b11;
 
-reg [31:0] stall_ctr_r;
-
-always @(posedge clk_i) begin
-   if (!rstn_i) begin
-      stall_ctr_r <= 0;
-   end
-   else begin
-      if (coz_buyruk_gecerli_o) begin
-         stall_ctr_r <= 0;
-      end
-      else begin
-         stall_ctr_r <= stall_ctr_r + 1;
-      end
-   end
-end
-
-// ila_getir2 dbg_getir2 (
-//     .clk    ( clk_i ),
-//     .probe0 ( stall_ctr_r ),
-//     .probe1 ( coz_buyruk_r ),
-//     .probe2 ( coz_buyruk_ps_r ),
-//     .probe3 ( coz_buyruk_gecerli_r )
-// );
-
 dallanma_ongorucu do (
    .clk_i                    ( clk_i ),
    .rstn_i                   ( rstn_i ),
