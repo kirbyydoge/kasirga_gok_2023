@@ -39,6 +39,6 @@ openlane/                   Kullanılan SRAM kütüphaneleri ve OpenLane konfig�
 ```
 
 ## OpenLane Sonuç Bağlantısı
-[Google Drive](https://drive.google.com/file/d/1iPRBgmaker0bfUkOEsaY3MI_MZh2U1ir/view?usp=share_link)
+[Google Drive](https://drive.google.com/file/d/1BAunV44_JXPuDZf73AfrFf0elB2RZZjR/view?usp=share_link)
 
-Text Link: https://drive.google.com/file/d/1iPRBgmaker0bfUkOEsaY3MI_MZh2U1ir/view?usp=share_link
+Text Link: https://drive.google.com/file/d/1BAunV44_JXPuDZf73AfrFf0elB2RZZjR/view?usp=share_link
