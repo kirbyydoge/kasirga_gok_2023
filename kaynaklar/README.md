@@ -25,7 +25,7 @@ UART durum yazmaçlarının kontrol edilmesi, string yardımcı ile printf fonks
 
 [Dhrystone Testi](https://en.wikipedia.org/wiki/Dhrystone) ve testlerle uyumlu Kasırga Gök Baremetal ortamı gerçeklemesini içerir. Derleyici değişiklikleri gerektirdiğinden `compile` klasöründeki derleyici dosyalarının ortam uyumlu versiyonlarını içerir.
 
-`kasirga.h`: `CPU_HZ` ve `BAUD_RATE` sırası ile işlemci frekansı ve UART baud rate belirtmelidir.
+`kasirga.h`: `CPU_HZ` ve `BAUD_RATE` sırası ile işlemci frekansı ve UART baud rate belirtmelidir.\
 `dhrystone.c`: `LOOPS` çalıştırılacak Dhrystone iterasyonlarını belirtir.
 
 Kasırga Gök işlemcisi 100MHz ile VCU108 kartında 166,666 dhrystone/saniye skora sahiptir.
@@ -36,7 +36,7 @@ Derlemek için: `make -B dhrystone`
 
 [CoreMark Testi](https://github.com/eembc/coremark) ve testlerle uyumlu Kasırga Gök Baremetal ortamı gerçeklemesini içerir. Derleyici değişiklikleri gerektirdiğinden `compile` klasöründeki derleyici dosyalarının ortam uyumlu versiyonlarını içerir.
 
-`kasirga.h`: `CPU_HZ` ve `BAUD_RATE` sırası ile işlemci frekansı ve UART baud rate belirtmelidir.
+`kasirga.h`: `CPU_HZ` ve `BAUD_RATE` sırası ile işlemci frekansı ve UART baud rate belirtmelidir.\
 `core_portme.h`: `ITERATIONS` çalıştırılacak Dhrystone iterasyonlarını belirtir.
 
 Kasırga Gök işlemcisi 100MHz (125MHz) ile VCU108 kartında 181 (226) CoreMark iterasyon/saniye skorune sahiptir.
