@@ -39,6 +39,6 @@ Derlemek için: `make -B dhrystone`
 `kasirga.h`: `CPU_HZ` ve `BAUD_RATE` sırası ile işlemci frekansı ve UART baud rate belirtmelidir.\
 `core_portme.h`: `ITERATIONS` çalıştırılacak CoreMark iterasyon sayısını belirtir.
 
-Kasırga Gök işlemcisi 100MHz (125MHz) ile VCU108 kartında 181 (226) CoreMark iterasyon/saniye skorune sahiptir.
+Kasırga Gök işlemcisi 100MHz (125MHz) ile VCU108 kartında 181 (226) CoreMark iterasyon/saniye skora sahiptir.
 
 Derlemek için: `make -B core_main`
