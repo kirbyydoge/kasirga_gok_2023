@@ -10,7 +10,7 @@ wire uart_rx_i;
 wire spi_cs_o;
 wire spi_sck_o;
 wire spi_mosi_o;
-reg  spi_miso_i;
+wire spi_miso_i;
 wire pwm0_o;
 wire pwm1_o;
 
@@ -33,6 +33,27 @@ teknofest_wrapper tw (
 .spi_miso_i (spi_miso_i),
 .pwm0_o (pwm0_o),
 .pwm1_o (pwm1_o)    
+);
+
+wire o_RX_DV_w;
+wire [7:0] o_RX_Byte;
+reg  i_TX_DV_r;
+reg [7:0] i_TX_Byte;
+wire o_SPI_MISO;
+
+SPI_Slave #(
+  .SPI_MODE(0)
+) slave (
+    .i_Rst_L (rst_ni),
+    .i_Clk (clk_i),
+    .o_RX_DV (o_RX_DV_w),
+    .o_RX_Byte (o_RX_Byte),
+    .i_TX_DV (i_TX_DV_r),
+    .i_TX_Byte (i_TX_Byte),
+    .i_SPI_Clk (spi_sck_o),
+    .o_SPI_MISO (spi_miso_i),
+    .i_SPI_MOSI (spi_mosi_o),
+    .i_SPI_CS_n (spi_cs_o)
 );
 
 always begin
@@ -77,7 +98,6 @@ always @(posedge clk_i) begin
     if (!rst_ni) begin
         uart_ctr <= 0;
         uart_baud_ctr <= 0;
-        spi_miso_i <= 0;
     end
     else if (tw.soc.uartd.rx_en_w) begin
         uart_baud_ctr <= uart_baud_ctr + 1;
@@ -85,7 +105,6 @@ always @(posedge clk_i) begin
             uart_baud_ctr <= 0;
             uart_ctr <= (uart_ctr + 1) % 11;
         end
-        spi_miso_i <= !spi_miso_i;
     end 
 end
 
@@ -93,8 +112,8 @@ assign uart_rx_i = uart_msg[10 - uart_ctr];
 
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
 localparam RISCV_TEST = 0;
-localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
-//localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
+//localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
+localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
 localparam LOG_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/vivado.txt";
 localparam UART_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/uart.txt";
 initial begin

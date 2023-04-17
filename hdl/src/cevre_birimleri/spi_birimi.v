@@ -152,7 +152,7 @@ always @* begin
             cmd_hint_ns = cmd_hint_i;
             cmd_cpha_ns = cmd_cpha_i;
             cmd_cpol_ns = cmd_cpol_i;
-            cmd_sck_div_ns = cmd_sck_div_i;
+            cmd_sck_div_ns = 'h20;
             cmd_end_cs_ns = cmd_end_cs_i;
             cmd_dir_ns = cmd_dir_i;
             buf_mosi_ns = cmd_msb_first_i ? cmd_data_reversed_w : cmd_data_i;
@@ -165,7 +165,7 @@ always @* begin
     DURUM_BASLA: begin
         sck_clk_ns = cmd_cpol_r;
         sck_sayac_ns = 15'd0;
-        mosi_ns = buf_mosi_r[transfer_sayac_r];
+        mosi_ns = cmd_cpha_r ? mosi_r : buf_mosi_r[transfer_sayac_r];
         csn_ns = cmd_dir_r[1] || cmd_dir_r[0] ? `LOW : csn_r;
         sck_enable_ns = cmd_dir_r[1] || cmd_dir_r[0];
         recv_valid_ns = `LOW;
