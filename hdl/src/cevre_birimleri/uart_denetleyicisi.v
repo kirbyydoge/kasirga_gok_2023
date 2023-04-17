@@ -185,21 +185,21 @@ end
 
 always @ (posedge clk_i) begin
     if (!rstn_i) begin
-            durum_r <= BOSTA;
-            uart_ctrl_r <= 0;
-            uart_veri_r <= 0;
-            uart_gecerli_r <= `LOW;
-            fifo_buf_veri_r <= 0;
-            uart_tilefields_r <= 0;
-        end
-        else begin
-            uart_tilefields_r <= uart_tilefields_ns;
-            durum_r <= durum_ns; 
-            uart_ctrl_r <= uart_ctrl_ns;
-            uart_veri_r <= uart_veri_ns;
-            uart_gecerli_r <= uart_gecerli_ns;
-            fifo_buf_veri_r <= fifo_buf_veri_ns;
-        end
+        durum_r <= BOSTA;
+        uart_ctrl_r <= 0;
+        uart_veri_r <= 0;
+        uart_gecerli_r <= `LOW;
+        fifo_buf_veri_r <= 0;
+        uart_tilefields_r <= 0;
+    end
+    else begin
+        uart_tilefields_r <= uart_tilefields_ns;
+        durum_r <= durum_ns; 
+        uart_ctrl_r <= uart_ctrl_ns;
+        uart_veri_r <= uart_veri_ns;
+        uart_gecerli_r <= uart_gecerli_ns;
+        fifo_buf_veri_r <= fifo_buf_veri_ns;
+    end
 end
 
 fifo #(
@@ -233,6 +233,7 @@ fifo #(
 uart_alici alici (
     .clk_i                     ( clk_i ),
     .rstn_i                    ( rstn_i ),
+    .rx_en_i                   ( rx_en_w ),
     .alinan_veri_o             ( alici_alinan_veri_w ),
     .alinan_gecerli_o          ( alici_alinan_gecerli_w ),
     .baud_div_i                ( baud_div ),   

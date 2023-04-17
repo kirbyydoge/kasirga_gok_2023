@@ -7,6 +7,7 @@ module uart_alici (
     input                   clk_i,
     input                   rstn_i,
 
+    input                   rx_en_i,
     output [7:0]            alinan_veri_o,
     output                  alinan_gecerli_o,
     input [15:0]            baud_div_i,
@@ -52,7 +53,7 @@ always @* begin
     sayac_ns = sayac_r + 1;
 
     saat_aktif_cmb = sayac_r == baud_div_i - 1;
-    sample_aktif_cmb = sample_en_r && sayac_r == (baud_div_i / 2);
+    sample_aktif_cmb = sample_en_r && sayac_r == (baud_div_i / 2 - 1);
 
     if (sayac_r == baud_div_i - 1) begin
         sayac_ns = 0;
@@ -61,7 +62,7 @@ always @* begin
     case (durum_r) 
         BOSTA: begin
             sample_en_ns = `LOW;
-            if (rx_i == `LOW) begin 
+            if (rx_i == `LOW && rx_en_i) begin 
                 durum_ns = VERI_AL;
                 sayac_ns = 16'd0;
                 alinan_veri_biti_ns = 0;
@@ -80,8 +81,8 @@ always @* begin
             end
         end
         BITTI: begin
-            sample_en_ns = `LOW;
-            if (saat_aktif_cmb) begin
+            if (sample_aktif_cmb) begin
+                sample_en_ns = `LOW;
                 alinan_veri_gecerli_cmb = `HIGH;
                 durum_ns = BOSTA;
                 hazir_cmb = `HIGH;

@@ -318,8 +318,12 @@ always @* begin
             sb_cmd_data_cmb = fifo_mosi_rd_data_w;
             fifo_mosi_rd_en_cmb = exe_cmd_yon_r == KOMUT_YAZ;
             sb_cmd_end_cs_cmb = exe_kalan_r == 1 ? exe_cs_end_r : `LOW;
-            sb_cmd_hint_cmb = exe_kalan_r == 1 ? `HIGH : `LOW;
-            sb_cmd_msb_first_cmb = `LOW;
+            `ifdef SPI_SEAMLESS
+                sb_cmd_hint_cmb = exe_kalan_r == 1 ? (sb_cmd_end_cs_cmb && !fifo_cmd_empty_w) : `LOW;
+            `else
+                sb_cmd_hint_cmb = exe_kalan_r == 1 ? `HIGH : `LOW;
+            `endif
+            sb_cmd_msb_first_cmb = `SPI_IS_MSB;
             sb_cmd_valid_cmb = `HIGH;
             exe_kalan_ns = exe_kalan_r - 1;
             durum_exe_ns = exe_cmd_yon_r == KOMUT_OKU ? DURUM_EXE_OKU_BEKLE : DURUM_EXE_BASLAT;

@@ -88,20 +88,26 @@ integer last_inst;
 integer last_uart;
 
 reg [10:0] uart_msg;
-localparam CPU_HZ = 100_000_000;
+localparam CPU_HZ = 50_000_000;
 localparam BAUD_RATE = 115200;
-localparam BAUD_DIV = CPU_HZ / BAUD_RATE;
+localparam BAUD_DIV = 6;
 integer uart_baud_ctr;
 integer uart_ctr;
+integer uart_stall;
+integer last_stall;
+
+wire [7:0] next_data = uart_msg[8:1] + 1'b1;
 
 always @(posedge clk_i) begin
     if (!rst_ni) begin
         uart_ctr <= 0;
         uart_baud_ctr <= 0;
+        last_stall <= 10;
     end
     else if (tw.soc.uartd.rx_en_w) begin
         uart_baud_ctr <= uart_baud_ctr + 1;
         if (uart_baud_ctr == BAUD_DIV - 1) begin
+            uart_msg <= {2'b10, next_data, 1'b1};
             uart_baud_ctr <= 0;
             uart_ctr <= (uart_ctr + 1) % 11;
         end
@@ -113,9 +119,11 @@ assign uart_rx_i = uart_msg[10 - uart_ctr];
 // 0 yapilirsa test kontrolu ve otomatik sonlanma yapilmaz
 localparam RISCV_TEST = 0;
 //localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
-localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
+//localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
+localparam STANDALONE_PATH = "/home/kirbyydoge/Downloads/uart_receiver.hex";
 localparam LOG_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/vivado.txt";
 localparam UART_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/uart.txt";
+
 initial begin
     uart_msg = 11'b10_10110011_1;
     if (RISCV_TEST) begin
