@@ -115,14 +115,14 @@ end
 always @ (posedge clk_i) begin
    if (!rstn_i) begin
       for (i = 0; i < `BTB_SATIR_SAYISI; i = i + 1) begin
-         BTB_r[i] <= {`BTB_SATIR_BOYUT{1'b0}};
+         BTB_r[i] <= 0;
       end
       for (i = 0; i < `BHT_SATIR_SAYISI; i = i + 1) begin
-         BHT_r[i] <= {`BHT_SATIR_BOYUT{1'b0}};
+         BHT_r[i] <= 0;
       end
-      GGY_r <= {`GENEL_GECMIS_YAZMACI_BIT{1'b0}};
-      dogru_tahmin_sayac_r <= {`PS_BIT{1'b0}};
-      yanlis_tahmin_sayac_r <= {`PS_BIT{1'b0}};    
+      GGY_r <= 0;
+      dogru_tahmin_sayac_r <= 0;
+      yanlis_tahmin_sayac_r <= 0;    
    end
    else begin
       for (i = 0; i < `BTB_SATIR_SAYISI; i = i + 1) begin

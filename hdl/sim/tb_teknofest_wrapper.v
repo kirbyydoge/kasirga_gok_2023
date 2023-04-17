@@ -35,6 +35,27 @@ teknofest_wrapper tw (
 .pwm1_o (pwm1_o)    
 );
 
+wire o_RX_DV_w;
+wire [7:0] o_RX_Byte;
+reg  i_TX_DV_r;
+reg [7:0] i_TX_Byte;
+wire o_SPI_MISO;
+
+SPI_Slave #(
+  .SPI_MODE(0)
+) slave (
+    .i_Rst_L (rst_ni),
+    .i_Clk (clk_i),
+    .o_RX_DV (o_RX_DV_w),
+    .o_RX_Byte (o_RX_Byte),
+    .i_TX_DV (i_TX_DV_r),
+    .i_TX_Byte (i_TX_Byte),
+    .i_SPI_Clk (spi_sck_o),
+    .o_SPI_MISO (spi_miso_i),
+    .i_SPI_MOSI (spi_mosi_o),
+    .i_SPI_CS_n (spi_cs_o)
+);
+
 always begin
     clk_i = 1'b0;
     #5;

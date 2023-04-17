@@ -159,7 +159,7 @@ genvar i;
       .clk0           ( io_l1bv_clk_w ), 
       .csb0           ( !io_l1bv_komut_gecerli_w ),
       .web0           ( l1b_wr_mask ), 
-      .addr0          ( {1'b0, io_l1bv_komut_adres_w} ),
+      .addr0          ( {0, io_l1bv_komut_adres_w} ),
       .wmask0         ( 'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF ),
       .din0           ( l1b_wr_connect ),
       .dout0          ( l1b_rd_connect )
@@ -175,7 +175,7 @@ generate
          .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
          .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
          .addr_i         ( io_l1bv_komut_adres_w ), 
-         .data_i         ( io_l1bv_yaz_etiket_bw[i] ), 
+         .data_i         ( {0, io_l1bv_yaz_etiket_bw[i]} ), 
          .data_o         ( io_l1bv_oku_etiket_bw[i] )
       );
       
@@ -187,7 +187,7 @@ generate
          .cmd_en_i       ( io_l1bv_komut_gecerli_w ),
          .wr_en_i        ( io_l1bv_komut_yaz_w[i] ), 
          .addr_i         ( io_l1bv_komut_adres_w ), 
-         .data_i         ( io_l1bv_yaz_blok_bw[i] ), 
+         .data_i         ( {0, io_l1bv_yaz_blok_bw[i]} ), 
          .data_o         ( io_l1bv_oku_blok_bw[i] )
       );
    end
@@ -287,7 +287,7 @@ wire [`L1_BLOK_BIT-1:0]         io_l1vv_oku_blok_bw         [0:`L1V_YOL-1];
       .clk0           ( io_l1vv_clk_w ), 
       .csb0           ( !io_l1vv_komut_gecerli_w ),
       .web0           ( l1v_wr_mask ), 
-      .addr0          ( {1'b0, io_l1vv_komut_adres_w} ),
+      .addr0          ( {0, io_l1vv_komut_adres_w} ),
       .wmask0         ( 'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF ),
       .din0           ( l1v_wr_connect ),
       .dout0          ( l1v_rd_connect )
@@ -302,7 +302,7 @@ generate
             .clk_i          ( io_l1vv_clk_w ), 
             .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
             .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
-            .addr_i         ( io_l1vv_komut_adres_w ), 
+            .addr_i         ( {0, io_l1vv_komut_adres_w} ), 
             .data_i         ( io_l1vv_yaz_etiket_bw[i] ), 
             .data_o         ( io_l1vv_oku_etiket_bw[i] )
          );
@@ -314,7 +314,7 @@ generate
             .clk_i          ( io_l1vv_clk_w ),
             .cmd_en_i       ( io_l1vv_komut_gecerli_w ),
             .wr_en_i        ( io_l1vv_komut_yaz_w[i] ), 
-            .addr_i         ( io_l1vv_komut_adres_w ), 
+            .addr_i         ( {0, io_l1vv_komut_adres_w} ), 
             .data_i         ( io_l1vv_yaz_blok_bw[i] ), 
             .data_o         ( io_l1vv_oku_blok_bw[i] )
          );
