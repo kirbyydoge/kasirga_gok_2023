@@ -1,3 +1,28 @@
+# İşlemci Parametreleri
+
+Kasırga Gök işlemcisi parametreleri ile yüksek esneklik sunar. Aşağıdaki parametreleri kullanarak işlemcinin yapısını ve başarımını değiştirebilirsiniz.\
+
+## Önbellek Parametreleri
+
+`L1_BLOK_BIT`: Sistemin ve ilk düzey önbelleklerin veri öbeği boyutunu belirtir. 32'nin tam katı olmalıdır. (ADRES_BYTE_BIT log2(`L1_BLOK_BIT) olmalıdır)\
+`L1B/V_SATIR`: Önbelleklerin satır sayılarını belirtir. Buyruk ve Veri önbelleği eşit satır sayısına sahip olmalıdır. (ADRES_SATIR_BIT log2(`L1B/V_SATIR) olmalıdır)\
+`L1B/V_YOL`: Önbelleklerin yol sayılarını belirtir. L1B ve L1V için farklı yol sayıları kullanılabilir. Kullanılan yollar herhangi bir tamsayı olabilir. (Openlane akışı için yalnızca 6/2 oranında SRAM'ler sunulmuştur.)\
+
+## SPI Parametreleri
+
+`SPI_SEAMLESS`: Tanımlandığında ardışık komutlar takip ederek (cmd içerisinde belirtilmese bile) SCK gecikmelerini engeller.\
+`SPI_IS_MSB`: 1 iken MSB, 0 iken LSB transfer yapar. Transferler her zaman little endian yapılır.
+
+## Bellek Parametreleri
+
+`BELLEK_BASLANGIC`: Ana bellek başlangıç adresini düzenler.\
+`BELLEK_BOYUT`: Ana bellek boyutu. (Aşağıdaki harita parametre maskesi tarafından üstüne yazılır)
+
+## Sistem Adres Haritası
+
+`UART/SPI/RAM/TIMER/PWM_BASE_ADDR`: İlgili birimin başlangıç adresini tanımlar.
+`UART/SPI/RAM/TIMER/PWM_MASK_ADDR`: İlgili birimin erişim maskesini tanımlar.
+
 # İşlemci Verilog Hiyerarşisi
 
 ```
