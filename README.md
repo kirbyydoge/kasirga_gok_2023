@@ -29,5 +29,5 @@ kaynaklar/                  İşlemci test ve doğrulaması için kullanılan ha
  |_ README.md               !! Koşulan testler ve baremetal ortamı hakkında bilgiler !!
 ```
 
-# OpenLane Sonuçları Bağlantısı
+## OpenLane Sonuçları Bağlantısı
 
