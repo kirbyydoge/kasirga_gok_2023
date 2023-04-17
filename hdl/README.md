@@ -78,5 +78,8 @@ teknofest_wrapper                     <teknofest_wrapper.v>
   |_ sram_112x128                     <sram_112x128.v>
 |_ main_memory                        <teknofest_ram.v>
   |_ simpleuart                       <simpleuart.v>
-  
+!! Saat frekansi değiştirecekseniz Clock Wizard Vivado IP ile hedeflediğiniz saat frekansını üretmelisiniz. !!
+|_ clk_wiz                            <Vivado IP>
+
+Tasarımımız VCU108 kartında 100, Nexys kartında ise 60 MHz'de gerçeklenebilmektedir.  
 ```
