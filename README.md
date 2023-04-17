@@ -15,6 +15,7 @@ hdl/                        İşlemci gerçeklemesi ve doğrulaması donanım ka
    |_ cevre_birimleri/      UART, SPI ve PWM birimleri ile denetleyicileri
    |_ README.md             !! İşlemci hiyerarşisi !!
 kaynaklar/                  İşlemci test ve doğrulaması için kullanılan harici dosyalar
+ |_ spike_debug/            SPIKE simülatörü ile debug kaynakları
  |_ compile/                RISC-V Baremetal ortamı taban derleyicisi
  |_ coremark/               Kasırga Gök işlemcisine uygun CoreMark gerçeklemesi
  |_ dhrystone/              Kasırga Gök işlemcisine uygun Dhrystone gerçeklemesi
