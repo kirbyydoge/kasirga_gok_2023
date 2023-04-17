@@ -26,11 +26,6 @@ module spi_birimi (
     output                          sck_o
 ); 
 
-reg           cmd_cpha_r;
-reg           cmd_cpha_ns;
-
-reg           cmd_cpol_r;
-reg           cmd_cpol_ns;
 
 reg           cmd_hint_r;
 reg           cmd_hint_ns;
@@ -108,8 +103,6 @@ always @* begin
     cmd_hint_ns = cmd_hint_r;
     clock_edge_ctr_ns = clock_edge_ctr_r;
     durum_ns = durum_r;
-    cmd_cpha_ns = cmd_cpha_r;
-    cmd_cpol_ns = cmd_cpol_r;
     cmd_sck_div_ns = cmd_sck_div_r;
     cmd_end_cs_ns = cmd_end_cs_r;
     cmd_dir_ns = cmd_dir_r;
@@ -127,10 +120,10 @@ always @* begin
     recv_data_valid_cmb = `LOW;
 
     cmd_ready_cmb = `LOW;
-    sck_sample_cmb = cmd_cpol_r ^ cmd_cpha_r ? sck_negedge_r : sck_posedge_r;
-    sck_flip_cmb = cmd_cpol_r ^ cmd_cpha_r ? sck_posedge_r : sck_negedge_r;
+    sck_sample_cmb = cmd_cpol_i ^ cmd_cpha_i ? sck_negedge_r : sck_posedge_r;
+    sck_flip_cmb = cmd_cpol_i ^ cmd_cpha_i ? sck_posedge_r : sck_negedge_r;
 
-    sck_clk_ns = sck_sayac_r == (cmd_sck_div_r / 2 - 1) ? !sck_clk_r : sck_clk_r;
+    sck_clk_ns = sck_sayac_r == cmd_sck_div_i ? !sck_clk_r : sck_clk_r;
 
     sck_posedge_ns = (sck_clk_ns ^ sck_clk_r) && !sck_clk_r;
     sck_negedge_ns = (sck_clk_ns ^ sck_clk_r) && sck_clk_r;
@@ -148,29 +141,25 @@ always @* begin
     case(durum_r)
     DURUM_BOSTA: begin
         cmd_ready_cmb = `HIGH;
+        sck_clk_ns = cmd_cpol_i;
         if (cmd_ready_o && cmd_valid_i) begin
             cmd_hint_ns = cmd_hint_i;
-            cmd_cpha_ns = cmd_cpha_i;
-            cmd_cpol_ns = cmd_cpol_i;
-            cmd_sck_div_ns = cmd_sck_div_i;
             cmd_end_cs_ns = cmd_end_cs_i;
             cmd_dir_ns = cmd_dir_i;
             buf_mosi_ns = cmd_msb_first_i ? cmd_data_reversed_w : cmd_data_i;
-            sck_clk_ns = cmd_cpol_i;
             transfer_sayac_ns = 5'b0;
 
             durum_ns = DURUM_BASLA;
         end
     end
     DURUM_BASLA: begin
-        sck_clk_ns = cmd_cpol_r;
         sck_sayac_ns = 15'd0;
-        mosi_ns = cmd_cpha_r ? mosi_r : buf_mosi_r[transfer_sayac_r];
+        mosi_ns = cmd_cpha_i ? mosi_r : buf_mosi_r[transfer_sayac_r];
         csn_ns = cmd_dir_r[1] || cmd_dir_r[0] ? `LOW : csn_r;
         sck_enable_ns = cmd_dir_r[1] || cmd_dir_r[0];
         recv_valid_ns = `LOW;
         clock_edge_ctr_ns = 0;
-        transfer_sayac_ns = !cmd_cpha_r;
+        transfer_sayac_ns = !cmd_cpha_i;
 
         durum_ns =  cmd_dir_r[1] ? DURUM_GONDER :
                     cmd_dir_r[0] ? DURUM_GETIR  : DURUM_BOSTA;
@@ -210,9 +199,6 @@ end
 always @(posedge clk_i) begin
     if (!rstn_i) begin
         durum_r <= DURUM_BOSTA;
-        cmd_cpha_r <= 0;
-        cmd_cpol_r <= 0;
-        cmd_sck_div_r <= 0;
         cmd_end_cs_r <= 0;
         cmd_dir_r <= 0;
         sck_sayac_r <= 0;
@@ -231,9 +217,6 @@ always @(posedge clk_i) begin
     end
     else begin
         durum_r <= durum_ns;
-        cmd_cpha_r <= cmd_cpha_ns;
-        cmd_cpol_r <= cmd_cpol_ns;
-        cmd_sck_div_r <= cmd_sck_div_ns;
         cmd_end_cs_r <= cmd_end_cs_ns;
         cmd_dir_r = cmd_dir_ns;
         sck_sayac_r <= sck_sayac_ns;

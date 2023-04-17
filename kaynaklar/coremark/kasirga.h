@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define CPU_HZ      100000000
-#define BAUD_RATE   9600
+#define CPU_HZ      60000000
+#define BAUD_RATE   115200
 
 #ifndef TRUE
 #define TRUE (1==1)

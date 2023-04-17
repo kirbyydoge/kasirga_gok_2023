@@ -112,7 +112,7 @@ main(void)
     char *argv[1];
 #else
 MAIN_RETURN_TYPE
-mainx(int argc, char *argv[])
+main(int argc, char *argv[])
 {
 #endif
     ee_u16       i, j = 0, num_algorithms = 0;

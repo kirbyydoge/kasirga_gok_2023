@@ -17,10 +17,10 @@ int terminal() {
     return cmd_ptr;
 }
 
-int main() {
-    uart_set_ctrl(CPU_HZ / BAUD_RATE, 1, 1);
-    while (1) {
-        terminal();
-    }
-    return 0;
-}
+// int main() {
+//     uart_set_ctrl(CPU_HZ / BAUD_RATE, 1, 1);
+//     while (1) {
+//         terminal();
+//     }
+//     return 0;
+// }

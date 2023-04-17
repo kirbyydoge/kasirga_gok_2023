@@ -280,13 +280,13 @@ always @* begin
     end
     endcase
 
-    sb_cmd_cpha_cmb = 0;
-    sb_cmd_cpol_cmb = 0;
+    sb_cmd_cpha_cmb = spi_ctrl_cpha_w;
+    sb_cmd_cpol_cmb = spi_ctrl_cpol_w;
+    sb_cmd_sck_div_cmb = spi_ctrl_sck_div_w;
     sb_cmd_dir_cmb = 0;
     sb_cmd_data_cmb = 0;
     sb_cmd_end_cs_cmb = 0;
     sb_cmd_msb_first_cmb = 0;
-    sb_cmd_sck_div_cmb = 0;
     sb_cmd_valid_cmb = 0;
     sb_cmd_hint_cmb = 0;
 
@@ -314,15 +314,12 @@ always @* begin
             durum_exe_ns = DURUM_EXE_BOSTA;
         end
         else if (sb_cmd_ready_w) begin
-            sb_cmd_cpha_cmb = spi_ctrl_cpha_w;
-            sb_cmd_cpol_cmb = spi_ctrl_cpol_w;
             sb_cmd_dir_cmb = exe_cmd_yon_r;
             sb_cmd_data_cmb = fifo_mosi_rd_data_w;
             fifo_mosi_rd_en_cmb = exe_cmd_yon_r == KOMUT_YAZ;
             sb_cmd_end_cs_cmb = exe_kalan_r == 1 ? exe_cs_end_r : `LOW;
             sb_cmd_hint_cmb = exe_kalan_r == 1 ? `HIGH : `LOW;
             sb_cmd_msb_first_cmb = `LOW;
-            sb_cmd_sck_div_cmb = spi_ctrl_sck_div_w;
             sb_cmd_valid_cmb = `HIGH;
             exe_kalan_ns = exe_kalan_r - 1;
             durum_exe_ns = exe_cmd_yon_r == KOMUT_OKU ? DURUM_EXE_OKU_BEKLE : DURUM_EXE_BASLAT;
