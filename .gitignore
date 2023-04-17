@@ -1,5 +1,4 @@
 kaynaklar/rv32test/export_tests.py
-hdl/sim/tb_teknofest_wrapper.v
 _golden.txt
 _vivado.txt
 diff.txt
@@ -7,3 +6,4 @@ msg.txt
 uart.txt
 vivado.txt
 golden.txt
+.vscode/
