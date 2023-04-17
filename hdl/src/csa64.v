@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
 module csa64 (
-    input  [63:0] op0_i,
-    input  [63:0] op1_i,
-    input  [63:0] op2_i,
-    output [63:0] sum_o,
-    output [63:0] carry_o
+   input  [63:0] op0_i,
+   input  [63:0] op1_i,
+   input  [63:0] op2_i,
+   output [63:0] sum_o,
+   output [63:0] carry_o
 );
 
 assign sum_o = op0_i ^ op1_i ^ op2_i;

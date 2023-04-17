@@ -4,20 +4,20 @@
 `include "mikroislem.vh"
 
 module dallanma_ongorucu (
-     input                       clk_i,
-     input                       rstn_i,
+   input                       clk_i,
+   input                       rstn_i,
 
-     input   [`PS_BIT-1:0]       ps_i,
-     input                       ps_gecerli_i,
+   input   [`PS_BIT-1:0]       ps_i,
+   input                       ps_gecerli_i,
 
-     output                      atladi_o, // Branch taken    
-     output  [`PS_BIT-1:0]       ongoru_o,  // Nereye atlayacağı --- Getir 1'e giden sinyal
+   output                      atladi_o, // Branch taken    
+   output  [`PS_BIT-1:0]       ongoru_o,  // Nereye atlayacağı --- Getir 1'e giden sinyal
 
-     input   [`PS_BIT-1:0]       yurut_ps_i,
-     input                       yurut_guncelle_i, // dallanma buyruğuysa yürütten güncelleme gelecek
-     input                       yurut_atladi_i, // atladı mi bilgisi
-     input   [`PS_BIT-1:0]       yurut_atlanan_adres_i, // eğer dallanma atladıysa target neresi bilgisi TODO: yürüte eklenecek
-     input                       yurut_hatali_tahmin_i  // hatalı tahmin
+   input   [`PS_BIT-1:0]       yurut_ps_i,
+   input                       yurut_guncelle_i, // dallanma buyruğuysa yürütten güncelleme gelecek
+   input                       yurut_atladi_i, // atladı mi bilgisi
+   input   [`PS_BIT-1:0]       yurut_atlanan_adres_i, // eğer dallanma atladıysa target neresi bilgisi TODO: yürüte eklenecek
+   input                       yurut_hatali_tahmin_i  // hatalı tahmin
 
 );
 
@@ -81,7 +81,7 @@ localparam ZAYIF_ATLAMAZ = 1;
 localparam GUCLU_ATLAMAZ = 0;
 
 assign atladi_o = ps_gecerli_i && btb_valid_w && btb_etiketler_esit_mi_w && bht_etiketler_esit_mi_w && 
-                  ((bht_dallanma_tahmini_w == GUCLU_ATLAR) || ((bht_dallanma_tahmini_w == ZAYIF_ATLAR))) && (btb_target_w!=0);
+            ((bht_dallanma_tahmini_w == GUCLU_ATLAR) || ((bht_dallanma_tahmini_w == ZAYIF_ATLAR))) && (btb_target_w!=0);
 assign ongoru_o = btb_target_w;
 
 integer i;
@@ -90,50 +90,50 @@ always @* begin
     dogru_tahmin_sayac_ns = dogru_tahmin_sayac_r;
     yanlis_tahmin_sayac_ns = yanlis_tahmin_sayac_r;
     for (i = 0; i < `BTB_SATIR_SAYISI; i = i + 1) begin
-       BTB_ns[i] = BTB_r[i];
+     BTB_ns[i] = BTB_r[i];
     end
     for (i = 0; i < `BHT_SATIR_SAYISI; i = i + 1) begin
-       BHT_ns[i] = BHT_r[i];
+     BHT_ns[i] = BHT_r[i];
     end
     
     if (yurut_guncelle_i) begin
-        GGY_ns = {GGY_r [`GENEL_GECMIS_YAZMACI_BIT-2:0], yurut_atladi_i}; 
-        if (yurut_atladi_i) begin
-          BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI] = `HIGH; // ;BTB_VALID_BITI GÜNCELLEMESİ
-          BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI-1:`PS_BIT] = yurut_ps_btb_etiket_w; // BTB_ETIKET GÜNCELLEMESİ
-          BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`PS_BIT-1:0] = yurut_atlanan_adres_i; // SADECE ATLADIYSA TARGET GÜNCELLENMELİ, ATLAMADIYSA 0 YAPMALI MIYIZ???
-        end
-        BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`BHT_SATIR_BOYUT-1:`DALLANMA_TAHMIN_BIT] = yurut_ps_bht_etiket_w; // BHT_ETIKET 
-        BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`DALLANMA_TAHMIN_BIT-1:0] = yurut_atladi_i ? // BHT_DALLANMA_TAHMINI GÜNCELLEMESİ
-                                                                            (bht_yurut_ps_dallanma_tahmini == 3 ? 3 : bht_yurut_ps_dallanma_tahmini + 1) :
-                                                                            (bht_yurut_ps_dallanma_tahmini == 0 ? 0 : bht_yurut_ps_dallanma_tahmini - 1);  
-        dogru_tahmin_sayac_ns = yurut_hatali_tahmin_i ? dogru_tahmin_sayac_r : dogru_tahmin_sayac_r + 1;
-        yanlis_tahmin_sayac_ns = yurut_hatali_tahmin_i ? yanlis_tahmin_sayac_r + 1 : yanlis_tahmin_sayac_r;        
+      GGY_ns = {GGY_r [`GENEL_GECMIS_YAZMACI_BIT-2:0], yurut_atladi_i}; 
+      if (yurut_atladi_i) begin
+      BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI] = `HIGH; // ;BTB_VALID_BITI GÜNCELLEMESİ
+      BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`BTB_VALID_BITI-1:`PS_BIT] = yurut_ps_btb_etiket_w; // BTB_ETIKET GÜNCELLEMESİ
+      BTB_ns [yurut_ps_i[`BTB_PS_BIT-1:0]][`PS_BIT-1:0] = yurut_atlanan_adres_i; // SADECE ATLADIYSA TARGET GÜNCELLENMELİ, ATLAMADIYSA 0 YAPMALI MIYIZ???
+      end
+      BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`BHT_SATIR_BOYUT-1:`DALLANMA_TAHMIN_BIT] = yurut_ps_bht_etiket_w; // BHT_ETIKET 
+      BHT_ns [yurut_ps_i[`BHT_PS_BIT-1:0]^GGY_r][`DALLANMA_TAHMIN_BIT-1:0] = yurut_atladi_i ? // BHT_DALLANMA_TAHMINI GÜNCELLEMESİ
+                                              (bht_yurut_ps_dallanma_tahmini == 3 ? 3 : bht_yurut_ps_dallanma_tahmini + 1) :
+                                              (bht_yurut_ps_dallanma_tahmini == 0 ? 0 : bht_yurut_ps_dallanma_tahmini - 1);  
+      dogru_tahmin_sayac_ns = yurut_hatali_tahmin_i ? dogru_tahmin_sayac_r : dogru_tahmin_sayac_r + 1;
+      yanlis_tahmin_sayac_ns = yurut_hatali_tahmin_i ? yanlis_tahmin_sayac_r + 1 : yanlis_tahmin_sayac_r;        
     end
 end
 
 always @ (posedge clk_i) begin
-     if (!rstn_i) begin
-          for (i = 0; i < `BTB_SATIR_SAYISI; i = i + 1) begin
-               BTB_r[i] <= 0;
-          end
-          for (i = 0; i < `BHT_SATIR_SAYISI; i = i + 1) begin
-               BHT_r[i] <= 0;
-          end
-          GGY_r <= 0;
-          dogru_tahmin_sayac_r <= 0;
-          yanlis_tahmin_sayac_r <= 0;    
-     end
-     else begin
-          for (i = 0; i < `BTB_SATIR_SAYISI; i = i + 1) begin
-               BTB_r[i] <= BTB_ns[i];
-          end
-          for (i = 0; i < `BHT_SATIR_SAYISI; i = i + 1) begin
-               BHT_r[i] <= BHT_ns[i];
-          end
-          GGY_r <= GGY_ns; 
-          dogru_tahmin_sayac_r <= dogru_tahmin_sayac_ns;
-          yanlis_tahmin_sayac_r <= yanlis_tahmin_sayac_ns;
-     end
+   if (!rstn_i) begin
+      for (i = 0; i < `BTB_SATIR_SAYISI; i = i + 1) begin
+         BTB_r[i] <= 0;
+      end
+      for (i = 0; i < `BHT_SATIR_SAYISI; i = i + 1) begin
+         BHT_r[i] <= 0;
+      end
+      GGY_r <= 0;
+      dogru_tahmin_sayac_r <= 0;
+      yanlis_tahmin_sayac_r <= 0;    
+   end
+   else begin
+      for (i = 0; i < `BTB_SATIR_SAYISI; i = i + 1) begin
+         BTB_r[i] <= BTB_ns[i];
+      end
+      for (i = 0; i < `BHT_SATIR_SAYISI; i = i + 1) begin
+         BHT_r[i] <= BHT_ns[i];
+      end
+      GGY_r <= GGY_ns; 
+      dogru_tahmin_sayac_r <= dogru_tahmin_sayac_ns;
+      yanlis_tahmin_sayac_r <= yanlis_tahmin_sayac_ns;
+   end
 end
 endmodule

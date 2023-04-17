@@ -3,25 +3,25 @@
 `include "sabitler.vh"
 
 module spi_denetleyici (
-    input                       clk_i,
-    input                       rstn_i,
+   input                       clk_i,
+   input                       rstn_i,
 
-    input   [`ADRES_BIT-1:0]    cek_adres_i,
-    input   [`VERI_BIT-1:0]     cek_veri_i,
-    input   [`TL_A_BITS-1:0]    cek_tilefields_i,
+   input   [`ADRES_BIT-1:0]    cek_adres_i,
+   input   [`VERI_BIT-1:0]     cek_veri_i,
+   input   [`TL_A_BITS-1:0]    cek_tilefields_i,
 
-    input                       cek_gecerli_i,
-    output                      cek_hazir_o,
+   input                       cek_gecerli_i,
+   output                      cek_hazir_o,
 
-    output  [`VERI_BIT-1:0]     spi_veri_o,
-    output                      spi_gecerli_o,
-    output  [`TL_D_BITS-1:0]    spi_tilefields_o,
-    input                       spi_hazir_i,
+   output  [`VERI_BIT-1:0]     spi_veri_o,
+   output                      spi_gecerli_o,
+   output  [`TL_D_BITS-1:0]    spi_tilefields_o,
+   input                       spi_hazir_i,
 
-    input                       miso_i,
-    output                      mosi_o,
-    output                      csn_o,
-    output                      sck_o
+   input                       miso_i,
+   output                      mosi_o,
+   output                      csn_o,
+   output                      sck_o
 );
 
 wire        cek_spi_istek_w;
@@ -141,326 +141,326 @@ localparam  KOMUT_OKU = 2'b01;
 localparam  KOMUT_YAZ = 2'b10;
 
 always @* begin
-    exe_byte_buf_ns = exe_byte_buf_r;
-    exe_byte_ctr_ns = exe_byte_ctr_r;
-    wr_buf_ns = wr_buf_r;
-    wr_buf_rem_ns = wr_buf_rem_r;
-    spi_tilefields_ns = spi_tilefields_r;
-    spi_tilefields_ns[`TL_D_SIZE] = 5;
-    spi_gecerli_ns = spi_gecerli_r;
-    spi_veri_ns = spi_veri_r;
-    durum_ns = durum_r;
-    durum_exe_ns = durum_exe_r;
-    exe_cmd_yon_ns = exe_cmd_yon_r;
-    exe_cs_end_ns = exe_cs_end_r;
-    exe_kalan_ns = exe_kalan_r;
-    fifo_miso_wr_data_cmb = 0;
-    fifo_mosi_wr_data_cmb = 0;
-    fifo_cmd_wr_data_cmb = 0;
-    fifo_miso_wr_en_cmb = `LOW;
-    fifo_miso_rd_en_cmb = `LOW;
-    fifo_mosi_wr_en_cmb = `LOW;
-    fifo_mosi_rd_en_cmb = `LOW;
-    fifo_cmd_wr_en_cmb = `LOW;
-    fifo_cmd_rd_en_cmb = `LOW;
-    fifo_buf_veri_ns = fifo_buf_veri_r;
-    fifo_buf_miso_ns = fifo_buf_miso_r;
-    spi_ctrl_ns = spi_ctrl_r;
+   exe_byte_buf_ns = exe_byte_buf_r;
+   exe_byte_ctr_ns = exe_byte_ctr_r;
+   wr_buf_ns = wr_buf_r;
+   wr_buf_rem_ns = wr_buf_rem_r;
+   spi_tilefields_ns = spi_tilefields_r;
+   spi_tilefields_ns[`TL_D_SIZE] = 5;
+   spi_gecerli_ns = spi_gecerli_r;
+   spi_veri_ns = spi_veri_r;
+   durum_ns = durum_r;
+   durum_exe_ns = durum_exe_r;
+   exe_cmd_yon_ns = exe_cmd_yon_r;
+   exe_cs_end_ns = exe_cs_end_r;
+   exe_kalan_ns = exe_kalan_r;
+   fifo_miso_wr_data_cmb = 0;
+   fifo_mosi_wr_data_cmb = 0;
+   fifo_cmd_wr_data_cmb = 0;
+   fifo_miso_wr_en_cmb = `LOW;
+   fifo_miso_rd_en_cmb = `LOW;
+   fifo_mosi_wr_en_cmb = `LOW;
+   fifo_mosi_rd_en_cmb = `LOW;
+   fifo_cmd_wr_en_cmb = `LOW;
+   fifo_cmd_rd_en_cmb = `LOW;
+   fifo_buf_veri_ns = fifo_buf_veri_r;
+   fifo_buf_miso_ns = fifo_buf_miso_r;
+   spi_ctrl_ns = spi_ctrl_r;
 
-    if ((spi_gecerli_o && spi_hazir_i) || spi_tilefields_o[`TL_D_OP] == `TL_OP_ACK) begin
-        spi_gecerli_ns = `LOW;
-    end
+   if ((spi_gecerli_o && spi_hazir_i) || spi_tilefields_o[`TL_D_OP] == `TL_OP_ACK) begin
+      spi_gecerli_ns = `LOW;
+   end
 
-    case(durum_r)
-    DURUM_BOSTA: begin
-        if (cek_spi_istek_w) begin
-            case(cek_spi_addr_w)
-            `SPI_CTRL_REG: begin
-                if (cek_spi_yaz_w) begin
-                    spi_ctrl_ns = cek_veri_i;
+   case(durum_r)
+   DURUM_BOSTA: begin
+      if (cek_spi_istek_w) begin
+         case(cek_spi_addr_w)
+         `SPI_CTRL_REG: begin
+            if (cek_spi_yaz_w) begin
+               spi_ctrl_ns = cek_veri_i;
+            end
+         end
+         `SPI_STATUS_REG: begin
+            if (cek_spi_oku_w) begin
+               spi_veri_ns = spi_status_w;
+               spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+               spi_gecerli_ns = `HIGH;
+            end
+         end
+         `SPI_RDATA_REG: begin
+            if (cek_spi_oku_w) begin
+               if (fifo_miso_empty_w) begin
+                  durum_ns = DURUM_VERI_BEKLE;
+               end
+               else begin
+                  spi_veri_ns = fifo_miso_rd_data_w;
+                  fifo_miso_rd_en_cmb = `HIGH;
+                  spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                  spi_gecerli_ns = `HIGH;
+               end
+            end
+         end
+         `SPI_WDATA_REG: begin
+            if (cek_spi_yaz_w) begin
+               spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
+               spi_gecerli_ns = `HIGH;
+               if (fifo_mosi_full_w) begin
+                  fifo_buf_veri_ns = cek_veri_i;
+                  durum_ns = DURUM_MOSI_YER_BEKLE;
+                  wr_buf_ns = cek_veri_i;
+                  wr_buf_rem_ns = `VERI_BYTE - 1;
+               end
+               else begin
+                  wr_buf_ns = cek_veri_i >> 8;
+                  wr_buf_rem_ns = `VERI_BYTE - 2;
+                  fifo_mosi_wr_data_cmb = cek_veri_i[7:0];
+                  fifo_mosi_wr_en_cmb = `HIGH;
+                  durum_ns = DURUM_MOSI_YAZ;
                 end
             end
-            `SPI_STATUS_REG: begin
-                if (cek_spi_oku_w) begin
-                    spi_veri_ns = spi_status_w;
-                    spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
-                    spi_gecerli_ns = `HIGH;
-                end
+         end
+         `SPI_CMD_REG: begin
+            if (cek_spi_yaz_w) begin
+               spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
+               spi_gecerli_ns = `HIGH;
+               if (fifo_cmd_full_w) begin
+                  fifo_buf_veri_ns = cek_veri_i;
+                  durum_ns = DURUM_CMD_YER_BEKLE;
+               end
+               else begin
+                  fifo_cmd_wr_data_cmb = cek_veri_i;
+                  fifo_cmd_wr_en_cmb = `HIGH;
+               end
             end
-            `SPI_RDATA_REG: begin
-                if (cek_spi_oku_w) begin
-                    if (fifo_miso_empty_w) begin
-                        durum_ns = DURUM_VERI_BEKLE;
-                    end
-                    else begin
-                        spi_veri_ns = fifo_miso_rd_data_w;
-                        fifo_miso_rd_en_cmb = `HIGH;
-                        spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
-                        spi_gecerli_ns = `HIGH;
-                    end
-                end
-            end
-            `SPI_WDATA_REG: begin
-                if (cek_spi_yaz_w) begin
-                    spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
-                    spi_gecerli_ns = `HIGH;
-                    if (fifo_mosi_full_w) begin
-                        fifo_buf_veri_ns = cek_veri_i;
-                        durum_ns = DURUM_MOSI_YER_BEKLE;
-                        wr_buf_ns = cek_veri_i;
-                        wr_buf_rem_ns = `VERI_BYTE - 1;
-                    end
-                    else begin
-                        wr_buf_ns = cek_veri_i >> 8;
-                        wr_buf_rem_ns = `VERI_BYTE - 2;
-                        fifo_mosi_wr_data_cmb = cek_veri_i[7:0];
-                        fifo_mosi_wr_en_cmb = `HIGH;
-                        durum_ns = DURUM_MOSI_YAZ;
-                     end
-                end
-            end
-            `SPI_CMD_REG: begin
-                if (cek_spi_yaz_w) begin
-                    spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
-                    spi_gecerli_ns = `HIGH;
-                    if (fifo_cmd_full_w) begin
-                        fifo_buf_veri_ns = cek_veri_i;
-                        durum_ns = DURUM_CMD_YER_BEKLE;
-                    end
-                    else begin
-                        fifo_cmd_wr_data_cmb = cek_veri_i;
-                        fifo_cmd_wr_en_cmb = `HIGH;
-                    end
-                end
-            end
-            endcase
-        end
-    end
-    DURUM_VERI_BEKLE: begin
-        if (!fifo_miso_empty_w) begin
-            spi_veri_ns = fifo_miso_rd_data_w;
-            fifo_miso_rd_en_cmb = `HIGH;
-            spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
-            spi_gecerli_ns = `HIGH;
+         end
+         endcase
+      end
+   end
+   DURUM_VERI_BEKLE: begin
+      if (!fifo_miso_empty_w) begin
+         spi_veri_ns = fifo_miso_rd_data_w;
+         fifo_miso_rd_en_cmb = `HIGH;
+         spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+         spi_gecerli_ns = `HIGH;
+         durum_ns = DURUM_BOSTA;
+      end
+   end
+   DURUM_MOSI_YER_BEKLE: begin
+      if (!fifo_mosi_full_w) begin
+         wr_buf_ns = wr_buf_r >> 8;
+         wr_buf_rem_ns = wr_buf_rem_r - 1;
+         fifo_mosi_wr_data_cmb = wr_buf_r[7:0];
+         fifo_mosi_wr_en_cmb = `HIGH;
+         if (wr_buf_rem_r == 0) begin
             durum_ns = DURUM_BOSTA;
-        end
-    end
-    DURUM_MOSI_YER_BEKLE: begin
-        if (!fifo_mosi_full_w) begin
-            wr_buf_ns = wr_buf_r >> 8;
-            wr_buf_rem_ns = wr_buf_rem_r - 1;
-            fifo_mosi_wr_data_cmb = wr_buf_r[7:0];
-            fifo_mosi_wr_en_cmb = `HIGH;
-            if (wr_buf_rem_r == 0) begin
-                durum_ns = DURUM_BOSTA;
-            end
-            else begin
-                durum_ns = DURUM_MOSI_YAZ;
-            end
-        end
-    end
-    DURUM_CMD_YER_BEKLE: begin
-        if (!fifo_cmd_full_w) begin
-            fifo_cmd_wr_data_cmb = fifo_buf_veri_r;
-            fifo_cmd_wr_en_cmb = `HIGH;
+         end
+         else begin
+            durum_ns = DURUM_MOSI_YAZ;
+         end
+      end
+   end
+   DURUM_CMD_YER_BEKLE: begin
+      if (!fifo_cmd_full_w) begin
+         fifo_cmd_wr_data_cmb = fifo_buf_veri_r;
+         fifo_cmd_wr_en_cmb = `HIGH;
+         durum_ns = DURUM_BOSTA;
+      end
+   end
+   DURUM_MOSI_YAZ: begin
+      if (fifo_miso_full_w) begin
+         durum_ns = DURUM_MOSI_YER_BEKLE;
+      end
+      else begin
+         wr_buf_ns = wr_buf_r >> 8;
+         wr_buf_rem_ns = wr_buf_rem_r - 1;
+         fifo_mosi_wr_data_cmb = wr_buf_r[7:0];
+         fifo_mosi_wr_en_cmb = `HIGH;
+         if (wr_buf_rem_r == 0) begin
             durum_ns = DURUM_BOSTA;
-        end
-    end
-    DURUM_MOSI_YAZ: begin
-        if (fifo_miso_full_w) begin
-            durum_ns = DURUM_MOSI_YER_BEKLE;
-        end
-        else begin
-            wr_buf_ns = wr_buf_r >> 8;
-            wr_buf_rem_ns = wr_buf_rem_r - 1;
-            fifo_mosi_wr_data_cmb = wr_buf_r[7:0];
-            fifo_mosi_wr_en_cmb = `HIGH;
-            if (wr_buf_rem_r == 0) begin
-                durum_ns = DURUM_BOSTA;
-            end
-        end
-    end
-    endcase
+         end
+      end
+   end
+   endcase
 
-    sb_cmd_cpha_cmb = spi_ctrl_cpha_w;
-    sb_cmd_cpol_cmb = spi_ctrl_cpol_w;
-    sb_cmd_sck_div_cmb = spi_ctrl_sck_div_w;
-    sb_cmd_dir_cmb = 0;
-    sb_cmd_data_cmb = 0;
-    sb_cmd_end_cs_cmb = 0;
-    sb_cmd_msb_first_cmb = 0;
-    sb_cmd_valid_cmb = 0;
-    sb_cmd_hint_cmb = 0;
+   sb_cmd_cpha_cmb = spi_ctrl_cpha_w;
+   sb_cmd_cpol_cmb = spi_ctrl_cpol_w;
+   sb_cmd_sck_div_cmb = spi_ctrl_sck_div_w;
+   sb_cmd_dir_cmb = 0;
+   sb_cmd_data_cmb = 0;
+   sb_cmd_end_cs_cmb = 0;
+   sb_cmd_msb_first_cmb = 0;
+   sb_cmd_valid_cmb = 0;
+   sb_cmd_hint_cmb = 0;
 
-    if (exe_byte_ctr_r == 4) begin
-        fifo_miso_wr_data_cmb = exe_byte_buf_r;
-        fifo_miso_wr_en_cmb = `HIGH;
-        exe_byte_ctr_ns = 0;
-    end
+   if (exe_byte_ctr_r == 4) begin
+      fifo_miso_wr_data_cmb = exe_byte_buf_r;
+      fifo_miso_wr_en_cmb = `HIGH;
+      exe_byte_ctr_ns = 0;
+   end
 
-    case(durum_exe_r)
-    DURUM_EXE_BOSTA: begin
-        if (!fifo_cmd_empty_w && spi_ctrl_en_w) begin
-            exe_kalan_ns = fifo_cmd_rd_data_w[8:0] + 10'd1;
-            exe_cs_end_ns = ~fifo_cmd_rd_data_w[9];
-            exe_cmd_yon_ns = fifo_cmd_rd_data_w[13:12];
-            fifo_cmd_rd_en_cmb = `HIGH;
+   case(durum_exe_r)
+   DURUM_EXE_BOSTA: begin
+      if (!fifo_cmd_empty_w && spi_ctrl_en_w) begin
+         exe_kalan_ns = fifo_cmd_rd_data_w[8:0] + 10'd1;
+         exe_cs_end_ns = ~fifo_cmd_rd_data_w[9];
+         exe_cmd_yon_ns = fifo_cmd_rd_data_w[13:12];
+         fifo_cmd_rd_en_cmb = `HIGH;
+         durum_exe_ns = DURUM_EXE_BASLAT;
+      end
+   end
+   DURUM_EXE_BASLAT: begin
+      if (exe_cmd_yon_r == KOMUT_YAZ && fifo_mosi_empty_w) begin
+         durum_exe_ns = DURUM_EXE_VERI_BEKLE;
+      end
+      else if (exe_kalan_r == 0) begin
+         durum_exe_ns = DURUM_EXE_BOSTA;
+      end
+      else if (sb_cmd_ready_w) begin
+         sb_cmd_dir_cmb = exe_cmd_yon_r;
+         sb_cmd_data_cmb = fifo_mosi_rd_data_w;
+         fifo_mosi_rd_en_cmb = exe_cmd_yon_r == KOMUT_YAZ;
+         sb_cmd_end_cs_cmb = exe_kalan_r == 1 ? exe_cs_end_r : `LOW;
+         `ifdef SPI_SEAMLESS
+            sb_cmd_hint_cmb = exe_kalan_r == 1 ? (sb_cmd_end_cs_cmb && !fifo_cmd_empty_w) : `LOW;
+         `else
+            sb_cmd_hint_cmb = exe_kalan_r == 1 ? `HIGH : `LOW;
+         `endif
+         sb_cmd_msb_first_cmb = `SPI_IS_MSB;
+         sb_cmd_valid_cmb = `HIGH;
+         exe_kalan_ns = exe_kalan_r - 1;
+         durum_exe_ns = exe_cmd_yon_r == KOMUT_OKU ? DURUM_EXE_OKU_BEKLE : DURUM_EXE_BASLAT;
+      end
+   end
+   DURUM_EXE_OKU_BEKLE: begin
+      if (sb_recv_data_valid_w) begin
+         if (fifo_miso_full_w) begin
+            fifo_buf_miso_ns = sb_recv_data_w;
+            durum_exe_ns = DURUM_EXE_YER_BEKLE;
+         end
+         else begin
+            exe_byte_buf_ns[exe_byte_ctr_r * 8 +: 8] = sb_recv_data_w;
+            exe_byte_ctr_ns = exe_byte_ctr_r + 1;
             durum_exe_ns = DURUM_EXE_BASLAT;
-        end
-    end
-    DURUM_EXE_BASLAT: begin
-        if (exe_cmd_yon_r == KOMUT_YAZ && fifo_mosi_empty_w) begin
-            durum_exe_ns = DURUM_EXE_VERI_BEKLE;
-        end
-        else if (exe_kalan_r == 0) begin
-            durum_exe_ns = DURUM_EXE_BOSTA;
-        end
-        else if (sb_cmd_ready_w) begin
-            sb_cmd_dir_cmb = exe_cmd_yon_r;
-            sb_cmd_data_cmb = fifo_mosi_rd_data_w;
-            fifo_mosi_rd_en_cmb = exe_cmd_yon_r == KOMUT_YAZ;
-            sb_cmd_end_cs_cmb = exe_kalan_r == 1 ? exe_cs_end_r : `LOW;
-            `ifdef SPI_SEAMLESS
-                sb_cmd_hint_cmb = exe_kalan_r == 1 ? (sb_cmd_end_cs_cmb && !fifo_cmd_empty_w) : `LOW;
-            `else
-                sb_cmd_hint_cmb = exe_kalan_r == 1 ? `HIGH : `LOW;
-            `endif
-            sb_cmd_msb_first_cmb = `SPI_IS_MSB;
-            sb_cmd_valid_cmb = `HIGH;
-            exe_kalan_ns = exe_kalan_r - 1;
-            durum_exe_ns = exe_cmd_yon_r == KOMUT_OKU ? DURUM_EXE_OKU_BEKLE : DURUM_EXE_BASLAT;
-        end
-    end
-    DURUM_EXE_OKU_BEKLE: begin
-        if (sb_recv_data_valid_w) begin
-            if (fifo_miso_full_w) begin
-                fifo_buf_miso_ns = sb_recv_data_w;
-                durum_exe_ns = DURUM_EXE_YER_BEKLE;
-            end
-            else begin
-                exe_byte_buf_ns[exe_byte_ctr_r * 8 +: 8] = sb_recv_data_w;
-                exe_byte_ctr_ns = exe_byte_ctr_r + 1;
-                durum_exe_ns = DURUM_EXE_BASLAT;
-            end 
-        end
-    end
-    DURUM_EXE_YER_BEKLE: begin
-        if (!fifo_miso_full_w) begin
-            fifo_miso_wr_data_cmb = fifo_buf_miso_r;
-            fifo_miso_wr_en_cmb = `HIGH;
-            durum_exe_ns = DURUM_EXE_BASLAT;
-        end
-    end
-    DURUM_EXE_VERI_BEKLE: begin
-        if (!fifo_mosi_empty_w) begin
-            durum_exe_ns = DURUM_EXE_BASLAT;
-        end
-    end
-    endcase
+         end 
+      end
+   end
+   DURUM_EXE_YER_BEKLE: begin
+      if (!fifo_miso_full_w) begin
+         fifo_miso_wr_data_cmb = fifo_buf_miso_r;
+         fifo_miso_wr_en_cmb = `HIGH;
+         durum_exe_ns = DURUM_EXE_BASLAT;
+      end
+   end
+   DURUM_EXE_VERI_BEKLE: begin
+      if (!fifo_mosi_empty_w) begin
+         durum_exe_ns = DURUM_EXE_BASLAT;
+      end
+   end
+   endcase
 
-    cek_hazir_ns = durum_ns == DURUM_BOSTA;
+   cek_hazir_ns = durum_ns == DURUM_BOSTA;
 end
 
 always @(posedge clk_i) begin
-    if (!rstn_i) begin
-        spi_veri_r <= 0;
-        fifo_buf_veri_r <= 0;
-        fifo_buf_miso_r <= 0;
-        spi_gecerli_r <= 0;
-        spi_ctrl_r <= 0;
-        cek_hazir_r <= 0;
-        durum_r <= 0;
-        durum_exe_r <= 0;
-        exe_cmd_yon_r <= 0;
-        exe_cs_end_r <= 0;
-        exe_kalan_r <= 0;
-        spi_tilefields_r <= 0;
-        wr_buf_r <= 0;
-        wr_buf_rem_r <= 0;
-        exe_byte_buf_r <= 0;
-        exe_byte_ctr_r <= 0;
-    end
-    else begin
-        spi_veri_r <= spi_veri_ns;
-        spi_tilefields_r <= spi_tilefields_ns;
-        fifo_buf_veri_r <= fifo_buf_veri_ns;
-        fifo_buf_miso_r <= fifo_buf_miso_ns;
-        spi_gecerli_r <= spi_gecerli_ns;
-        spi_ctrl_r <= spi_ctrl_ns;
-        cek_hazir_r <= cek_hazir_ns;
-        durum_r <= durum_ns;
-        durum_exe_r <= durum_exe_ns;
-        exe_cmd_yon_r <= exe_cmd_yon_ns;
-        exe_cs_end_r <= exe_cs_end_ns;
-        exe_kalan_r <= exe_kalan_ns;
-        wr_buf_r <= wr_buf_ns;
-        wr_buf_rem_r <= wr_buf_rem_ns;
-        exe_byte_buf_r <= exe_byte_buf_ns;
-        exe_byte_ctr_r <= exe_byte_ctr_ns;
-    end
+   if (!rstn_i) begin
+      spi_veri_r <= 0;
+      fifo_buf_veri_r <= 0;
+      fifo_buf_miso_r <= 0;
+      spi_gecerli_r <= 0;
+      spi_ctrl_r <= 0;
+      cek_hazir_r <= 0;
+      durum_r <= 0;
+      durum_exe_r <= 0;
+      exe_cmd_yon_r <= 0;
+      exe_cs_end_r <= 0;
+      exe_kalan_r <= 0;
+      spi_tilefields_r <= 0;
+      wr_buf_r <= 0;
+      wr_buf_rem_r <= 0;
+      exe_byte_buf_r <= 0;
+      exe_byte_ctr_r <= 0;
+   end
+   else begin
+      spi_veri_r <= spi_veri_ns;
+      spi_tilefields_r <= spi_tilefields_ns;
+      fifo_buf_veri_r <= fifo_buf_veri_ns;
+      fifo_buf_miso_r <= fifo_buf_miso_ns;
+      spi_gecerli_r <= spi_gecerli_ns;
+      spi_ctrl_r <= spi_ctrl_ns;
+      cek_hazir_r <= cek_hazir_ns;
+      durum_r <= durum_ns;
+      durum_exe_r <= durum_exe_ns;
+      exe_cmd_yon_r <= exe_cmd_yon_ns;
+      exe_cs_end_r <= exe_cs_end_ns;
+      exe_kalan_r <= exe_kalan_ns;
+      wr_buf_r <= wr_buf_ns;
+      wr_buf_rem_r <= wr_buf_rem_ns;
+      exe_byte_buf_r <= exe_byte_buf_ns;
+      exe_byte_ctr_r <= exe_byte_ctr_ns;
+   end
 end
 
 spi_birimi spi (
-    .clk_i               ( clk_i ),
-    .rstn_i              ( rstn_i ),
-    .cmd_msb_first_i     ( sb_cmd_msb_first_cmb ),
-    .cmd_data_i          ( sb_cmd_data_cmb ),
-    .cmd_valid_i         ( sb_cmd_valid_cmb ),
-    .cmd_cpha_i          ( sb_cmd_cpha_cmb ),
-    .cmd_cpol_i          ( sb_cmd_cpol_cmb ),
-    .cmd_sck_div_i       ( sb_cmd_sck_div_cmb ),
-    .cmd_end_cs_i        ( sb_cmd_end_cs_cmb ),
-    .cmd_dir_i           ( sb_cmd_dir_cmb ),
-    .cmd_hint_i          ( sb_cmd_hint_cmb ),
-    .cmd_ready_o         ( sb_cmd_ready_w ),
-    .recv_data_o         ( sb_recv_data_w ),
-    .recv_data_valid_o   ( sb_recv_data_valid_w ),
-    .miso_i              ( miso_i ),
-    .mosi_o              ( mosi_o ),
-    .csn_o               ( csn_o ),
-    .sck_o               ( sck_o )
+   .clk_i               ( clk_i ),
+   .rstn_i              ( rstn_i ),
+   .cmd_msb_first_i     ( sb_cmd_msb_first_cmb ),
+   .cmd_data_i          ( sb_cmd_data_cmb ),
+   .cmd_valid_i         ( sb_cmd_valid_cmb ),
+   .cmd_cpha_i          ( sb_cmd_cpha_cmb ),
+   .cmd_cpol_i          ( sb_cmd_cpol_cmb ),
+   .cmd_sck_div_i       ( sb_cmd_sck_div_cmb ),
+   .cmd_end_cs_i        ( sb_cmd_end_cs_cmb ),
+   .cmd_dir_i           ( sb_cmd_dir_cmb ),
+   .cmd_hint_i          ( sb_cmd_hint_cmb ),
+   .cmd_ready_o         ( sb_cmd_ready_w ),
+   .recv_data_o         ( sb_recv_data_w ),
+   .recv_data_valid_o   ( sb_recv_data_valid_w ),
+   .miso_i              ( miso_i ),
+   .mosi_o              ( mosi_o ),
+   .csn_o               ( csn_o ),
+   .sck_o               ( sck_o )
 ); 
 
 fifo #(
-    .DATA_WIDTH(32),
-    .DATA_DEPTH(8)
+   .DATA_WIDTH(32),
+   .DATA_DEPTH(8)
 ) fifo_miso (
-    .clk_i      ( clk_i ),
-    .rstn_i     ( rstn_i ),
-    .data_i     ( fifo_miso_wr_data_cmb ),
-    .wr_en_i    ( fifo_miso_wr_en_cmb ),
-    .data_o     ( fifo_miso_rd_data_w ),
-    .rd_en_i    ( fifo_miso_rd_en_cmb ),
-    .full_o     ( fifo_miso_full_w ),
-    .empty_o    ( fifo_miso_empty_w )
+   .clk_i      ( clk_i ),
+   .rstn_i     ( rstn_i ),
+   .data_i     ( fifo_miso_wr_data_cmb ),
+   .wr_en_i    ( fifo_miso_wr_en_cmb ),
+   .data_o     ( fifo_miso_rd_data_w ),
+   .rd_en_i    ( fifo_miso_rd_en_cmb ),
+   .full_o     ( fifo_miso_full_w ),
+   .empty_o    ( fifo_miso_empty_w )
 );
 
 fifo #(
-    .DATA_WIDTH(8),
-    .DATA_DEPTH(32)
+   .DATA_WIDTH(8),
+   .DATA_DEPTH(32)
 ) fifo_mosi (
-    .clk_i      ( clk_i ),
-    .rstn_i     ( rstn_i ),
-    .data_i     ( fifo_mosi_wr_data_cmb ),
-    .wr_en_i    ( fifo_mosi_wr_en_cmb ),
-    .data_o     ( fifo_mosi_rd_data_w ),
-    .rd_en_i    ( fifo_mosi_rd_en_cmb ),
-    .full_o     ( fifo_mosi_full_w ),
-    .empty_o    ( fifo_mosi_empty_w )
+   .clk_i      ( clk_i ),
+   .rstn_i     ( rstn_i ),
+   .data_i     ( fifo_mosi_wr_data_cmb ),
+   .wr_en_i    ( fifo_mosi_wr_en_cmb ),
+   .data_o     ( fifo_mosi_rd_data_w ),
+   .rd_en_i    ( fifo_mosi_rd_en_cmb ),
+   .full_o     ( fifo_mosi_full_w ),
+   .empty_o    ( fifo_mosi_empty_w )
 );
 
 fifo #(
-    .DATA_WIDTH(32),
-    .DATA_DEPTH(8)
+   .DATA_WIDTH(32),
+   .DATA_DEPTH(8)
 ) fifo_cmd (
-    .clk_i      ( clk_i ),
-    .rstn_i     ( rstn_i ),
-    .data_i     ( fifo_cmd_wr_data_cmb ),
-    .wr_en_i    ( fifo_cmd_wr_en_cmb ),
-    .data_o     ( fifo_cmd_rd_data_w ),
-    .rd_en_i    ( fifo_cmd_rd_en_cmb ),
-    .full_o     ( fifo_cmd_full_w ),
-    .empty_o    ( fifo_cmd_empty_w )
+   .clk_i      ( clk_i ),
+   .rstn_i     ( rstn_i ),
+   .data_i     ( fifo_cmd_wr_data_cmb ),
+   .wr_en_i    ( fifo_cmd_wr_en_cmb ),
+   .data_o     ( fifo_cmd_rd_data_w ),
+   .rd_en_i    ( fifo_cmd_rd_en_cmb ),
+   .full_o     ( fifo_cmd_full_w ),
+   .empty_o    ( fifo_cmd_empty_w )
 );
 
 assign spi_ctrl_en_w = spi_ctrl_r[0];

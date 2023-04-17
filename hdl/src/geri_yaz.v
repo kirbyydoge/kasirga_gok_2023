@@ -4,20 +4,20 @@
 `include "mikroislem.vh"
 
 module geri_yaz (
-    input                           clk_i,
-    input                           rstn_i,
+   input                           clk_i,
+   input                           rstn_i,
 
-    input   [`UOP_BIT-1:0]          gy_uop_i,
+   input   [`UOP_BIT-1:0]          gy_uop_i,
 
-    output  [`VERI_BIT-1:0]         yo_veri_o,
-    output  [`YAZMAC_BIT-1:0]       yo_adres_o,
-    output  [`UOP_TAG_BIT-1:0]      yo_etiket_o,
-    output                          yo_gecerli_o,
+   output  [`VERI_BIT-1:0]         yo_veri_o,
+   output  [`YAZMAC_BIT-1:0]       yo_adres_o,
+   output  [`UOP_TAG_BIT-1:0]      yo_etiket_o,
+   output                          yo_gecerli_o,
 
-    output  [`VERI_BIT-1:0]         csr_veri_o,
-    output  [`CSR_ADRES_BIT-1:0]    csr_adres_o,
-    output  [`UOP_TAG_BIT-1:0]      csr_etiket_o,
-    output                          csr_gecerli_o
+   output  [`VERI_BIT-1:0]         csr_veri_o,
+   output  [`CSR_ADRES_BIT-1:0]    csr_adres_o,
+   output  [`UOP_TAG_BIT-1:0]      csr_etiket_o,
+   output                          csr_gecerli_o
 );
 
 // DEBUG
@@ -60,21 +60,21 @@ assign csr_etiket_o = uop_gy_etiket_w;
 
 reg [31:0] inst_ctr_r;
 always @(posedge clk_i) begin
-    if (uop_gy_gecerli_w) begin
-        inst_ctr_r <= inst_ctr_r + 1;
-    `ifdef LOG_COMMITS
-        if (uop_gy_veri_gecerli_w) begin
-            $display("core   0: 3 0x%08x (0x0000) x%2d 0x%08x", uop_ps_w, uop_gy_adres_w, uop_gy_veri_w);
-        end
-        else begin
-            $display("core   0: 3 0x%08x (0x0000)", uop_ps_w);
-        end
-    `endif
-    end
+   if (uop_gy_gecerli_w) begin
+      inst_ctr_r <= inst_ctr_r + 1;
+   `ifdef LOG_COMMITS
+      if (uop_gy_veri_gecerli_w) begin
+         $display("core   0: 3 0x%08x (0x0000) x%2d 0x%08x", uop_ps_w, uop_gy_adres_w, uop_gy_veri_w);
+      end
+      else begin
+         $display("core   0: 3 0x%08x (0x0000)", uop_ps_w);
+      end
+   `endif
+   end
 
-    if (!rstn_i) begin
-        inst_ctr_r <= 0;
-    end
+   if (!rstn_i) begin
+      inst_ctr_r <= 0;
+   end
 end
 // Simdilik 2 kere registerlamaya gerek yok. Direkt UOP yazmaclarindan combinational gitmeli.
 

@@ -1,16 +1,16 @@
 `timescale 1ns/1ps
 
 module yapay_zeka_birimi (
-    input                       clk_i,
-    input                       rstn_i,
+   input                       clk_i,
+   input                       rstn_i,
 
-    input                       islem_gecerli_i,
-    input   [`UOP_YZB_BIT-1:0]  islem_kod_i,
-    input   [`VERI_BIT-1:0]     islem_islec1_i,
-    input   [`VERI_BIT-1:0]     islem_islec2_i,
+   input                       islem_gecerli_i,
+   input   [`UOP_YZB_BIT-1:0]  islem_kod_i,
+   input   [`VERI_BIT-1:0]     islem_islec1_i,
+   input   [`VERI_BIT-1:0]     islem_islec2_i,
 
-    output  [`VERI_BIT-1:0]     islem_sonuc_o,
-    output                      islem_gecerli_o
+   output  [`VERI_BIT-1:0]     islem_sonuc_o,
+   output                      islem_gecerli_o
 );
 
 localparam                  HAZIR = 'd0;
@@ -60,130 +60,130 @@ wire [2*`VERI_BIT-1:0]      carpici_sonuc_w;
 wire                        carpici_sonuc_gecerli_w;
 
 always @* begin
-    for (i = 0; i < `N_CNN_YAZMAC; i = i + 1) begin
-        bellek_x_ns[i] = bellek_x_r[i];
-        bellek_w_ns[i] = bellek_w_r[i];
-    end
-    sayac_x_ns = sayac_x_r;
-    sayac_w_ns = sayac_w_r;
-    sayac_sonuc_ns = sayac_sonuc_r;
-    sayac_istek_ns = sayac_istek_r;
-    islem_sonuc_ns = islem_sonuc_r;
-    islem_gecerli_cmb = `HIGH;
-    toplayici_is0_cmb = islem_sonuc_r;
-    toplayici_is1_cmb = carpici_sonuc_w[0 +: `VERI_BIT];
-    carpici_is0_cmb = bellek_x_r[sayac_istek_r];
-    carpici_is1_cmb = bellek_w_r[sayac_istek_r];
-    carpici_gecerli_cmb = `LOW;
-    spekulatif_durum_ns = spekulatif_durum_r;
+   for (i = 0; i < `N_CNN_YAZMAC; i = i + 1) begin
+      bellek_x_ns[i] = bellek_x_r[i];
+      bellek_w_ns[i] = bellek_w_r[i];
+   end
+   sayac_x_ns = sayac_x_r;
+   sayac_w_ns = sayac_w_r;
+   sayac_sonuc_ns = sayac_sonuc_r;
+   sayac_istek_ns = sayac_istek_r;
+   islem_sonuc_ns = islem_sonuc_r;
+   islem_gecerli_cmb = `HIGH;
+   toplayici_is0_cmb = islem_sonuc_r;
+   toplayici_is1_cmb = carpici_sonuc_w[0 +: `VERI_BIT];
+   carpici_is0_cmb = bellek_x_r[sayac_istek_r];
+   carpici_is1_cmb = bellek_w_r[sayac_istek_r];
+   carpici_gecerli_cmb = `LOW;
+   spekulatif_durum_ns = spekulatif_durum_r;
 
-    if (islem_gecerli_i) begin
-        case(islem_kod_i)
-        `UOP_YZB_LDX_OP1: begin
-            bellek_x_ns[sayac_x_r] = islem_islec1_i;
-            sayac_x_ns = sayac_x_r + 1;
-        end
-        `UOP_YZB_LDX_ALL: begin
-            bellek_x_ns[sayac_x_r] = islem_islec1_i;
-            bellek_x_ns[sayac_x_r + 1] = islem_islec2_i;
-            sayac_x_ns = sayac_x_r + 2;
-        end
-        `UOP_YZB_LDW_OP1: begin
-            bellek_w_ns[sayac_w_r] = islem_islec1_i;
-            sayac_w_ns = sayac_w_r + 1;
-        end
-        `UOP_YZB_LDW_ALL: begin
-            bellek_w_ns[sayac_w_r] = islem_islec1_i;
-            bellek_w_ns[sayac_w_r + 1] = islem_islec2_i;
-            sayac_w_ns = sayac_w_r + 2;
-        end
-        `UOP_YZB_CLRX: begin
-            sayac_x_ns = {`CNN_YAZMAC_BIT{1'b0}};
-            sayac_sonuc_ns = {`CNN_YAZMAC_BIT{1'b0}}; // Spekulatif carpimlari geri sar
-            sayac_istek_ns = {`CNN_YAZMAC_BIT{1'b0}};
-            islem_sonuc_ns = {`VERI_BIT{1'b0}};
-        end
-        `UOP_YZB_CLRW: begin
-            sayac_w_ns = {`CNN_YAZMAC_BIT{1'b0}};
-            sayac_sonuc_ns = {`CNN_YAZMAC_BIT{1'b0}}; // Spekulatif carpimlari geri sar
-            sayac_istek_ns = {`CNN_YAZMAC_BIT{1'b0}};
-            islem_sonuc_ns = {`VERI_BIT{1'b0}};
-        end
-        `UOP_YZB_RUN: begin
-            islem_gecerli_cmb = sayac_sonuc_r == sayac_min_w;
-        end
-        endcase
-    end
+   if (islem_gecerli_i) begin
+      case(islem_kod_i)
+      `UOP_YZB_LDX_OP1: begin
+         bellek_x_ns[sayac_x_r] = islem_islec1_i;
+         sayac_x_ns = sayac_x_r + 1;
+      end
+      `UOP_YZB_LDX_ALL: begin
+         bellek_x_ns[sayac_x_r] = islem_islec1_i;
+         bellek_x_ns[sayac_x_r + 1] = islem_islec2_i;
+         sayac_x_ns = sayac_x_r + 2;
+      end
+      `UOP_YZB_LDW_OP1: begin
+         bellek_w_ns[sayac_w_r] = islem_islec1_i;
+         sayac_w_ns = sayac_w_r + 1;
+      end
+      `UOP_YZB_LDW_ALL: begin
+         bellek_w_ns[sayac_w_r] = islem_islec1_i;
+         bellek_w_ns[sayac_w_r + 1] = islem_islec2_i;
+         sayac_w_ns = sayac_w_r + 2;
+      end
+      `UOP_YZB_CLRX: begin
+         sayac_x_ns = {`CNN_YAZMAC_BIT{1'b0}};
+         sayac_sonuc_ns = {`CNN_YAZMAC_BIT{1'b0}}; // Spekulatif carpimlari geri sar
+         sayac_istek_ns = {`CNN_YAZMAC_BIT{1'b0}};
+         islem_sonuc_ns = {`VERI_BIT{1'b0}};
+      end
+      `UOP_YZB_CLRW: begin
+         sayac_w_ns = {`CNN_YAZMAC_BIT{1'b0}};
+         sayac_sonuc_ns = {`CNN_YAZMAC_BIT{1'b0}}; // Spekulatif carpimlari geri sar
+         sayac_istek_ns = {`CNN_YAZMAC_BIT{1'b0}};
+         islem_sonuc_ns = {`VERI_BIT{1'b0}};
+      end
+      `UOP_YZB_RUN: begin
+         islem_gecerli_cmb = sayac_sonuc_r == sayac_min_w;
+      end
+      endcase
+   end
 
-    case(spekulatif_durum_r)
-    DURUM_BOSTA: begin
-        if (sayac_sonuc_r < sayac_min_w) begin
+   case(spekulatif_durum_r)
+   DURUM_BOSTA: begin
+      if (sayac_sonuc_r < sayac_min_w) begin
+         carpici_gecerli_cmb = `HIGH;
+         sayac_istek_ns = sayac_istek_r + 1;
+         spekulatif_durum_ns = DURUM_ISTEK;
+      end
+   end
+   DURUM_ISTEK: begin
+      if (carpici_sonuc_gecerli_w) begin
+         islem_sonuc_ns = toplayici_sonuc_w;
+         sayac_sonuc_ns = sayac_sonuc_r + 1;
+         if (sayac_sonuc_r < sayac_min_w - 1) begin
             carpici_gecerli_cmb = `HIGH;
             sayac_istek_ns = sayac_istek_r + 1;
             spekulatif_durum_ns = DURUM_ISTEK;
-        end
-    end
-    DURUM_ISTEK: begin
-        if (carpici_sonuc_gecerli_w) begin
-            islem_sonuc_ns = toplayici_sonuc_w;
-            sayac_sonuc_ns = sayac_sonuc_r + 1;
-            if (sayac_sonuc_r < sayac_min_w - 1) begin
-                carpici_gecerli_cmb = `HIGH;
-                sayac_istek_ns = sayac_istek_r + 1;
-                spekulatif_durum_ns = DURUM_ISTEK;
-            end
-            else begin
-                spekulatif_durum_ns = DURUM_BOSTA;
-            end
-        end
-    end
-    endcase
+         end
+         else begin
+            spekulatif_durum_ns = DURUM_BOSTA;
+         end
+      end
+   end
+   endcase
 end
 
 always @(posedge clk_i) begin
-    if (!rstn_i) begin
-        for (i = 0; i < `N_CNN_YAZMAC; i = i + 1) begin
-            bellek_x_r[i] <= {`VERI_BIT{1'b0}};
-            bellek_w_r[i] <= {`VERI_BIT{1'b0}};
-        end
-        sayac_x_r <= {`CNN_YAZMAC_BIT{1'b0}};
-        sayac_w_r <= {`CNN_YAZMAC_BIT{1'b0}};
-        sayac_sonuc_r <= {`CNN_YAZMAC_BIT{1'b0}};
-        sayac_istek_r <= {`CNN_YAZMAC_BIT{1'b0}};
-        islem_sonuc_r <= {`VERI_BIT{1'b0}};
-        spekulatif_durum_r <= DURUM_BOSTA;
-    end
-    else begin
-        for (i = 0; i < `N_CNN_YAZMAC; i = i + 1) begin
-            bellek_x_r[i] <= bellek_x_ns[i];
-            bellek_w_r[i] <= bellek_w_ns[i];
-        end
-        sayac_x_r <= sayac_x_ns;
-        sayac_w_r <= sayac_w_ns;
-        sayac_sonuc_r <= sayac_sonuc_ns;
-        sayac_istek_r <= sayac_istek_ns;
-        islem_sonuc_r <= islem_sonuc_ns;
-        spekulatif_durum_r <= spekulatif_durum_ns;
-    end
+   if (!rstn_i) begin
+      for (i = 0; i < `N_CNN_YAZMAC; i = i + 1) begin
+         bellek_x_r[i] <= {`VERI_BIT{1'b0}};
+         bellek_w_r[i] <= {`VERI_BIT{1'b0}};
+      end
+      sayac_x_r <= {`CNN_YAZMAC_BIT{1'b0}};
+      sayac_w_r <= {`CNN_YAZMAC_BIT{1'b0}};
+      sayac_sonuc_r <= {`CNN_YAZMAC_BIT{1'b0}};
+      sayac_istek_r <= {`CNN_YAZMAC_BIT{1'b0}};
+      islem_sonuc_r <= {`VERI_BIT{1'b0}};
+      spekulatif_durum_r <= DURUM_BOSTA;
+   end
+   else begin
+      for (i = 0; i < `N_CNN_YAZMAC; i = i + 1) begin
+         bellek_x_r[i] <= bellek_x_ns[i];
+         bellek_w_r[i] <= bellek_w_ns[i];
+      end
+      sayac_x_r <= sayac_x_ns;
+      sayac_w_r <= sayac_w_ns;
+      sayac_sonuc_r <= sayac_sonuc_ns;
+      sayac_istek_r <= sayac_istek_ns;
+      islem_sonuc_r <= islem_sonuc_ns;
+      spekulatif_durum_r <= spekulatif_durum_ns;
+   end
 end
 
 carpici_pipe3 carp (
-    .clk_i             ( clk_i ),
-    .islec0_i          ( carpici_is0_cmb ),
-    .islec0_isaretli_i ( `HIGH ),
-    .islec1_i          ( carpici_is1_cmb ),
-    .islec1_isaretli_i ( `HIGH ),
-    .islem_gecerli_i   ( carpici_gecerli_cmb ),
-    .carpim_o          ( carpici_sonuc_w ),
-    .carpim_gecerli_o  ( carpici_sonuc_gecerli_w )
+   .clk_i             ( clk_i ),
+   .islec0_i          ( carpici_is0_cmb ),
+   .islec0_isaretli_i ( `HIGH ),
+   .islec1_i          ( carpici_is1_cmb ),
+   .islec1_isaretli_i ( `HIGH ),
+   .islem_gecerli_i   ( carpici_gecerli_cmb ),
+   .carpim_o          ( carpici_sonuc_w ),
+   .carpim_gecerli_o  ( carpici_sonuc_gecerli_w )
 );
 
 toplayici topla (
-    .islec0_i ( toplayici_is0_cmb ),
-    .islec1_i ( toplayici_is1_cmb ),
-    .carry_i  ( 1'b0 ),
-    .toplam_o ( toplayici_sonuc_w ),
-    .carry_o  ()
+   .islec0_i ( toplayici_is0_cmb ),
+   .islec1_i ( toplayici_is1_cmb ),
+   .carry_i  ( 1'b0 ),
+   .toplam_o ( toplayici_sonuc_w ),
+   .carry_o  ()
 );
 
 assign sayac_min_w = sayac_x_r < sayac_w_r ? sayac_x_r : sayac_w_r;

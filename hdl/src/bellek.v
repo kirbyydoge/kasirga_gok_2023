@@ -4,38 +4,33 @@
 `include "mikroislem.vh"
 
 module bellek (
-    input                       clk_i,
-    input                       rstn_i,
+   input                       clk_i,
+   input                       rstn_i,
 
-    // l1v istek <> bellek
-    output  [`ADRES_BIT-1:0]    l1v_istek_adres_o,
-    output                      l1v_istek_gecerli_o,
-    output                      l1v_istek_onbellekleme_o,
-    output                      l1v_istek_yaz_o,
-    output  [`VERI_BIT-1:0]     l1v_istek_veri_o,
-    output  [`VERI_BYTE-1:0]    l1v_istek_maske_o,
-    input                       l1v_istek_hazir_i,
+   // l1v istek <> bellek
+   output  [`ADRES_BIT-1:0]    l1v_istek_adres_o,
+   output                      l1v_istek_gecerli_o,
+   output                      l1v_istek_onbellekleme_o,
+   output                      l1v_istek_yaz_o,
+   output  [`VERI_BIT-1:0]     l1v_istek_veri_o,
+   output  [`VERI_BYTE-1:0]    l1v_istek_maske_o,
+   input                       l1v_istek_hazir_i,
 
-    // Yazmc oku sonuna veri yonlendirmesi
-    output  [`VERI_BIT-1:0]     yo_veri_o,
-    output  [`YAZMAC_BIT-1:0]   yo_adres_o,
-    output  [`UOP_TAG_BIT-1:0]  yo_etiket_o,
-    output                      yo_gecerli_o,
+   // Yazmc oku sonuna veri yonlendirmesi
+   output  [`VERI_BIT-1:0]     yo_veri_o,
+   output  [`YAZMAC_BIT-1:0]   yo_adres_o,
+   output  [`UOP_TAG_BIT-1:0]  yo_etiket_o,
+   output                      yo_gecerli_o,
 
-    // l1v yanit <> bellek
-    input   [`VERI_BIT-1:0]     l1v_veri_i,
-    input                       l1v_veri_gecerli_i,
-    output                      l1v_veri_hazir_o,
-    //Yazma
-    input                       l1v_istek_hazir_i,
-    output  [`PS_BIT-1:0]       l1v_istek_adres_o,
-    output                      l1v_istek_gecerli_o,
+   // l1v yanit <> bellek
+   input   [`VERI_BIT-1:0]     l1v_veri_i,
+   input                       l1v_veri_gecerli_i,
+   output                      l1v_veri_hazir_o,
 
-    //duraklat
-    output                      duraklat_o,
+   output                      duraklat_o,
 
-    input   [`UOP_BIT-1:0]      bellek_uop_i,
-    output  [`UOP_BIT-1:0]      geri_yaz_uop_o
+   input   [`UOP_BIT-1:0]      bellek_uop_i,
+   output  [`UOP_BIT-1:0]      geri_yaz_uop_o
 );
 
 reg [`UOP_BIT-1:0]              uop_r;
@@ -86,68 +81,66 @@ localparam OKU = 0;
 localparam HAZIR = 1;
 
 always @* begin
-    uop_ns = bellek_uop_i;
-    yo_gecerli_cmb = `LOW;
+   uop_ns = bellek_uop_i;
+   yo_gecerli_cmb = `LOW;
 
-    bib_istek_gecerli_cmb = `LOW;
-    duraklat_cmb = `LOW;
-    durum_ns = durum_r;
-    
-    case(durum_r)
-        HAZIR: begin
-            if (yaz_w && uop_gecerli_w) begin
-                bib_istek_gecerli_cmb = `HIGH;
-                duraklat_cmb = !vyb_hazir_w;
-            end
-            if (oku_w && uop_gecerli_w) begin
-                bib_istek_gecerli_cmb = `HIGH;
-                duraklat_cmb = `HIGH;
-                durum_ns = vyb_hazir_w ? OKU : HAZIR;
-            end
-        end
-        OKU: begin
+   bib_istek_gecerli_cmb = `LOW;
+   duraklat_cmb = `LOW;
+   durum_ns = durum_r;
+   
+   case(durum_r)
+      HAZIR: begin
+         if (yaz_w && uop_gecerli_w) begin
+            bib_istek_gecerli_cmb = `HIGH;
+            duraklat_cmb = !vyb_hazir_w;
+         end
+         if (oku_w && uop_gecerli_w) begin
+            bib_istek_gecerli_cmb = `HIGH;
             duraklat_cmb = `HIGH;
-            if (bellek_gecerli_w) begin // bana veri gelmiş demektir 
-                yo_gecerli_cmb = `HIGH;
-                case (uop_buyruk_secim_w)
-                    `UOP_BEL_LW: begin // 32 Bit Okur
-                        uop_ns[`UOP_RD] = bellek_veri_w;   
-                    end
-                    `UOP_BEL_LH: begin // 16 Bit Okur, sign-extend edip rd'ye yazar
-                        uop_ns[`UOP_RD] = $signed(bellek_veri_w[uop_bayt_indis_w * 8 +: 16]);
-                    end
-                    `UOP_BEL_LHU: begin // 16 Bit Okur, zero-extend edip rd'ye yazar
-                        uop_ns[`UOP_RD] = {16'b0, bellek_veri_w[uop_bayt_indis_w * 8 +: 16]};       
-                    end
-                    `UOP_BEL_LB: begin // 8 Bit Okur, sign-extend edip rd'ye yazar
-                        uop_ns[`UOP_RD] = $signed(bellek_veri_w[uop_bayt_indis_w * 8 +: 8]);         
-                    end
-                    `UOP_BEL_LBU: begin // 8 Bit Okur, zero-extend edip rd'ye yazar
-                        uop_ns[`UOP_RD] = {24'b0, bellek_veri_w[uop_bayt_indis_w * 8 +: 8]};      
-                    end
-                endcase
-                duraklat_cmb = `LOW;
-                durum_ns = HAZIR;
-            end
-        end
-    endcase
+            durum_ns = vyb_hazir_w ? OKU : HAZIR;
+         end
+      end
+      OKU: begin
+         duraklat_cmb = `HIGH;
+         if (bellek_gecerli_w) begin // bana veri gelmiş demektir 
+            yo_gecerli_cmb = `HIGH;
+            case (uop_buyruk_secim_w)
+               `UOP_BEL_LW: begin // 32 Bit Okur
+                  uop_ns[`UOP_RD] = bellek_veri_w;   
+               end
+               `UOP_BEL_LH: begin // 16 Bit Okur, sign-extend edip rd'ye yazar
+                  uop_ns[`UOP_RD] = $signed(bellek_veri_w[uop_bayt_indis_w * 8 +: 16]);
+               end
+               `UOP_BEL_LHU: begin // 16 Bit Okur, zero-extend edip rd'ye yazar
+                  uop_ns[`UOP_RD] = {16'b0, bellek_veri_w[uop_bayt_indis_w * 8 +: 16]};       
+               end
+               `UOP_BEL_LB: begin // 8 Bit Okur, sign-extend edip rd'ye yazar
+                  uop_ns[`UOP_RD] = $signed(bellek_veri_w[uop_bayt_indis_w * 8 +: 8]);         
+               end
+               `UOP_BEL_LBU: begin // 8 Bit Okur, zero-extend edip rd'ye yazar
+                  uop_ns[`UOP_RD] = {24'b0, bellek_veri_w[uop_bayt_indis_w * 8 +: 8]};      
+               end
+            endcase
+            duraklat_cmb = `LOW;
+            durum_ns = HAZIR;
+         end
+      end
+   endcase
 
-    uop_ns[`UOP_VALID] = !duraklat_cmb && uop_gecerli_w;
+   uop_ns[`UOP_VALID] = !duraklat_cmb && uop_gecerli_w;
 end
 
 always @(posedge clk_i) begin
-    if (!rstn_i) begin
-        uop_r <= {`UOP_BIT{`LOW}};
-        bib_istek_gecerli_r <= 1'b0;
-        bib_veri_r <= {`VERI_BIT{1'b0}};
-        bellek_veri_r <= 1'b0;
-        durum_r <= HAZIR;
-    end
-    else begin
-        uop_r <= uop_ns;
-        bellek_veri_r <= bellek_veri_ns;
-        durum_r <= durum_ns;  
-    end
+   if (!rstn_i) begin
+      uop_r <= {`UOP_BIT{`LOW}};
+      bellek_veri_r <= 1'b0;
+      durum_r <= HAZIR;
+   end
+   else begin
+      uop_r <= uop_ns;
+      bellek_veri_r <= bellek_veri_ns;
+      durum_r <= durum_ns;  
+   end
 end
 
 <<<<<<< HEAD
@@ -161,39 +154,39 @@ bellek_islem_birimi bib(
 
 =======
 bellek_islem_birimi bib (
-    .clk_i                            ( clk_i               ),
-    .rstn_i                           ( rstn_i              ),  
-    .uop_buyruk_secim_i               ( uop_buyruk_secim_w  ),          
-    .uop_rd_i                         ( uop_rd_w            ),  
-    .uop_rs2_i                        ( uop_rs2_w           ),  
-    .veri_o                           ( bib_veri_w          ),
-    .maske_o                          ( maske_w             ),
-    .oku_o                            ( oku_w               ),
-    .yaz_o                            ( yaz_w               )    
+   .clk_i                            ( clk_i               ),
+   .rstn_i                           ( rstn_i              ),  
+   .uop_buyruk_secim_i               ( uop_buyruk_secim_w  ),          
+   .uop_rd_i                         ( uop_rd_w            ),  
+   .uop_rs2_i                        ( uop_rs2_w           ),  
+   .veri_o                           ( bib_veri_w          ),
+   .maske_o                          ( maske_w             ),
+   .oku_o                            ( oku_w               ),
+   .yaz_o                            ( yaz_w               )    
 );
 
 veri_yolu_birimi vyb ( 
-    .clk_i                            ( clk_i                ),
-    .rstn_i                           ( rstn_i               ),
-    .port_istek_adres_o               ( l1v_istek_adres_o    ),
-    .port_istek_gecerli_o             ( l1v_istek_gecerli_o  ),
-    .port_istek_onbellekleme_o        ( l1v_istek_onbellekleme_o ),
-    .port_istek_yaz_o                 ( l1v_istek_yaz_o      ),
-    .port_istek_veri_o                ( l1v_istek_veri_o     ),
-    .port_istek_maske_o               ( l1v_istek_maske_o    ),
-    .port_istek_hazir_i               ( l1v_istek_hazir_i    ),
-    .port_veri_i                      ( l1v_veri_i           ),
-    .port_veri_gecerli_i              ( l1v_veri_gecerli_i   ),
-    .port_veri_hazir_o                ( l1v_veri_hazir_o     ),
-    .bib_istek_gecerli_i              ( bib_istek_gecerli_w  ),
-    .bib_istek_yaz_i                  ( bib_istek_yaz_w      ),
-    .bib_veri_i                       ( bib_veri_w           ),  // yazılacak veri
-    .bib_istek_oku_i                  ( bib_istek_oku_w      ),
-    .bib_istek_adres_i                ( bib_istek_adres_w    ),
-    .bib_istek_maske_i                ( bib_istek_maske_w    ),
-    .bellek_hazir_o                   ( vyb_hazir_w          ),
-    .bellek_veri_o                    ( bellek_veri_w        ),
-    .bellek_gecerli_o                 ( bellek_gecerli_w     )   // islem bitti sinyali
+   .clk_i                            ( clk_i                ),
+   .rstn_i                           ( rstn_i               ),
+   .port_istek_adres_o               ( l1v_istek_adres_o    ),
+   .port_istek_gecerli_o             ( l1v_istek_gecerli_o  ),
+   .port_istek_onbellekleme_o        ( l1v_istek_onbellekleme_o ),
+   .port_istek_yaz_o                 ( l1v_istek_yaz_o      ),
+   .port_istek_veri_o                ( l1v_istek_veri_o     ),
+   .port_istek_maske_o               ( l1v_istek_maske_o    ),
+   .port_istek_hazir_i               ( l1v_istek_hazir_i    ),
+   .port_veri_i                      ( l1v_veri_i           ),
+   .port_veri_gecerli_i              ( l1v_veri_gecerli_i   ),
+   .port_veri_hazir_o                ( l1v_veri_hazir_o     ),
+   .bib_istek_gecerli_i              ( bib_istek_gecerli_w  ),
+   .bib_istek_yaz_i                  ( bib_istek_yaz_w      ),
+   .bib_veri_i                       ( bib_veri_w           ),  // yazılacak veri
+   .bib_istek_oku_i                  ( bib_istek_oku_w      ),
+   .bib_istek_adres_i                ( bib_istek_adres_w    ),
+   .bib_istek_maske_i                ( bib_istek_maske_w    ),
+   .bellek_hazir_o                   ( vyb_hazir_w          ),
+   .bellek_veri_o                    ( bellek_veri_w        ),
+   .bellek_gecerli_o                 ( bellek_gecerli_w     )   // islem bitti sinyali
 );
 
 assign geri_yaz_uop_o = uop_r;

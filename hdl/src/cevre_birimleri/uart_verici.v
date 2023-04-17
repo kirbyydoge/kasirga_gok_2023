@@ -4,18 +4,18 @@
 `include "sabitler.vh"
 
 module uart_verici (
-    input                   clk_i,
-    input                   rstn_i,
-    
-    input                   tx_en_i,              // tx_en
-    input                   veri_gecerli_i, // !fifo_empty
-    output                  consume_o,
+   input                   clk_i,
+   input                   rstn_i,
+   
+   input                   tx_en_i,              // tx_en
+   input                   veri_gecerli_i, // !fifo_empty
+   output                  consume_o,
 
-    input [7:0]             gelen_veri_i,
-    input [15:0]            baud_div_i,
-    
-    output                  tx_o,
-    output                  hazir_o
+   input [7:0]             gelen_veri_i,
+   input [15:0]            baud_div_i,
+   
+   output                  tx_o,
+   output                  hazir_o
 );
 
 localparam BOSTA = 0;
@@ -42,72 +42,72 @@ reg saat_aktif_cmb;
 reg consume_cmb;
 
 always @* begin
-    tx_cmb = `HIGH;
-    hazir_cmb = `LOW;
-    saat_aktif_cmb = `LOW;
-    durum_ns = durum_r;
-    sayac_ns = sayac_r;
-    veri_ns = veri_r;
-    gonderilecek_veri_biti_ns = gonderilecek_veri_biti_r;
-    consume_cmb = `LOW;
+   tx_cmb = `HIGH;
+   hazir_cmb = `LOW;
+   saat_aktif_cmb = `LOW;
+   durum_ns = durum_r;
+   sayac_ns = sayac_r;
+   veri_ns = veri_r;
+   gonderilecek_veri_biti_ns = gonderilecek_veri_biti_r;
+   consume_cmb = `LOW;
 
-    sayac_ns = sayac_r + 1;
+   sayac_ns = sayac_r + 1;
 
-    saat_aktif_cmb = sayac_r == baud_div_i;
+   saat_aktif_cmb = sayac_r == baud_div_i;
 
-    if (sayac_r == baud_div_i) begin
-        sayac_ns = 0;
-    end
+   if (sayac_r == baud_div_i) begin
+      sayac_ns = 0;
+   end
 
-    case (durum_r) 
-        BOSTA: begin
-            if (tx_en_i && veri_gecerli_i) begin
-                consume_cmb = `HIGH;
-                tx_cmb = `LOW;
-                durum_ns = BASLA;
-                sayac_ns = 16'd0;
-                veri_ns = gelen_veri_i;
-                gonderilecek_veri_biti_ns = 0;
-            end    
-        end
-        BASLA: begin
+   case (durum_r) 
+      BOSTA: begin
+         if (tx_en_i && veri_gecerli_i) begin
+            consume_cmb = `HIGH;
             tx_cmb = `LOW;
-            if (saat_aktif_cmb) begin
-                durum_ns = VERI_GONDER;
+            durum_ns = BASLA;
+            sayac_ns = 16'd0;
+            veri_ns = gelen_veri_i;
+            gonderilecek_veri_biti_ns = 0;
+         end    
+      end
+      BASLA: begin
+         tx_cmb = `LOW;
+         if (saat_aktif_cmb) begin
+            durum_ns = VERI_GONDER;
+         end
+      end
+      VERI_GONDER: begin
+         tx_cmb = veri_r[gonderilecek_veri_biti_r];
+         if (saat_aktif_cmb) begin
+            gonderilecek_veri_biti_ns = gonderilecek_veri_biti_r + 1;
+            if (gonderilecek_veri_biti_r == 3'd7) begin
+               durum_ns = BITTI;
             end
-        end
-        VERI_GONDER: begin
-            tx_cmb = veri_r[gonderilecek_veri_biti_r];
-            if (saat_aktif_cmb) begin
-                gonderilecek_veri_biti_ns = gonderilecek_veri_biti_r + 1;
-                if (gonderilecek_veri_biti_r == 3'd7) begin
-                    durum_ns = BITTI;
-                end
-            end            
-        end
-        BITTI: begin
-            tx_cmb = `HIGH;
-            if (saat_aktif_cmb) begin
-                durum_ns = BOSTA;
-                hazir_cmb = `HIGH;
-            end     
-        end
-    endcase
+         end            
+      end
+      BITTI: begin
+         tx_cmb = `HIGH;
+         if (saat_aktif_cmb) begin
+            durum_ns = BOSTA;
+            hazir_cmb = `HIGH;
+         end     
+      end
+   endcase
 end
 
 always @ (posedge clk_i) begin
-    if (!rstn_i) begin
-        durum_r <= BOSTA;
-        sayac_r <= 0;
-        gonderilecek_veri_biti_r <= 0; // En anlamsız bitten yollamaya başlanır.
-        veri_r <= 0;
-    end
-    else begin
-        durum_r <= durum_ns; 
-        sayac_r <= sayac_ns;
-        gonderilecek_veri_biti_r <= gonderilecek_veri_biti_ns;
-        veri_r <= veri_ns;
-    end
+   if (!rstn_i) begin
+      durum_r <= BOSTA;
+      sayac_r <= 0;
+      gonderilecek_veri_biti_r <= 0; // En anlamsız bitten yollamaya başlanır.
+      veri_r <= 0;
+   end
+   else begin
+      durum_r <= durum_ns; 
+      sayac_r <= sayac_ns;
+      gonderilecek_veri_biti_r <= gonderilecek_veri_biti_ns;
+      veri_r <= veri_ns;
+   end
 end
 
 assign tx_o = tx_cmb;

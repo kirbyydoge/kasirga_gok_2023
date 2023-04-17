@@ -3,23 +3,23 @@
 `include "sabitler.vh"
 
 module uart_denetleyicisi (
-    input                       clk_i,
-    input                       rstn_i,
+   input                       clk_i,
+   input                       rstn_i,
 
-    input   [`ADRES_BIT-1:0]    cek_adres_i,
-    input   [`VERI_BIT-1:0]     cek_veri_i,
-    input   [`TL_A_BITS-1:0]    cek_tilefields_i,
+   input   [`ADRES_BIT-1:0]    cek_adres_i,
+   input   [`VERI_BIT-1:0]     cek_veri_i,
+   input   [`TL_A_BITS-1:0]    cek_tilefields_i,
 
-    input                       cek_gecerli_i,
-    output                      cek_hazir_o,
+   input                       cek_gecerli_i,
+   output                      cek_hazir_o,
 
-    output  [`VERI_BIT-1:0]     uart_veri_o,
-    output                      uart_gecerli_o,
-    output  [`TL_D_BITS-1:0]    uart_tilefields_o,
-    input                       uart_hazir_i,
+   output  [`VERI_BIT-1:0]     uart_veri_o,
+   output                      uart_gecerli_o,
+   output  [`TL_D_BITS-1:0]    uart_tilefields_o,
+   input                       uart_hazir_i,
 
-    input                       rx_i,
-    output                      tx_o
+   input                       rx_i,
+   output                      tx_o
 );
 
 wire        cek_uart_istek_w;
@@ -86,190 +86,190 @@ wire                  verici_tx_w;
 wire                  verici_hazir_w;
 
 always @* begin
-    uart_tilefields_ns = uart_tilefields_r;
-    uart_tilefields_ns[`TL_D_SIZE] = 5;
-    durum_ns = durum_r;
-    uart_ctrl_ns = uart_ctrl_r;
-    uart_veri_ns = uart_veri_r;
-    uart_gecerli_ns = uart_gecerli_r;
-    fifo_buf_veri_ns = fifo_buf_veri_r;
-    tx_fifo_wr_data_cmb = 8'd0;
-    tx_fifo_wr_en_cmb = `LOW;
-    tx_fifo_rd_en_cmb = `LOW;
-    rx_fifo_wr_data_cmb = 8'd0;
-    rx_fifo_wr_en_cmb = `LOW;
-    rx_fifo_rd_en_cmb = `LOW;
-    uart_rdata = 0;
-    uart_wdata = 0;
+   uart_tilefields_ns = uart_tilefields_r;
+   uart_tilefields_ns[`TL_D_SIZE] = 5;
+   durum_ns = durum_r;
+   uart_ctrl_ns = uart_ctrl_r;
+   uart_veri_ns = uart_veri_r;
+   uart_gecerli_ns = uart_gecerli_r;
+   fifo_buf_veri_ns = fifo_buf_veri_r;
+   tx_fifo_wr_data_cmb = 8'd0;
+   tx_fifo_wr_en_cmb = `LOW;
+   tx_fifo_rd_en_cmb = `LOW;
+   rx_fifo_wr_data_cmb = 8'd0;
+   rx_fifo_wr_en_cmb = `LOW;
+   rx_fifo_rd_en_cmb = `LOW;
+   uart_rdata = 0;
+   uart_wdata = 0;
 
-    alici_rx_cmb = `HIGH; // baslarken low'a çek
-    verici_basla_cmb = `LOW;
-    verici_gelen_veri_gecerli_cmb = `LOW;
-    verici_gelen_veri_cmb = 8'd0;
+   alici_rx_cmb = `HIGH; // baslarken low'a çek
+   verici_basla_cmb = `LOW;
+   verici_gelen_veri_gecerli_cmb = `LOW;
+   verici_gelen_veri_cmb = 8'd0;
 
-    if ((uart_gecerli_o && uart_hazir_i) || uart_tilefields_o[`TL_D_OP] == `TL_OP_ACK) begin
-        uart_gecerli_ns = `LOW;
-    end
+   if ((uart_gecerli_o && uart_hazir_i) || uart_tilefields_o[`TL_D_OP] == `TL_OP_ACK) begin
+      uart_gecerli_ns = `LOW;
+   end
 
-    case (durum_r)
-        BOSTA: begin
-            if (cek_uart_istek_w) begin
-                case (cek_uart_addr_w) 
-                    `UART_CTRL_REG: begin
-                        if (cek_uart_oku_w) begin
-                            uart_veri_ns = uart_ctrl_r;
-                            uart_gecerli_ns = `HIGH;
-                            uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
-                        end
-                        else if (cek_uart_yaz_w) begin
-                            uart_ctrl_ns = cek_veri_i;
-                            uart_gecerli_ns = `HIGH;
-                            uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
-                        end
-                    end
-                    `UART_STATUS_REG: begin
-                        if (cek_uart_oku_w) begin
-                        `ifndef SPIKE_DIFF
-                            uart_veri_ns = uart_status_w;
-                        `else
-                            uart_veri_ns = 32'd0;
-                        `endif
-                            uart_gecerli_ns = `HIGH;
-                            uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
-                        end
-                    end
-                    `UART_RDATA_REG: begin
-                        if (cek_uart_oku_w) begin
-                            if (rx_fifo_empty) begin
-                                durum_ns = VERI_BEKLE;
-                            end
-                            else begin
-                                uart_veri_ns = rx_fifo_rd_data_w;
-                                rx_fifo_rd_en_cmb = `HIGH;
-                                uart_gecerli_ns = `HIGH;
-                                uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
-                            end
-                        end
-                    end
-                    `UART_WDATA_REG: begin
-                         if (cek_uart_yaz_w) begin
-                            uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
-                            uart_gecerli_ns = `HIGH;
-                            if (tx_fifo_full_w) begin
-                                fifo_buf_veri_ns = cek_veri_i;
-                                durum_ns = YER_BEKLE;
-                            end
-                            else begin
-                                tx_fifo_wr_data_cmb = cek_veri_i;
-                                tx_fifo_wr_en_cmb = `HIGH;
-                            end
-                        end
-                    end
-                endcase
-            end    
-        end
-        VERI_BEKLE: begin
-             if (!rx_fifo_empty) begin
-                uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
-                uart_veri_ns = rx_fifo_rd_data_w;
-                rx_fifo_rd_en_cmb = `HIGH;
-                uart_gecerli_ns = `HIGH;
-                durum_ns = BOSTA;
-            end
-        end
-        YER_BEKLE: begin
-            if (!tx_fifo_full_w) begin
-                tx_fifo_wr_data_cmb = fifo_buf_veri_r;
-                tx_fifo_wr_en_cmb = `HIGH;
-                durum_ns = BOSTA;
-            end
-        end
-    endcase
+   case (durum_r)
+      BOSTA: begin
+         if (cek_uart_istek_w) begin
+            case (cek_uart_addr_w) 
+               `UART_CTRL_REG: begin
+                  if (cek_uart_oku_w) begin
+                     uart_veri_ns = uart_ctrl_r;
+                     uart_gecerli_ns = `HIGH;
+                     uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                  end
+                  else if (cek_uart_yaz_w) begin
+                     uart_ctrl_ns = cek_veri_i;
+                     uart_gecerli_ns = `HIGH;
+                     uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
+                  end
+               end
+               `UART_STATUS_REG: begin
+                  if (cek_uart_oku_w) begin
+                  `ifndef SPIKE_DIFF
+                     uart_veri_ns = uart_status_w;
+                  `else
+                     uart_veri_ns = 32'd0;
+                  `endif
+                     uart_gecerli_ns = `HIGH;
+                     uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                  end
+               end
+               `UART_RDATA_REG: begin
+                  if (cek_uart_oku_w) begin
+                     if (rx_fifo_empty) begin
+                        durum_ns = VERI_BEKLE;
+                     end
+                     else begin
+                        uart_veri_ns = rx_fifo_rd_data_w;
+                        rx_fifo_rd_en_cmb = `HIGH;
+                        uart_gecerli_ns = `HIGH;
+                        uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+                     end
+                  end
+               end
+               `UART_WDATA_REG: begin
+                   if (cek_uart_yaz_w) begin
+                     uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK;
+                     uart_gecerli_ns = `HIGH;
+                     if (tx_fifo_full_w) begin
+                        fifo_buf_veri_ns = cek_veri_i;
+                        durum_ns = YER_BEKLE;
+                     end
+                     else begin
+                        tx_fifo_wr_data_cmb = cek_veri_i;
+                        tx_fifo_wr_en_cmb = `HIGH;
+                     end
+                  end
+               end
+            endcase
+         end    
+      end
+      VERI_BEKLE: begin
+          if (!rx_fifo_empty) begin
+            uart_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
+            uart_veri_ns = rx_fifo_rd_data_w;
+            rx_fifo_rd_en_cmb = `HIGH;
+            uart_gecerli_ns = `HIGH;
+            durum_ns = BOSTA;
+         end
+      end
+      YER_BEKLE: begin
+         if (!tx_fifo_full_w) begin
+            tx_fifo_wr_data_cmb = fifo_buf_veri_r;
+            tx_fifo_wr_en_cmb = `HIGH;
+            durum_ns = BOSTA;
+         end
+      end
+   endcase
 
-    if (alici_alinan_gecerli_w && rx_en_w) begin
-        rx_fifo_wr_data_cmb = alici_alinan_veri_w;
-        rx_fifo_wr_en_cmb = `HIGH;
-    end
+   if (alici_alinan_gecerli_w && rx_en_w) begin
+      rx_fifo_wr_data_cmb = alici_alinan_veri_w;
+      rx_fifo_wr_en_cmb = `HIGH;
+   end
 end
 
 always @ (posedge clk_i) begin
-    if (!rstn_i) begin
-        durum_r <= BOSTA;
-        uart_ctrl_r <= 0;
-        uart_veri_r <= 0;
-        uart_gecerli_r <= `LOW;
-        fifo_buf_veri_r <= 0;
-        uart_tilefields_r <= 0;
-    end
-    else begin
-        uart_tilefields_r <= uart_tilefields_ns;
-        durum_r <= durum_ns; 
-        uart_ctrl_r <= uart_ctrl_ns;
-        uart_veri_r <= uart_veri_ns;
-        uart_gecerli_r <= uart_gecerli_ns;
-        fifo_buf_veri_r <= fifo_buf_veri_ns;
-    end
+   if (!rstn_i) begin
+      durum_r <= BOSTA;
+      uart_ctrl_r <= 0;
+      uart_veri_r <= 0;
+      uart_gecerli_r <= `LOW;
+      fifo_buf_veri_r <= 0;
+      uart_tilefields_r <= 0;
+   end
+   else begin
+      uart_tilefields_r <= uart_tilefields_ns;
+      durum_r <= durum_ns; 
+      uart_ctrl_r <= uart_ctrl_ns;
+      uart_veri_r <= uart_veri_ns;
+      uart_gecerli_r <= uart_gecerli_ns;
+      fifo_buf_veri_r <= fifo_buf_veri_ns;
+   end
 end
 
 fifo #(
-    .DATA_WIDTH(8),
-    .DATA_DEPTH(32)
+   .DATA_WIDTH(8),
+   .DATA_DEPTH(32)
 ) rx_buffer (
-    .clk_i    ( clk_i ),         
-    .rstn_i   ( rstn_i ),         
-    .data_i   ( rx_fifo_wr_data_cmb ),         
-    .wr_en_i  ( rx_fifo_wr_en_cmb ),         
-    .data_o   ( rx_fifo_rd_data_w ),         
-    .rd_en_i  ( rx_fifo_rd_en_cmb ),         
-    .full_o   ( rx_fifo_full_w ),         
-    .empty_o  ( rx_fifo_empty )         
+   .clk_i    ( clk_i ),         
+   .rstn_i   ( rstn_i ),         
+   .data_i   ( rx_fifo_wr_data_cmb ),         
+   .wr_en_i  ( rx_fifo_wr_en_cmb ),         
+   .data_o   ( rx_fifo_rd_data_w ),         
+   .rd_en_i  ( rx_fifo_rd_en_cmb ),         
+   .full_o   ( rx_fifo_full_w ),         
+   .empty_o  ( rx_fifo_empty )         
 );
 
 fifo #(
-    .DATA_WIDTH(8),
-    .DATA_DEPTH(32)
+   .DATA_WIDTH(8),
+   .DATA_DEPTH(32)
 ) tx_buffer (
-    .clk_i    ( clk_i ),         
-    .rstn_i   ( rstn_i ),         
-    .data_i   ( tx_fifo_wr_data_cmb ),         
-    .wr_en_i  ( tx_fifo_wr_en_cmb),         
-    .data_o   ( tx_fifo_rd_data_w ),         
-    .rd_en_i  ( consume_w ),         
-    .full_o   ( tx_fifo_full_w ),         
-    .empty_o  ( tx_fifo_empty )         
+   .clk_i    ( clk_i ),         
+   .rstn_i   ( rstn_i ),         
+   .data_i   ( tx_fifo_wr_data_cmb ),         
+   .wr_en_i  ( tx_fifo_wr_en_cmb),         
+   .data_o   ( tx_fifo_rd_data_w ),         
+   .rd_en_i  ( consume_w ),         
+   .full_o   ( tx_fifo_full_w ),         
+   .empty_o  ( tx_fifo_empty )         
 );
 
 uart_alici alici (
-    .clk_i                     ( clk_i ),
-    .rstn_i                    ( rstn_i ),
-    .rx_en_i                   ( rx_en_w ),
-    .alinan_veri_o             ( alici_alinan_veri_w ),
-    .alinan_gecerli_o          ( alici_alinan_gecerli_w ),
-    .baud_div_i                ( baud_div ),   
-    .rx_i                      ( rx_i )
+   .clk_i                     ( clk_i ),
+   .rstn_i                    ( rstn_i ),
+   .rx_en_i                   ( rx_en_w ),
+   .alinan_veri_o             ( alici_alinan_veri_w ),
+   .alinan_gecerli_o          ( alici_alinan_gecerli_w ),
+   .baud_div_i                ( baud_div ),   
+   .rx_i                      ( rx_i )
 );
 
 uart_verici verici (
-    .clk_i                     ( clk_i),
-    .rstn_i                    ( rstn_i),
-    .tx_en_i                   ( tx_en_w ),
-    .veri_gecerli_i            ( !tx_fifo_empty ),
-    .consume_o                 ( consume_w ),
-    .gelen_veri_i              ( tx_fifo_rd_data_w ),
-    .baud_div_i                ( baud_div ),
-    .tx_o                      ( tx_o ),
-    .hazir_o                   ( verici_hazir_w ) 
+   .clk_i                     ( clk_i),
+   .rstn_i                    ( rstn_i),
+   .tx_en_i                   ( tx_en_w ),
+   .veri_gecerli_i            ( !tx_fifo_empty ),
+   .consume_o                 ( consume_w ),
+   .gelen_veri_i              ( tx_fifo_rd_data_w ),
+   .baud_div_i                ( baud_div ),
+   .tx_o                      ( tx_o ),
+   .hazir_o                   ( verici_hazir_w ) 
 );
 
 reg [31:0] tx_ctr_r;
 
 always @(posedge clk_i) begin
-    if (!rstn_i) begin
-        tx_ctr_r <= 0;
-    end
-    else if (consume_w) begin
-        tx_ctr_r <= tx_ctr_r + 1;
-    end
+   if (!rstn_i) begin
+      tx_ctr_r <= 0;
+   end
+   else if (consume_w) begin
+      tx_ctr_r <= tx_ctr_r + 1;
+   end
 end
 
 assign tx_en_w = uart_ctrl_r [0];
