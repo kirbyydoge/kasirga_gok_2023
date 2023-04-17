@@ -48,14 +48,14 @@ always @* begin
     durum_ns = durum_r;
     sayac_ns = sayac_r;
     veri_ns = veri_r;
-    gonderilecek_veri_biti_ns =gonderilecek_veri_biti_r;
+    gonderilecek_veri_biti_ns = gonderilecek_veri_biti_r;
     consume_cmb = `LOW;
 
     sayac_ns = sayac_r + 1;
 
-    saat_aktif_cmb = sayac_r == baud_div_i - 1;
+    saat_aktif_cmb = sayac_r == baud_div_i;
 
-    if (sayac_r == baud_div_i - 1) begin
+    if (sayac_r == baud_div_i) begin
         sayac_ns = 0;
     end
 

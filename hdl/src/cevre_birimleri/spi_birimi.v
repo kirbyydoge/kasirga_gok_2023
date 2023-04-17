@@ -108,7 +108,11 @@ reg [1:0] durum_ns;
 reg [4:0] clock_edge_ctr_r;
 reg [4:0] clock_edge_ctr_ns;
 
+reg ancestor_valid_r;
+reg ancestor_valid_ns;
+
 always @* begin
+    ancestor_valid_ns = ancestor_valid_r;
     cmd_hint_ns = cmd_hint_r;
     clock_edge_ctr_ns = clock_edge_ctr_r;
     durum_ns = durum_r;
@@ -166,9 +170,10 @@ always @* begin
         mosi_ns = cmd_cpha_i ? mosi_r : buf_mosi_r[transfer_sayac_r];
         csn_ns = cmd_dir_r[1] || cmd_dir_r[0] ? `LOW : csn_r;
         sck_enable_ns = cmd_dir_r[1] || cmd_dir_r[0];
-        recv_valid_ns = `LOW;
+        recv_valid_ns = ancestor_valid_r || !cmd_cpha_i;
         clock_edge_ctr_ns = 0;
-        transfer_sayac_ns = cmd_dir_r[1] && !cmd_cpha_i;
+        transfer_sayac_ns = cmd_dir_r[1] ? !cmd_cpha_i : 1'b0;
+        ancestor_valid_ns = !cmd_hint_r;
 
         durum_ns =  cmd_dir_r[1] ? DURUM_GONDER :
                     cmd_dir_r[0] ? DURUM_GETIR  : DURUM_BOSTA;
@@ -223,6 +228,7 @@ always @(posedge clk_i) begin
         recv_valid_r <= 0;
         clock_edge_ctr_r <= 0;
         cmd_hint_r <= 0;
+        ancestor_valid_r <= 0;
     end
     else begin
         durum_r <= durum_ns;
@@ -241,6 +247,7 @@ always @(posedge clk_i) begin
         recv_valid_r <= recv_valid_ns;
         clock_edge_ctr_r <= clock_edge_ctr_ns;
         cmd_hint_r <= cmd_hint_ns;
+        ancestor_valid_r <= ancestor_valid_ns;
     end
 end
 

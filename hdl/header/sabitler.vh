@@ -1,6 +1,6 @@
 //------Sentez Parametreleri------
-`define VCU108
-// `define NEXYS
+// `define VCU108
+`define NEXYS
 // `define SPIKE_DIFF
 // `define LOG_COMMITS
 // `define OPENLANE
@@ -19,7 +19,7 @@
 `define CSR_ADRES_BIT   12
 
 // `define SPI_SEAMLESS    
-`define SPI_IS_MSB      1'b0
+`define SPI_IS_MSB      1'b1
 
 // !!! DDB <> Yazmac Oku ve DDB <> Geri Yaz icin assert(VERI_BIT == MXLEN) !!!
 `define XLEN            32

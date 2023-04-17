@@ -291,18 +291,24 @@ assign uart_status_w [3] = rx_fifo_empty;
 
 assign cek_hazir_o = `HIGH;
 
-ila_uartd debug_uartd (
-    .clk    (clk_i),
-    .probe0 (durum_r),
-    .probe1 (tx_fifo_full_w),
-    .probe2 (tx_fifo_empty),
-    .probe3 (tx_fifo_wr_en_cmb),
-    .probe4 (tx_fifo_rd_en_cmb),
-    .probe5 (rx_fifo_full_w),
-    .probe6 (rx_fifo_empty),
-    .probe7 (rx_fifo_wr_en_cmb),
-    .probe8 (rx_fifo_rd_en_cmb),
-    .probe9 (baud_div)
-);
+//ila_uartd debug_uartd (
+//    .clk    (clk_i),
+//    .probe0 (durum_r),
+//    .probe1 (tx_fifo_full_w),
+//    .probe2 (tx_fifo_empty),
+//    .probe3 (tx_fifo_wr_en_cmb),
+//    .probe4 (tx_fifo_rd_en_cmb),
+//    .probe5 (rx_fifo_full_w),
+//    .probe6 (rx_fifo_empty),
+//    .probe7 (rx_fifo_wr_en_cmb),
+//    .probe8 (rx_fifo_rd_en_cmb),
+//    .probe9 (baud_div),
+//    .probe10(cek_adres_i),
+//    .probe11(cek_uart_istek_w),
+//    .probe12(cek_hazir_o),
+//    .probe13(uart_veri_o),
+//    .probe14(uart_gecerli_o),
+//    .probe15(uart_hazir_i)
+//);
 
 endmodule

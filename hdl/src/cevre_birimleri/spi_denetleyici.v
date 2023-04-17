@@ -194,6 +194,7 @@ always @* begin
                     end
                     else begin
                         spi_veri_ns = fifo_miso_rd_data_w;
+                        fifo_miso_rd_en_cmb = `HIGH;
                         spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
                         spi_gecerli_ns = `HIGH;
                     end
@@ -238,6 +239,7 @@ always @* begin
     DURUM_VERI_BEKLE: begin
         if (!fifo_miso_empty_w) begin
             spi_veri_ns = fifo_miso_rd_data_w;
+            fifo_miso_rd_en_cmb = `HIGH;
             spi_tilefields_ns[`TL_D_OP] = `TL_OP_ACK_DATA;
             spi_gecerli_ns = `HIGH;
             durum_ns = DURUM_BOSTA;
