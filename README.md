@@ -13,6 +13,7 @@ Kerem Yalçınkaya - Lisans Üye
 
 ```
 hdl/                        İşlemci gerçeklemesi ve doğrulaması donanım kaynakları
+ |_ ip/                     Kullanılan Clock Wizard Vivado IP dosyaları (Vivado 2020.2) 
  |_ constraints/            VCU108 ve Nexys için XDC dosyaları
  |_ header/                 Verilog header dosyaları
  |_ sim/                    Verilog simülasyon dosyaları
