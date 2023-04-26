@@ -71,9 +71,9 @@
 //-------Önbellek Denetleyiciler----------
 `define L1_BLOK_BIT 32    
 `define L1B_SATIR   128
-`define L1B_YOL     2  
+`define L1B_YOL     4  
 `define L1V_SATIR   128
-`define L1V_YOL     2
+`define L1V_YOL     4
 `define L1_BOYUT    (`L1_BLOK_BIT * `L1B_SATIR * `L1B_YOL) + (`L1_BLOK_BIT * `L1V_SATIR * `L1V_YOL) // Teknofest 2022-2023 icin 4KB olmali
 `define L1_ONBELLEK_GECIKME 1 // Denetleyici gecikmesi degil, SRAM/BRAM gecikmesi
 

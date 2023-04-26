@@ -46,7 +46,7 @@ wire   clk_wiz_locked;
 wire clk_w;
 clk_wiz_vcu clk_wiz
 (
-    .clk_60(clk_w),
+    .clk_100(clk_w),
     .reset(1'b0), 
     .locked(clk_wiz_locked),
     .clk_in1_p(clk_p),
@@ -56,7 +56,6 @@ clk_wiz_vcu clk_wiz
 wire clk_w;
 clk_wiz_nexys clk_wiz
 (
-    .clk_100(),
     .clk_60(clk_w),
     .reset(1'b0), 
     .locked(clk_wiz_locked),
@@ -128,7 +127,8 @@ always @(posedge clk_w) begin
   end
 end
 
-assign iomem_ready = ram_shift_q[RAM_DELAY-1] | (iomem_valid & (iomem_addr == 32'h3000_0000 || iomem_addr == 32'h3000_0004));
+reg timer_read_r;
+assign iomem_ready = ram_shift_q[RAM_DELAY-1] | timer_read_r;
 
 assign iomem_rdata = (iomem_valid & (iomem_addr == 32'h3000_0000)) ? timer[31:0]  :
                      (iomem_valid & (iomem_addr == 32'h3000_0004)) ? timer[63:32] : main_mem_rdata;
@@ -162,9 +162,11 @@ teknofest_ram #(
 always @(posedge clk_w) begin
   if (!rst_n) begin
     timer <= 64'h0;
+    timer_read_r <= 0;
   end else begin
   `ifndef SPIKE_DIFF
     timer <= timer + 64'h1;
+    timer_read_r <= iomem_valid & (iomem_addr == 32'h3000_0000 || iomem_addr == 32'h3000_0004);
   `endif
   end
 end
