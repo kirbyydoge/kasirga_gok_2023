@@ -10,12 +10,6 @@ void handle_trap() {
     uart_print(error_msg);
 }
 
-uint32_t kasirga_random(int seed) {
-    unsigned int state = seed * 747796405u + 2891336453u;
-    unsigned int word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-    return (word >> 22u) ^ word;
-}
-
 void uart_set_ctrl(uint16_t baud_div, uint8_t rx_en, uint8_t tx_en) {
     uint32_t ctrl = baud_div << 16 | rx_en << 1 | tx_en;
     *UART_CONTROL = ctrl;
