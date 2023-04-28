@@ -6,14 +6,14 @@ import time
 parser = argparse.ArgumentParser()
 
 parser.add_argument('hex', help='')
-parser.add_argument('--port' , '-p', default='COM6' , help='serial port\'un ismi')
+parser.add_argument('--port' , '-p', default='COM6', help='serial port\'un ismi')
 
 args = parser.parse_args()
 
 serial_port = args.port 
 hex = args.hex
 
-ser = serial.Serial(serial_port, 9600)
+ser = serial.Serial(serial_port, 115200)
 
 hex_f = open(hex)
 

@@ -1,0 +1,1 @@
+python screen.py --view COM6 --type color
