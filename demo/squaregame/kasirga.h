@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 
-#define CPU_HZ      60000000
-#define BAUD_RATE   115200
+#define CPU_HZ      100000000
+#define BAUD_RATE   460800
 
 #ifndef TRUE
-#define TRUE (1==1)
+#define TRUE  (1==1)
 #define FALSE (1!=1)
 #endif //TRUE
 
@@ -17,6 +17,7 @@
 #define RX_EMPTY_BIT    3
 
 void handle_trap();
+uint32_t kasirga_random(int seed);
 void uart_set_ctrl(uint16_t baud_div, uint8_t rx_en, uint8_t tx_en);
 int uart_tx_full();
 int uart_rx_full();

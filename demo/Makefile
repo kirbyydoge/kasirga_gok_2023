@@ -2,7 +2,7 @@ RISCVTYPE = riscv64-unknown-elf
 CC = $(RISCVTYPE)-gcc
 
 LINKER_SCRIPT ?= link.ld
-OUTPUTS = /home/kirbyydoge/Documents/kasirga_gok_2023/demo/hex
+OUTPUTS = ./hex
 
 ifndef PROG
 $(error PROG is not set)
@@ -14,10 +14,9 @@ demo_patterns=$(shell find *.c -maxdepth 0 -type f)
 demo-targets=$(demo_patterns:%=%)
 
 compile:
-	cd $DIR
-	$(CC) $(CFLAGS) *.c ../common/crt.S -o $*.riscv
-	elf2hex 4 4096 $*.riscv 1073741824 > $OUTPUTS/$*.hex
-	rm *.bin *.o *.s *.riscv
+	$(CC) $(CFLAGS) $(PROG)/*.c crt.S -o $(PROG).riscv
+	elf2hex 4 4096 $(PROG).riscv 1073741824 > $(OUTPUTS)/$(PROG).hex
+	rm *.riscv
 	
 .PHONY: clean
 clean:
