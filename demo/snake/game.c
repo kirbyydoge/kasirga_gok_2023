@@ -20,6 +20,8 @@
 
 #define STOP_BYTE       0x01
 
+#define STEP_TICKS      CPU_HZ
+
 #define INDEX(i, j) ((i) * SCREEN_WIDTH + (j))
 #define PAINT(row, col, val) screenBuffer[(row) * SCREEN_WIDTH + (col)] = (val);
 
@@ -210,12 +212,14 @@ int main(void) {
         elapsed = time1 - time0;
         elapsed_accum += elapsed;
         time0 = time1;
-        input |= getLastInput();
+        if (elapsed_accum > STEP_TICKS / 9) {
+            input |= getLastInput();
+        }
         for (int i = 0; i < SCREEN_SIZE; i++) {
             screenBuffer[i] = COLOR_BG;
         }
 
-        if (elapsed_accum > CPU_HZ / 3) {
+        if (elapsed_accum > STEP_TICKS / 3) {
             elapsed_accum = 0;
             update(input);
             input = 0;
