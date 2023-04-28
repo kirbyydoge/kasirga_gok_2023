@@ -99,7 +99,7 @@ localparam RISCV_TEST = 0;
 //localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/kaynaklar/coremark/core_main.hex";
 //localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/TEKNOFEST_2023_Cip_Tasarim_Yarismasi/baremetal-tekno-sw/outputs/tekno_example.hex";
 //localparam STANDALONE_PATH = "/home/kirbyydoge/Downloads/uart_receiver.hex";
-localparam STANDALONE_PATH = "/home/kirbyydoge/GitHub/kasirga_gok_2023/kaynaklar/demo/squaregame/game.hex";
+localparam STANDALONE_PATH = "C:/Users/aqwog/Documents/GitHub/kasirga_gok_2023/kaynaklar/coremark/spi_demo.hex";
 localparam LOG_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/vivado.txt";
 localparam UART_PATH = "/home/kirbyydoge/GitHub/kasirga-teknofest-2023/uart.txt";
 

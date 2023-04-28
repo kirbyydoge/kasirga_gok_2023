@@ -14,11 +14,11 @@ args = parser.parse_args()
 
 view_port = args.view
 
-view = serial.Serial(view_port, 460800, timeout=None, write_timeout=0)
+view = serial.Serial(view_port, 460800, timeout=None, write_timeout=None)
 
 screen_dims = (40, 40)
 screen_size = screen_dims[0] * screen_dims[1]
-SCALE = 20
+SCALE = 10
 
 screen = pygame.display.set_mode((screen_dims[1] * SCALE, screen_dims[0] * SCALE))
 square = pygame.Surface((SCALE, SCALE))
@@ -39,9 +39,13 @@ print("Starting")
 frames = 0
 screen_buf = []
 key_state = 0
+last_update = 0
 while True:
     try:
-        pygame.event.get()
+        if (time.time() - last_update) > 2:
+            print(f"FPS: {frames/2}")
+            frames = 0
+            last_update = time.time()
         if keyboard.is_pressed('w'):
             key_state |= W_MASK
         if keyboard.is_pressed('a'):
@@ -62,10 +66,12 @@ while True:
             pass
         finally:
             key_state = 0
+        view.flushOutput()
         if len(screen_buf) < screen_size:
             screen_buf = []
             continue
         frames += 1
+        pygame.event.get()
         for i in range(screen_dims[0]):
             for j in range(screen_dims[1]):
                 pixel = screen_buf[i * screen_dims[1] + j]
@@ -76,5 +82,6 @@ while True:
         screen_buf = []
     except KeyboardInterrupt:
         break
-    except:
+    except Exception as e:
+        print(e)
         screen_buf = []

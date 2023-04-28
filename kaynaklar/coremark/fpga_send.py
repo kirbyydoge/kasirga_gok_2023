@@ -32,7 +32,7 @@ print("Buyruk bellegini gonderiyorum... [" + str(hex_bytes) + " bayt]")
 
 byte_counter = 0
 for line in hex_arr:
-    hex_str = line[:8]
+    hex_str = line[:8].lstrip().strip()
     hex_data = bytearray.fromhex(hex_str)
     for i in range(4):
         print('{:02x}'.format(hex_data[3-i]), end="")
