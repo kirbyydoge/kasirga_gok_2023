@@ -104,16 +104,18 @@ int main(void) {
     uint8_t baitColor = COLOR_WHITE;
     uint8_t baitIncr = 0x25;
     uint32_t random = kasirga_random(0);
+
     for (int i = 0; i < N_BAIS; i++) {
         bait_t* bait = &baitLocs[i];
         random = kasirga_random(random);
-        bait->posX = random % (SCREEN_WIDTH * SUBPIXELS);
+        bait->posX = random % (SCREEN_WIDTH) * SUBPIXELS;
         random = kasirga_random(random);
-        bait->posY = random % (SCREEN_HEIGHT * SUBPIXELS);
+        bait->posY = random % (SCREEN_HEIGHT) * SUBPIXELS;
     }
+
     while(isRunning) {
         // Get Input
-        uint32_t time = getTime();
+        // uint32_t time = getTime();
         input = getLastInput();
 
         // Clear Screen
@@ -140,10 +142,10 @@ int main(void) {
 
         for (int i = 0; i < N_BAIS; i++) {
             bait_t* bait = &baitLocs[i];
-            while ( bait->posX >= playerPosX
-            &&      bait->posX <= playerPosX + playerWidth
-            &&      bait->posY >= playerPosY
-            &&      bait->posY <= playerPosY + playerWidth) {
+            if (bait->posX < playerPosX + playerWidth &&
+                bait->posX + SUBPIXELS > playerPosX &&
+                bait->posY < playerPosY + playerWidth &&
+                bait->posY + SUBPIXELS > playerPosY) {
                 random = kasirga_random(random);
                 bait->posX = (random % SCREEN_WIDTH) * SUBPIXELS;
                 random = kasirga_random(random);
@@ -165,11 +167,6 @@ int main(void) {
         color++;
         if (color == STOP_BYTE) {
             color++;
-        }
-
-        baitColor += baitIncr;
-        if (baitColor == STOP_BYTE) {
-            baitColor++;
         }
 
         screenBuffer[SCREEN_SIZE] = '\0';
