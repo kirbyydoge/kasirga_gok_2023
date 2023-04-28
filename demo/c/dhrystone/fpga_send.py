@@ -3,7 +3,7 @@ import argparse
 import os
 import time
  
-parser = argparse.ArgumentParser(description='C0 SoC\'ye program yukle')
+parser = argparse.ArgumentParser()
 
 parser.add_argument('hex', help='buyruk belleginin doldurulacagi veriyi iceren dosya (coe)')
 parser.add_argument('--port' , '-p', default='/dev/ttyUSB3' , help='serial port\'un ismi')

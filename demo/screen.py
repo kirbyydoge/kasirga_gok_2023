@@ -8,7 +8,7 @@ import keyboard
 import traceback
  
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--view' , '-v', default='COM6')
+parser.add_argument('--view' , '-v', default='/dev/ttyUSB2')
 
 args = parser.parse_args()
 

@@ -3,10 +3,10 @@ import argparse
 import os
 import time
  
-parser = argparse.ArgumentParser(description='')
+parser = argparse.ArgumentParser()
 
-parser.add_argument('hex', help='buyruk belleginin doldurulacagi veriyi iceren dosya (coe)')
-parser.add_argument('--port' , '-p', default='COM6')
+parser.add_argument('hex', help='')
+parser.add_argument('--port' , '-p', default='COM6' , help='serial port\'un ismi')
 
 args = parser.parse_args()
 
@@ -32,7 +32,7 @@ print("Buyruk bellegini gonderiyorum... [" + str(hex_bytes) + " bayt]")
 
 byte_counter = 0
 for line in hex_arr:
-    hex_str = line[:8]
+    hex_str = line[:8].lstrip().strip()
     hex_data = bytearray.fromhex(hex_str)
     for i in range(4):
         print('{:02x}'.format(hex_data[3-i]), end="")
@@ -42,4 +42,3 @@ for line in hex_arr:
     print("%" + "{:.2f}".format((byte_counter/hex_bytes) * 100) + " bitti", end = "\r", flush = True)
 
 print("Programladimmm")
-ser.close()
