@@ -18,9 +18,9 @@ type = args.type
 
 view = serial.Serial(view_port, 2000000, timeout=None, write_timeout=None)
 
-screen_dims = (20, 20)
+screen_dims = (40, 40)
 screen_size = screen_dims[0] * screen_dims[1]
-SCALE = 20
+SCALE = 15
 
 def from8bit(val):
     r = (val & 0xe0) >> 5

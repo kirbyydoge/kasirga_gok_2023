@@ -8,10 +8,19 @@
 #define SCREEN_HEIGHT   20
 #define SCREEN_SIZE     (SCREEN_WIDTH * SCREEN_HEIGHT)
 
-#define COLOR_BG        0x00
-#define COLOR_SNAKE     0X0d
-#define COLOR_BAIT      0xff
-#define COLOR_WALL      0xee
+// #define DISPLAY_COLOR
+
+#ifdef DISPLAY_COLOR
+    #define COLOR_BG        0x00
+    #define COLOR_SNAKE     0X0d
+    #define COLOR_BAIT      0xff
+    #define COLOR_WALL      0xee
+#else
+    #define COLOR_BG        ' '
+    #define COLOR_SNAKE     'o'
+    #define COLOR_BAIT      '.'
+    #define COLOR_WALL      'X'
+#endif
 
 #define W_MASK          0x01
 #define A_MASK          0x02
