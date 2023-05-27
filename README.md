@@ -1,10 +1,10 @@
 # Teknofest Cip Tasarim 2023 - Kasirga Gök İslemcisi
-<img width="505" alt="boru_hattı" src="https://user-images.githubusercontent.com/51290082/210544777-48d96615-e699-44f7-b176-6b13b69988f2.png">
+<img src="https://user-images.githubusercontent.com/51290082/210544777-48d96615-e699-44f7-b176-6b13b69988f2.png" width="550" alt="boru_hattı" >
 İşlemci boru hattı 7 aşamadan oluşmaktadır.
 
 # Kasırga Gök
 
-![thumbnail_GOK](https://github.com/kirbyydoge/kasirga_gok_2023/assets/60625692/124fbe9a-f5d0-473f-940b-d4a3090588a3)
+<img src="https://github.com/kirbyydoge/kasirga_gok_2023/assets/60625692/6d12445b-4319-4c51-8e26-c14a26b9f5f9" width="550">
 
 ## Takım Üyeleri
 ```
